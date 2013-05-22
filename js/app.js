@@ -22,7 +22,7 @@ var app = {
 			lang = localStorage.getItem('fit_lang');
 			app.translateApp();
 		} else {
-			/*navigator.notification.confirm('Vali keel / Choose language / Выбрать язык', function(button) {
+			navigator.notification.confirm('Vali keel / Choose language / Выбрать язык', function(button) {
 				
 				if (button == 1)
 					lang = 'et';
@@ -34,7 +34,7 @@ var app = {
 				localStorage.setItem('fit_lang', lang);
 				app.translateApp();
 					
-			}, 'Teade', 'eesti, english, русский');*/
+			}, 'Teade', 'eesti, english, русский');
 		}
 
 		app.initLogin(false);

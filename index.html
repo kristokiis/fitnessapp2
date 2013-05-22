@@ -470,6 +470,18 @@
         <script src="js/app.js"></script>
         
         <script src="js/main.js"></script>
+        
+        <script type="text/javascript" charset="utf-8">
+		    // Wait for Cordova to load
+		    document.addEventListener("deviceready", onDeviceReady, false);
+		    var gaPlugin;
+		    function onDeviceReady() {
+		    	app.init();
+		    	/*gaPlugin = window.plugins.gaPlugin; 
+		    	gaPlugin.init(successHandler, errorHandler, "UA-36289159-1", 10);*/
+		    	
+		    }
+		</script>
 
     </body>
 </html>
