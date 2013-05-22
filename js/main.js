@@ -145,7 +145,7 @@ function afterTeleport(where) {
 			app.parseUser();
 			break;
 	}
-	
+	app.replaceWords();
 }
 
 function hideallexcept(_this, caller) {

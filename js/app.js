@@ -43,20 +43,20 @@ var app = {
 	},
 	
 	translateApp: function() {
-		console.log('go for it: ' + "js/translations/" + lang + ".js");
 		$.getScript("js/translations/" + lang + ".js", function() {
-			$('.translate').each(function(i, item) {
-				if ($(this).hasClass('placeholder')) {
-					$(this).attr('placeholder', translations[lang][$(this).data('keyword')]);
-				} else if ($(this).hasClass('value')) {
-					$(this).val(translations[lang][$(this).data('keyword')]);
-				} else {
-					$(this).html(translations[lang][$(this).data('keyword')]);
-				}
-			});
+			app.replaceWords();
+		});	
+	},
+	replaceWords: function() {
+		$('.translate').each(function(i, item) {
+			if ($(this).hasClass('placeholder')) {
+				$(this).attr('placeholder', translations[lang][$(this).data('keyword')]);
+			} else if ($(this).hasClass('value')) {
+				$(this).val(translations[lang][$(this).data('keyword')]);
+			} else {
+				$(this).html(translations[lang][$(this).data('keyword')]);
+			}
 		});
-	
-			
 	},
 	
 	initLogin: function(cameFrom) {
@@ -101,7 +101,7 @@ var app = {
 				
 				app.doLogin(data);
 			} else {
-				navigator.notification.vibrate(500);
+				navigator.notification.vibrate(200);
 			}
 			
 		});
