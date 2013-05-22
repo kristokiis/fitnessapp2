@@ -141,6 +141,9 @@ function afterTeleport(where) {
 		case 'login':
 			app.initLogin(where);
 			break;
+		case 'homepage':
+			app.parseUser();
+			break;
 	}
 	
 }
@@ -214,6 +217,8 @@ function teleportMe( where ){
 					
 				
 					$('#' + where).addClass('open');
+					
+					console.log(LEVEL);
 					
 					if ( LEVEL >= '1' ){
 						$('.bottombar, .topbar').addClass('menuin');

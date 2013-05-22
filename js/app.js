@@ -17,32 +17,34 @@ var app = {
 			}
 			
 		}, 1500);
-	
-		if (localStorage.getItem('lang')) {
-			lang = localStorage.getItem('lang');
-			$('.' + lang + '-flag').addClass('active');
-		}
-		
-		$('.flag').unbind('click');
-		$('.flag').click(function(e) {
-			e.preventDefault();
-			$('.flag').removeClass('active');
-			$(this).addClass('active');
-			lang = $(this).attr('rel');
-			localStorage.setItem('lang', lang);
+		//lang = 'en';
+		if (localStorage.getItem('fit_lang')) {
+			lang = localStorage.getItem('fit_lang');
 			app.translateApp();
-		});
-		
-		app.translateApp();
-		
+		} else {
+			navigator.notification.confirm('Vali keel / Choose language / Выбрать язык', function(button) {
+				
+				if (button == 1)
+					lang = 'et';
+				else if (button == 2)
+					lang = 'en';
+				else if (button == 3)
+					lang = 'ru';
+					
+				localStorage.setItem('fit_lang', lang);
+				app.translateApp();
+					
+			}, 'Teade', 'eesti, english, русский');
+		}
+
 		app.initLogin(false);
-		
+		app.translateApp();
 		
 	},
 	
 	translateApp: function() {
-	
-		$.getScript("js/translations/" + lang + ".js", function(data, textStatus, jqxhr) {
+		console.log('go for it: ' + "js/translations/" + lang + ".js");
+		$.getScript("js/translations/" + lang + ".js", function() {
 			$('.translate').each(function(i, item) {
 				if ($(this).hasClass('placeholder')) {
 					$(this).attr('placeholder', translations[lang][$(this).data('keyword')]);
@@ -98,6 +100,8 @@ var app = {
 				data.client_pass = $('#clientPass').val();
 				
 				app.doLogin(data);
+			} else {
+				navigator.notification.vibrate(1000);
 			}
 			
 		});
@@ -144,9 +148,23 @@ var app = {
 	
 	doLogin: function(data) {
 		
-		console.log('LOG IN');
+		user = data;
 		
+		console.log('LOG IN');
+		LEVEL = 1;
 		teleportMe('homepage');
+	},
+	
+	parseUser: function() {
+		if(user.fb_id) {
+			
+		
+			$('.me').find('img').attr('src','https://graph.facebook.com/' + user.fb_id + '/picture');
+			$('.me').find('h2').html(user.firstname + ' ' + user.lastname);
+		} else {
+			$('.me').find('img').attr('src','i/thumb.png');
+			$('.me').find('h2').html('Päärn Brauer');
+		}	
 	},
 	
 	/*

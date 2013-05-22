@@ -3,12 +3,19 @@
     <head>
         <meta charset="utf-8">
 		<meta http-equiv="Cache-control" content="public">
-        <title></title>
-       <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+        <title>FitnessMobile</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 		
         <link rel="stylesheet" href="css/main.css">
         <link rel="stylesheet" href="css/normalize.css">
+        
+        <script type="text/javascript" charset="utf-8" src="phonegap.js"></script>
+		<script type="text/javascript" charset="utf-8" src="childbrowser.js"></script>
+		<script type="text/javascript" charset="utf-8" src="GAPlugin.js"></script>
+		<script src="cdv-plugin-fb-connect.js"></script>
+		<script src="facebook-js-sdk.js"></script>
+        
     </head>
     <body>
 
@@ -26,11 +33,11 @@
 					</hgroup>
 					
 					<div class="w50">
-						<a href="javascript:void(0);" class="fb loginbtn" data-page="homepage" data-level="1" ><span>Logi sisse</span></a>
+						<a href="javascript:void(0);" class="fb loginbtn" data-page="homepage" data-level="1" ><span class="translate" data-keyword="login"></span></a>
 					</div>
 					
 					<div class="w50">
-						<a href="javascript:void(0);" class="acc loginbtn teleport" data-page="login" data-level="0" ><span>Logi sisse</span></a>
+						<a href="javascript:void(0);" class="acc loginbtn teleport" data-page="login" data-level="0" ><span class="translate" data-keyword="login"></span></a>
 					</div>
 					<div class="clear"></div>
 				</section>
@@ -450,8 +457,6 @@
 		<section id="loading">
 			<img src="i/loading.png" alt=""/>
 		</section>
-		
-		<script src="phonegap.js"></script>
 		
         <script src="js/jquery.2.0.0.js"></script>
 		
