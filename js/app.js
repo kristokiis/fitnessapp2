@@ -101,7 +101,7 @@ var app = {
 				
 				app.doLogin(data);
 			} else {
-				navigator.notification.vibrate(1000);
+				navigator.notification.vibrate(500);
 			}
 			
 		});
@@ -211,5 +211,3 @@ function deliverError(msg, url, line) {
 window.onerror = function (msg, url, line) {
 	deliverError(msg, url, line);
 }
-
-app.init();
