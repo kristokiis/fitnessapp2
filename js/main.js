@@ -132,7 +132,7 @@ $(window).load(function () {
 	}, 800);	
 });
 
-function afterTeleport(where) {
+function afterTeleport(where, extra) {
 			
 	switch (where) {
 		case 'frontpage':
@@ -144,6 +144,30 @@ function afterTeleport(where) {
 		case 'homepage':
 			app.parseUser();
 			break;
+		case 'soodustused':
+			app.getFitshop();
+			break;
+		case 'harjutused':
+			app.loadExercisePage();
+			break;
+		case 'harjutused_subpage1':
+			app.loadExercises();
+			break;
+		case 'video':
+			app.parseExercise(extra);
+			break;
+		case 'kavade_ostmine':
+			app.initPackageBuying(1);
+			break;
+		case 'vali_kava':
+			app.initPackageBuying(2);
+			break;
+			
+		
+		/*
+		* huge stuff gathering here..
+		*/
+		
 	}
 	app.replaceWords();
 }
@@ -193,7 +217,7 @@ function goBack(_this, caller) {
 
 }
 
-function teleportMe( where ){
+function teleportMe( where, extra ){
 	//if(updating){
 	
 		LATEST = '#' + $('.open').attr('id');
@@ -203,7 +227,7 @@ function teleportMe( where ){
 			
 			$('#topbar .backbtn').attr('data-deep', LEVEL);
 			
-			$.get(where + '.html',{ "_": $.now() }, function(data){
+			$.get('templates/' + where + '.html',{ "_": $.now() }, function(data){
 				$(data).insertAfter( LATEST )
 				
 				jQuery('.centered').css('top', offset + 'px');
@@ -218,7 +242,7 @@ function teleportMe( where ){
 				
 					$('#' + where).addClass('open');
 					
-					console.log(LEVEL);
+					//console.log(LEVEL);
 					
 					if ( LEVEL >= '1' ){
 						$('.bottombar, .topbar').addClass('menuin');
@@ -236,11 +260,29 @@ function teleportMe( where ){
 					
 					updating = false;
 					
-					afterTeleport(where);
+					afterTeleport(where, extra);
 					
 				}, 20);
 
 			});
+			
+		// if category sorting..
+		} else if (extra && extra.refresh) {
+			console.log('REFRESH');
+			showLoading();
+			
+			afterTeleport(where, extra);
+			
+			setTimeout(function () {
+				reposition();
+						
+				hideMenu();
+				
+				bindEvents();
+				
+				updating = false;
+			}, 100);
+			
 		} else {
 			hideMenu();
 		}
@@ -284,7 +326,12 @@ function bindEvents() {
 		
 		//console.log(LEVEL);
 		
-		teleportMe( where );
+		var extra = {};
+		
+		if ($(this).data('extra_id'))
+			extra.extra_id = $(this).data('extra_id');
+		
+		teleportMe( where, extra );
 
 	});
 
@@ -338,6 +385,16 @@ $('#svgFront g').unbind(eventEnd).bind(eventEnd, function (e) {
 		$('#harjutused .me h3').text('HARJUTUSED');
 	}
 	
+	app.muscleGroup = $(this).data("muscle");
+	if (LEVEL != 2)
+		app.exerciseCat = 0;
+	LEVEL = 2;
+	setTimeout(function() {
+		$('.filter').click();
+		extra = {};
+		extra.refresh = true;
+		teleportMe('harjutused_subpage1', extra);
+	}, 400);
 	
 })
 
@@ -367,6 +424,17 @@ $('#svgBack g').unbind(eventEnd).bind(eventEnd, function (e) {
 		$('.lihasname').text( 'Vali lihasgrupp' );
 		$('#harjutused .me h3').text('HARJUTUSED');
 	}
+	
+	app.muscleGroup = $(this).data("muscle");
+	if (LEVEL != 2)
+		app.exerciseCat = 0;
+	LEVEL = 2;
+	setTimeout(function() {
+		$('.filter').click();
+		extra = {};
+		extra.refresh = true;
+		teleportMe('harjutused_subpage1', extra);
+	}, 400);
 	
 	
 })
@@ -439,71 +507,6 @@ $('.manFlip').unbind(eventEnd).bind(eventEnd, function (e) {
 	
 	});
 	
-	
-
-
-	$('.selectbtn img').unbind(eventEnd).bind(eventEnd, function (e) {
-		//e.preventDefault();
-
-		var id = $(this).parent().parent().data('id');
-		
-		if (!$(this).parent().parent().hasClass('selected')) {
-			$(this).parent().parent().addClass('selected');
-			toBuy.push(id);
-		} else {
-			$(this).parent().parent().removeClass('selected');
-			while (toBuy.indexOf(id) !== -1) {
-				toBuy.splice(toBuy.indexOf(id), 1);
-			}
-		}
-		if (toBuy.length >= 1) {
-			$('.buybtn').addClass('slideIn');
-		} else {
-			$('.buybtn').removeClass('slideIn');
-		}
-		//console.log(toBuy);
-	});
-
-	$('.buybtn').unbind(eventEnd).bind(eventEnd, function (e) {
-		//e.preventDefault();
-		
-		$('#buyoverlay').addClass('prepare').addClass('scale');
-		setTimeout(function () {
-			$('#buyoverlay').addClass('scaleIn');
-		}, 500);
-
-		var here = $('#buyoverlay .checkout');
-
-		here.html('');
-		
-		var html = '';
-		
-		var totalprice = 0;
-		
-		for (var i = 0; i < toBuy.length; i++) {
-
-			var id = toBuy[i];
-
-			var name = $('.box33[data-id=' + id + ']').children('h4.name').text();
-			var price = $('.box33[data-id=' + id + ']').children('h4.price').text();
-			
-
-			html += '<div class="inbasket"><div class="naming">'+ name +'</div><div class="pricing">'+ price +'</div><div class="erase"></div><div class="clear"></div></div>';
-
-			price = price.replace(' €', '');
-			totalprice = Number(totalprice) + Number(price);
-			//console.log( Number(totalprice), Number(price));
-
-		}
-		
-		totalprice = totalprice.toFixed(2);
-		
-		html += '<div class="intotal"><div class="naming">Summa:</div><div class="pricing">'+ totalprice +'  €</div><div class="clear"></div></div>';
-		
-		here.append(html);
-
-	});
-
 	$('.detailsbtn').unbind(eventEnd).bind(eventEnd, function (e) {
 		//e.preventDefault();
 		addHover( this );
@@ -773,9 +776,6 @@ $('.manFlip').unbind(eventEnd).bind(eventEnd, function (e) {
 	
 	});
 	
-
-
-
 	$('.touchhover').on('touchstart', function(e){
 		e.preventDefault();
 		$(this).addClass('hover');
@@ -822,7 +822,7 @@ $('.manFlip').unbind(eventEnd).bind(eventEnd, function (e) {
 				
 				//console.log('newLATEST > ' + newLATEST);
 				
-				teleportMe( newLATESTnohash );
+				teleportMe( newLATESTnohash, {} );
 
 				//$('.bottombar, .topbar').addClass('menuin');
 				//resizeby(newLATEST, 105);

@@ -20,7 +20,7 @@
     
     <access origin="*" />
     
-    <preference name="phonegap-version" value="2.7.0" />
+    <preference name="phonegap-version" value="2.5.0" />
     <preference name="orientation"      value="portrait" />
     <preference name="target-device"    value="handset" />
     <preference name="fullscreen"       value="false" />
