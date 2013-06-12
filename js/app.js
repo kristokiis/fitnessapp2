@@ -223,17 +223,33 @@ var app = {
 		data = {};
 		data.club_id = club_id;
 		
-		$.get(app.apiUrl + '?action=getExerciseCounts', data, function(result) {
+		$.get(app.apiUrl + '?action=getCategories', data, function(result) {
+		
+			content = $('.module-content');
+			template = $('.module-template');
+			template.hide();
+			console.log(result);
+		
 	   		$.each(result, function(i, item) {
-	   			$('#exercise_cat_' + item.category).html(item.total);
-		   		
+	   			template.find('h3').html(item.name);
+	   			template.find('.bubble').html(item.total);
+	   			template.find('img').attr('src', app.serverUrl + 'pics/categories/' + item.cat_id + '.jpg');
+	   			template.find('.harjutus_item').attr('data-cat', item.cat_id);
+		   		content.append(template.html());
 	   		});
+	   		
+	   		$('.harjutus_item').click(function(e) {
+			   app.exerciseCat = $(this).data('cat');
+			   console.log(app.exerciseCat);
+			   
+			   LEVEL = 2;
+			   teleportMe('harjutused_subpage1');
+			   
+		   });
+	   		
 	   }, 'jsonp');
 	   
-	   $('.harjutus_item').click(function(e) {
-		   app.exerciseCat = $(this).data('cat');
-		   console.log(app.exerciseCat);
-	   });
+	   
 	   
 		
 	},
