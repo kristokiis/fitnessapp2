@@ -27,6 +27,7 @@
     <preference name="webviewbounce" 	value="false" />
     
     <gap:plugin name="ChildBrowser" />
+    
 	<gap:plugin name="Analytics" /> <!-- latest release -->
 	
 	<gap:plugin name="FacebookConnect">
