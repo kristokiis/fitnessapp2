@@ -1,4 +1,3 @@
-
 <?xml version="1.0" encoding="UTF-8" ?>
     <widget xmlns = "http://www.w3.org/ns/widgets"
         xmlns:gap = "http://phonegap.com/ns/1.0"
@@ -25,16 +24,11 @@
     <preference name="target-device"    value="handset" />
     <preference name="fullscreen"       value="false" />
     <preference name="webviewbounce" 	value="false" />
-    
-    <gap:plugin name="ChildBrowser" />
-    
-	<gap:plugin name="Analytics" /> <!-- latest release -->
 	
 	<gap:plugin name="FacebookConnect">
 		<param name="APP_ID" value="161092774064906" />
 	</gap:plugin>
     
-    <feature name="http://api.phonegap.com/1.0/camera"/>
 	<feature name="http://api.phonegap.com/1.0/file"/>
 	<feature name="http://api.phonegap.com/1.0/geolocation"/>
 	<feature name="http://api.phonegap.com/1.0/media"/>
