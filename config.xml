@@ -27,13 +27,17 @@
     
     <preference name="load-url-timeout" value="50000" />
     
+    <gap:plugin name="FacebookConnect">
+		<param name="APP_ID" value="161092774064906" />
+	</gap:plugin>
+    
     <feature name="http://api.phonegap.com/1.0/camera"/>
 	<feature name="http://api.phonegap.com/1.0/file"/>
 	<feature name="http://api.phonegap.com/1.0/network"/>
+	
+	<icon src="assets/sparta_ico.png" />
     
-    <icon src="assets/icon.png" gap:platform="ios" width="57" height="57" />
-    <icon src="assets/icon-72.png" gap:platform="ios" width="72" height="72" />
-    <icon src="assets/icon_at_2x.png" gap:platform="ios" width="114" height="114" />
+    
     
     <icon src="assets/icon_android.png" gap:platform="android" gap:density="ldpi" />
 	<icon src="assets/icon_android.png" gap:platform="android" gap:density="mdpi" />
