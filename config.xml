@@ -8,10 +8,10 @@
 
     <!-- versionCode is optional and Android only -->
 
-    <name>Buduaar</name>
+    <name>FitnessMobile</name>
 
     <description>
-       Buduaari rakendus
+       Fitness rakendust
     </description>
 
     <author href="https://www.efley.ee" email="kristo@efley.ee">
@@ -26,9 +26,6 @@
     <preference name="webviewbounce" 	value="false" />
     
     <preference name="load-url-timeout" value="50000" />
-    
-    <gap:plugin name="ChildBrowser" />
-	<gap:plugin name="Analytics" /> <!-- latest release -->
     
     <feature name="http://api.phonegap.com/1.0/camera"/>
 	<feature name="http://api.phonegap.com/1.0/file"/>
