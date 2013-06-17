@@ -24,10 +24,6 @@
     <preference name="target-device"    value="handset" />
     <preference name="fullscreen"       value="false" />
     <preference name="webviewbounce" 	value="false" />
-	
-	<gap:plugin name="FacebookConnect">
-		<param name="APP_ID" value="161092774064906" />
-	</gap:plugin>
     
 	<feature name="http://api.phonegap.com/1.0/file"/>
 	<feature name="http://api.phonegap.com/1.0/geolocation"/>
