@@ -27,34 +27,24 @@
     
     <preference name="load-url-timeout" value="50000" />
     
-    <gap:plugin name="FacebookConnect">
-		<param name="APP_ID" value="161092774064906" />
-	</gap:plugin>
-    
     <feature name="http://api.phonegap.com/1.0/camera"/>
 	<feature name="http://api.phonegap.com/1.0/file"/>
 	<feature name="http://api.phonegap.com/1.0/network"/>
     
-    <icon src="assets/icon.png" gap:platform="ios" width="57" height="57" />
-    <icon src="assets/icon-72.png" gap:platform="ios" width="72" height="72" />
-    <icon src="assets/icon_at_2x.png" gap:platform="ios" width="114" height="114" />
-    
-    <icon src="assets/icon_android.png" gap:platform="android" gap:density="ldpi" />
-	<icon src="assets/icon_android.png" gap:platform="android" gap:density="mdpi" />
-	<icon src="assets/icon_android.png" gap:platform="android" gap:density="hdpi" />
-	<icon src="assets/icon_android.png" gap:platform="android" gap:density="xhdpi" />
+    <icon src="assets/sparta_ico.png" />
 
-    <gap:splash src="assets/splash/android/screen-ldpi-portrait.jpg"  gap:platform="android" gap:density="ldpi" />
-    <gap:splash src="assets/splash/android/screen-mdpi-portrait.jpg"  gap:platform="android" gap:density="mdpi" />
-    <gap:splash src="assets/splash/android/screen-hdpi-portrait.jpg"  gap:platform="android" gap:density="hdpi" />
-    <gap:splash src="assets/splash/android/screen-xhdpi-portrait.jpg" gap:platform="android" gap:density="xhdpi" />
+    <gap:splash src="assets/android/splash.png"  gap:platform="android" gap:density="ldpi" />
+    <gap:splash src="assets/android/splash.png"  gap:platform="android" gap:density="mdpi" />
+    <gap:splash src="assets/android/splash.png"  gap:platform="android" gap:density="hdpi" />
+    <gap:splash src="assets/android/splash.png" gap:platform="android" gap:density="xhdpi" />
 
-    <gap:splash src="assets/splash/ios/screen-iphone-portrait.png"    	gap:platform="ios"	width="320" height="480" />
-    <gap:splash src="assets/splash/ios/screen-iphone-portrait-2x.png" 	gap:platform="ios"	width="640" height="960" />
-    <gap:splash src="assets/splash/ios/Default-568h@2x.png" 			gap:platform="ios"	width="640" height="1136" />
+    <gap:splash src="assets/ios/splash.png"    	gap:platform="ios"	width="320" height="480" />
+    <gap:splash src="assets/ios/splash.png" 	gap:platform="ios"	width="640" height="960" />
+    <gap:splash src="assets/ios/splash.png" 	gap:platform="ios"	width="640" height="960" />
+    <gap:splash src="assets/ios/Default-568h@2x.png" 			gap:platform="ios"	width="640" height="1136" />
     
-    <gap:splash src="assets/splash/ios/screen-ipad-portrait.png"      gap:platform="ios"     width="768" height="1024" />
-    <gap:splash src="assets/splash/ios/screen-ipad-landscape.png"     gap:platform="ios"     width="1024" height="768" />
+    <gap:splash src="assets/ios/splash.png"      gap:platform="ios"     width="768" height="1024" />
+    <gap:splash src="assets/ios/splash.png"     gap:platform="ios"     width="1024" height="768" />
     
 	
 
