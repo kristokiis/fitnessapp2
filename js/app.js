@@ -4,12 +4,9 @@ var data = {};  //data object for querying data from server, should be emptied a
 var user = {};  //object for holding user data / gets from local DB or remote DB
 var items = []; //array for holding module items for inside navigation, without regetting them from server. should be emtied all the time
 
+var db = {};
+
 var categories = [];
-categories[1] = 'Soojendus-harjutused';
-categories[2] = 'Harjutused masinatel';
-categories[3] = 'Vabad raskused';
-categories[4] = 'Venitusharjutused';
-categories[5] = 'Muu';
 
 var muscle_groups = [];
 muscle_groups[1] = 'Trapets';
@@ -26,6 +23,9 @@ muscle_groups[11] = 'Tuhar';
 muscle_groups[12] = 'Tagareis';
 muscle_groups[13] = 'Triitseps';
 
+firstLoad = true;
+totalSteps = 10;
+
 var club_id = 2;
 
 var app = {
@@ -38,7 +38,13 @@ var app = {
 	packageType: 'training',
 	packageTrainer: 0,
 	
+	loadingSteps: function(step) {
+		
+	},
+	
 	init: function() {
+		
+		db = window.openDatabase("fitness", "1.0", "Fitness DB", 1000000);
 		
 		setTimeout(function() {
 			try {
@@ -70,7 +76,49 @@ var app = {
 
 		app.initLogin(false);
 		app.translateApp();
+		app.initTrainingPacks();
 		
+	},
+	
+	/*
+	* if first time, get from
+	*/
+	
+	initTrainingPacks: function() {
+		if (localStorage.getItem('notFirstTime')) {
+			
+			/*
+			* get packets from db
+			*/
+			
+			db.transaction(function(tx) {
+				tx.executeSql('SELECT * FROM DEMO', [], querySuccess, errorCB);
+			}, errorCB, function() {
+				console.log('Success');
+			});
+			
+			
+		} else {
+			db.transaction(function(tx) {
+				tx.executeSql('DROP TABLE IF EXISTS TRAININGS');
+				tx.executeSql('CREATE TABLE IF NOT EXISTS TRAININGS (id unique, type, name, data)');
+				tx.executeSql('INSERT INTO TRAININGS (id, type, name, data) VALUES (1, "training", "Test kava1", "andmed")');
+				tx.executeSql('INSERT INTO TRAININGS (id, type, name, data) VALUES (2, "training", "Test kava2", "andmed")');
+			}, errorCB, function() {
+				console.log('Success');
+			});
+		}
+	},
+	
+	parseTrainingPacks: function(tx, results) {
+		console.log("Returned rows = " + results.rows.length);
+	    // this will be true since it was a select statement and so rowsAffected was 0
+	    if (!results.rowsAffected) {
+	        console.log('No rows affected!');
+	        return false;
+	    }
+	    // for an insert statement, this property will return the ID of the last inserted row
+	    console.log("Last inserted row ID = " + results.insertId);
 	},
 	
 	translateApp: function() {
@@ -107,36 +155,45 @@ var app = {
 			});
 		});
 		
-		$('.loginformbtn').unbind('click');
-		$('.loginformbtn').click(function(e) {
-			e.preventDefault();
-			console.log('submit');
-			error = false;
-			if ($('#clientNr').val() == '') {
-				$('#clientNr').addClass('error');
-				error = true;
-			} else {
-				$('#clientNr').removeClass('error');
-			}
-				
-			if ($('#clientPass').val() == '') {
-				$('#clientPass').addClass('error');
-				error = true;
-			} else {
-				$('#clientPass').removeClass('error');
-			}
+		/*$('#loginForms input').unbind('focus').bind('focus', function (e) {
+			$('.loginformbtn').unbind(eventEnd);
+		});*/
+		
+		//$('.loginformbtn').unbind('click');
+		//$('#loginForms input').unbind('blur').bind('blur', function (e) {
+			$('.loginformbtn').unbind(eventEnd).bind(eventEnd, function (e) {
 			
-			if (!error) {
-				data.client_nr = $('#clientNr').val();
-				data.client_pass = $('#clientPass').val();
-				data.fb_id = false;
-				
-				app.doLogin(data);
-			} else {
-				navigator.notification.vibrate(200);
-			}
+				hideKeyBoard();
 			
-		});
+				e.preventDefault();
+				console.log('submit');
+				error = false;
+				if ($('#clientNr').val() == '') {
+					$('#clientNr').addClass('error');
+					error = true;
+				} else {
+					$('#clientNr').removeClass('error');
+				}
+					
+				if ($('#clientPass').val() == '') {
+					$('#clientPass').addClass('error');
+					error = true;
+				} else {
+					$('#clientPass').removeClass('error');
+				}
+				
+				if (!error) {
+					data.client_nr = $('#clientNr').val();
+					data.client_pass = $('#clientPass').val();
+					data.fb_id = false;
+					
+					app.doLogin(data);
+				} else {
+					navigator.notification.vibrate(200);
+				}
+				
+			});
+		//});
 		
 	},
 	
@@ -215,7 +272,10 @@ var app = {
 			*/
 			$('.me').find('img').attr('src','i/thumb.png');
 			$('.me').find('h2').html('Päärn Brauer');
-		}	
+		}
+		
+		localStorage.setObject('fitUser', user);
+			
 	},
 	
 	loadExercisePage: function() {
@@ -223,35 +283,38 @@ var app = {
 		data = {};
 		data.club_id = club_id;
 		
-		$.get(app.apiUrl + '?action=getCategories', data, function(result) {
+		if (!navigator.onLine) {
+			result = localStorage.getObject('fitCats');
+		} else {
+			$.get(app.apiUrl + '?action=getCategories', data, function(result) {
+				localStorage.setObject('fitCats', result);
+				app.parseCategories(result);
+		   }, 'jsonp');
+		}
+	},
+	
+	parseCategories: function(result) {
+		content = $('.module-content');
+		template = $('.module-template');
+		template.hide();
 		
-			content = $('.module-content');
-			template = $('.module-template');
-			template.hide();
-			console.log(result);
-		
-	   		$.each(result, function(i, item) {
-	   			template.find('h3').html(item.name);
-	   			template.find('.bubble').html(item.total);
-	   			template.find('img').attr('src', app.serverUrl + 'pics/categories/' + item.cat_id + '.jpg');
-	   			template.find('.harjutus_item').attr('data-cat', item.cat_id);
-		   		content.append(template.html());
-	   		});
-	   		
-	   		$('.harjutus_item').click(function(e) {
-			   app.exerciseCat = $(this).data('cat');
-			   console.log(app.exerciseCat);
-			   
-			   LEVEL = 2;
-			   teleportMe('harjutused_subpage1');
-			   
-		   });
-	   		
-	   }, 'jsonp');
-	   
-	   
-	   
-		
+   		$.each(result, function(i, item) {
+   			categories[item.cat_id] = item.name;
+   			template.find('h3').html(item.name);
+   			template.find('.bubble').html(item.total);
+   			template.find('img').attr('src', app.serverUrl + 'pics/categories/' + item.cat_id + '.jpg');
+   			template.find('.harjutus_item').attr('data-cat', item.cat_id);
+	   		content.append(template.html());
+   		});
+   		
+   		$('.harjutus_item').click(function(e) {
+		   app.exerciseCat = $(this).data('cat');
+		   console.log(app.exerciseCat);
+		   
+		   LEVEL = 2;
+		   teleportMe('harjutused_subpage1');
+		   
+	   });
 	},
 	
 	loadExercises: function() {
@@ -571,6 +634,36 @@ Storage.prototype.getObject = function(key) {
     return value && JSON.parse(value);
 }
 
+function storeFile(type, module, id) {
+	var fileTransfer = new FileTransfer();
+	if(type == 'videos')
+		extension = 'mp4';
+	else
+		extension = 'jpg';
+	
+	var uri = encodeURI(app.serverUrl + type + '/' + module + '/' + id + '.' + extension);
+	
+	fileTransfer.download(
+	    uri,
+	    filePath,
+	    function(entry) {
+	        console.log("download complete: " + entry.fullPath);
+	        //$('img.')
+	    },
+	    function(error) {
+	        console.log("download error source " + error.source);
+	        console.log("download error target " + error.target);
+	        console.log("upload error code" + error.code);
+	    },
+	    false,
+	    {
+	        headers: {
+	            "Authorization": "Basic dGVzdHVzZXJuYW1lOnRlc3RwYXNzd29yZA=="
+	        }
+	    }
+	);
+}
+
 function isOdd(num) { return num % 2;}
 
 function deliverError(msg, url, line) {
@@ -598,4 +691,9 @@ function deliverError(msg, url, line) {
 
 window.onerror = function (msg, url, line) {
 	deliverError(msg, url, line);
+}
+
+function errorCB(e) {
+	alert('Error in DB: ' + e);
+	console.error(e);
 }

@@ -45,6 +45,7 @@ function resizeby(_this, _plus) {
 	var toscrollheight = Number(wind - (offset + me + bbar));
 	//console.log(newheight , toscrollheight);
 	
+	//alert('ok');
 	
 	jQuery('.page-wrap').css('height', wind + 'px');
 	//setTimeout(function () {
@@ -137,6 +138,8 @@ function afterTeleport(where, extra) {
 	switch (where) {
 		case 'frontpage':
 			app.initLogin(where);
+			//alert('ok');
+			$('#topbar').css('top', '0px');
 			break;
 		case 'login':
 			app.initLogin(where);
@@ -245,7 +248,10 @@ function teleportMe( where, extra ){
 					//console.log(LEVEL);
 					
 					if ( LEVEL >= '1' ){
-						$('.bottombar, .topbar').addClass('menuin');
+						setTimeout(function() {
+							$('.bottombar, .topbar').addClass('menuin');
+						}, 1000);
+						
 					} else {
 						$('.bottombar, .topbar').removeClass('menuin');
 					}
@@ -786,6 +792,21 @@ $('.manFlip').unbind(eventEnd).bind(eventEnd, function (e) {
 		$(this).removeClass('hover');
 	});
 } /* bindEvents */
+
+function hideKeyBoard() {
+	
+	var field = document.createElement('input');
+	field.setAttribute('type', 'text');
+	document.body.appendChild(field);
+	
+	setTimeout(function() {
+	    field.focus();
+	    setTimeout(function() {
+	        field.setAttribute('style', 'display:none;');
+	    }, 50);
+	}, 50);
+	
+}
 
 (function ($) {
 	$(document).ready(function () {
