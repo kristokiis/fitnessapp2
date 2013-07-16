@@ -50,7 +50,7 @@ var app = {
 		  return false;
 		};*/
 		
-		/*db = window.openDatabase("fitness", "1.0", "Fitness DB", 1000000);
+		db = window.openDatabase("fitness", "1.0", "Fitness DB", 1000000);
 		
 		setTimeout(function() {
 			try {
@@ -78,11 +78,11 @@ var app = {
 				app.translateApp();
 					
 			}, 'Teade', 'eesti, english, русский');
-		}*/
+		}
 
 		app.initLogin(false);
-		app.translateApp();
-		//app.initTrainingPacks();
+		//app.translateApp();
+		app.initTrainingPacks();
 		
 	},
 	
