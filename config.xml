@@ -45,11 +45,6 @@
     
     <gap:splash src="assets/ios/splash.png"      gap:platform="ios"     width="768" height="1024" />
     <gap:splash src="assets/ios/splash.png"     gap:platform="ios"     width="1024" height="768" />
-    
-    <gap:plugin name="com.phonegap.plugins.facebookconnect">
-	    <param name="APP_ID" value="161092774064906" />
-	    <param name="APP_NAME" value="FitnessMobile" />
-	</gap:plugin>
 	
 
 </widget>
