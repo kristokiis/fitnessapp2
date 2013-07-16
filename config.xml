@@ -20,7 +20,7 @@
     
     <access origin="*" />
     
-    <preference name="phonegap-version" value="2.7.0" />
+    <preference name="phonegap-version" value="2.9.0" />
     <preference name="target-device"    value="handset" />
     <preference name="fullscreen"       value="false" />
     <preference name="webviewbounce" 	value="false" />
@@ -46,6 +46,9 @@
     <gap:splash src="assets/ios/splash.png"      gap:platform="ios"     width="768" height="1024" />
     <gap:splash src="assets/ios/splash.png"     gap:platform="ios"     width="1024" height="768" />
     
+    <gap:plugin name="com.phonegap.plugins.facebookconnect">
+	    <param name="APP_ID" value="161092774064906" />
+	</gap:plugin>
 	
 
 </widget>

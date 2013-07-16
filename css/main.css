@@ -85,9 +85,17 @@ fieldset {
  */
 
 textarea {
+	background: none repeat scroll 0 0 transparent;
+    border: medium none;
+    color: #CCCCCC;
+    height: 20px;
     resize: vertical;
+    vertical-align: top;
 }
 
+.gray_item textarea {
+	width: 80%;
+}
 
 .clear:before,
 .clear:after {
@@ -835,7 +843,9 @@ input.error {
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(85,103,113,1)), color-stop(100%,rgba(85,103,113,1)));
 	background: -webkit-linear-gradient(top,  rgba(20,20,20,1) 0%,rgba(85,103,113,1) 100%);
 	background: linear-gradient(to bottom,  rgba(20,20,20,1) 0%,rgba(85,103,113,1) 100%);
-
+	
+	-webkit-transform: rotate(180deg);
+	-moz-transform: rotate(180deg);
 }
 
 
@@ -1461,6 +1471,7 @@ video{
 
 #selectiveoverlay{
 	background: none repeat scroll 0 0 rgba(40, 40, 40, 0.9);
+	z-index: 1200;
 }
 
 #selectiveoverlay .header {
@@ -1685,6 +1696,44 @@ video{
 
 
 
+div.select {
+  display: inline-block;
+}
+
+.selects{
+	position: relative;
+}
+
+div.select select {
+	-webkit-appearance: none;
+	-moz-appearance: none;
+    background: none repeat scroll 0 0 transparent;
+    border: medium none;
+    color: #A1A1A1;
+    padding: 5px 0;
+    width: 100%;
+	position: relative;
+}
+
+
+div.select:after {
+  background: url("../i/select.png") no-repeat scroll center center transparent;
+  background-size: 90% auto;
+  content: "";
+  padding: 6% 4%;
+  pointer-events: none;
+  position: absolute;
+  right: 3%;
+  top: 24%;
+  width: 3%;
+  
+}
+
+.selects .select{
+	width: 100%;
+}
+
+
 
 .month h4{
 	background: rgb(250,203,36);
@@ -1833,7 +1882,7 @@ video{
   padding: 4px 2px;
 }
 
-.box33 .details{
+.details{
 
 	background: -moz-linear-gradient(top,  rgba(69,67,67,1) 0%, rgba(18,18,18,1) 100%);
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(69,67,67,1)), color-stop(100%,rgba(18,18,18,1)));
@@ -1854,7 +1903,7 @@ video{
 	background: #222;
 }
 
-.box33 .details span:after {
+.details span:after {
   background: url("../i/arrow7.png") no-repeat scroll center center transparent;
   background-size: 130% auto;
   content: "";
@@ -1879,7 +1928,9 @@ video{
 	font-size: 22px;
 	text-align: center;
 	display: inline-block;
-	margin: 5% 0 10%;
+	/*margin: 5% auto;*/
+	margin: 10%;
+	text-align: center;
 	
 	border: 1px solid rgba(69,67,67,0.5);
 	border-radius: 6px;
@@ -2350,6 +2401,12 @@ video{
 	padding: 7% 18% 7% 4%;
 }
 
+
+.selects .item_wrap{
+	background: none;
+	padding: 7% 1% 7% 4%;
+}
+
 .icon_ok .item_wrap{
 	background: url("../i/icon_ok.png") no-repeat scroll 95% center transparent;
 	background-size: 8% auto;
@@ -2470,6 +2527,10 @@ video{
 	background-size: 7% auto;
 }
 
+.nobg_special_button {
+	width: 100%;
+	text-align: center;
+}
 
 
 #fitnesstest .toscroll {
@@ -2874,7 +2935,7 @@ video{
 #thefilter h1 {
   background: none repeat scroll 0 0 #000000;
   color: #FFFFFF;
-  padding: 15px 0;
+  padding: 14px 0;
   font-size: 14px;
   text-align: center;
   text-transform: uppercase;
@@ -3070,6 +3131,25 @@ li {
 
 .logo {
   margin: 2% auto 3%;
+}
+
+
+.selects .item_wrap {
+  background: none repeat scroll 0 0 transparent;
+  padding: 2% 1% 2% 3% !important;
+}
+
+div.select:after {
+  background: url("../i/select.png") no-repeat scroll center center transparent;
+  background-size: 90% auto;
+  content: "";
+  padding: 15px 5px;
+  pointer-events: none;
+  position: absolute;
+  right: 3%;
+  top: 24%;
+  width: 40px;
+  
 }
 
 
@@ -3279,11 +3359,11 @@ li {
   float: none;
 }
 
-.box33 .details {
+.details {
   font-size: 15px;
 }
 
-.box33 .details span:after {
+.details span:after {
   background-size: 90% auto;
   top: 7px;
 }
@@ -3525,7 +3605,7 @@ li {
 		
 		
 		.loadedcontent h1 {
-		  font-size: 22px;
+		  font-size: 18px;
 		}
 		
 		.loadedcontent h4 {
@@ -3533,7 +3613,7 @@ li {
 		}
 		
 		.loadedcontent h2 {
-		  font-size: 26px;
+		  font-size: 16px;
 		}
 		
 		.touchslider-next {
