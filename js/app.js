@@ -51,7 +51,7 @@ var app = {
 		};*/
 		
 		/*db = window.openDatabase("fitness", "1.0", "Fitness DB", 1000000);
-		
+		*/
 		setTimeout(function() {
 			try {
 				FB.init({ appId: "161092774064906", nativeInterface: CDV.FB, useCachedDialogs: false });
@@ -78,7 +78,7 @@ var app = {
 				app.translateApp();
 					
 			}, 'Teade', 'eesti, english, русский');
-		}*/
+		}
 
 		app.initLogin(false);
 		app.translateApp();
