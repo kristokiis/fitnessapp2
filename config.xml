@@ -1,0 +1,56 @@
+
+<?xml version="1.0" encoding="UTF-8" ?>
+    <widget xmlns = "http://www.w3.org/ns/widgets"
+        xmlns:gap = "http://phonegap.com/ns/1.0"
+        id        = "ee.efley.fitnessmobile"
+        versionCode="15" 
+        version   = "1.0.5">
+
+    <!-- versionCode is optional and Android only -->
+
+    <name>FitnessMobile</name>
+
+    <description>
+       Fitness rakendust
+    </description>
+
+    <author href="https://www.efley.ee" email="kristo@efley.ee">
+        Efley
+    </author>
+    
+    <access origin="*" />
+    
+    <preference name="phonegap-version" value="2.9.0" />
+    <preference name="target-device"    value="handset" />
+    <preference name="fullscreen"       value="false" />
+    <preference name="webviewbounce" 	value="false" />
+    
+    <preference name="splash-screen-duration" value="10000" />
+    <preference name="load-url-timeout" value="10000" />
+    
+    <feature name="http://api.phonegap.com/1.0/camera"/>
+	<feature name="http://api.phonegap.com/1.0/file"/>
+	<feature name="http://api.phonegap.com/1.0/network"/>
+    
+    <icon src="assets/sparta_ico.png" />
+
+    <gap:splash src="assets/android/splash.png"  gap:platform="android" gap:density="ldpi" />
+    <gap:splash src="assets/android/splash.png"  gap:platform="android" gap:density="mdpi" />
+    <gap:splash src="assets/android/splash.png"  gap:platform="android" gap:density="hdpi" />
+    <gap:splash src="assets/android/splash.png" gap:platform="android" gap:density="xhdpi" />
+
+    <gap:splash src="assets/ios/splash.png"    	gap:platform="ios"	width="320" height="480" />
+    <gap:splash src="assets/ios/splash.png" 	gap:platform="ios"	width="640" height="960" />
+    <gap:splash src="assets/ios/splash.png" 	gap:platform="ios"	width="640" height="960" />
+    <gap:splash src="assets/ios/Default-568h@2x.png" 			gap:platform="ios"	width="640" height="1136" />
+    
+    <gap:splash src="assets/ios/splash.png"      gap:platform="ios"     width="768" height="1024" />
+    <gap:splash src="assets/ios/splash.png"     gap:platform="ios"     width="1024" height="768" />
+    
+    <gap:plugin name="com.phonegap.plugins.facebookconnect">
+	    <param name="APP_ID" value="161092774064906" />
+	    <param name="APP_NAME" value="FitnessMobile" />
+	</gap:plugin>
+	
+
+</widget>
