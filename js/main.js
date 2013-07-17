@@ -396,7 +396,11 @@ function showLoading(){
 
 function bindEvents() {
 	
-		$('textarea').autoResize();
+	console.log('binding..');
+	
+	//$('textarea').autoResize();
+	
+	console.log('binding this shit..');
 	
 	var diaryscroll = $('#diaryscroll').length;
 	if(diaryscroll){
@@ -404,6 +408,7 @@ function bindEvents() {
 		scroll.enableStickyHeaders('h4');
 	}
 
+	console.log('binding this shit still..');
 
 	$('.teleport').unbind(eventEnd).bind(eventEnd, function (e) {
 		e.preventDefault();
@@ -433,6 +438,8 @@ function bindEvents() {
 		teleportMe( where, extra );
 
 	});
+	
+	console.log('binding this shit over..');
 
 	$('.filter').unbind(eventEnd).bind(eventEnd, function (e) {
 		e.preventDefault();

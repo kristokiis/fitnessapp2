@@ -253,7 +253,7 @@
 			<img src="i/loading.png" alt=""/>
 		</section>
 		
-        <script src="js/jquery.2.0.0.js"></script>
+        <script src="js/jquery.2.0.3.js"></script>
 		
         <script src="js/iscroll.js"></script>
         <script src="js/iscrollSticky.js"></script>
@@ -267,13 +267,19 @@
         <script src="js/main.js"></script>
         
         <script type="text/javascript" charset="utf-8">
+        	
 		    // Wait for Cordova to load
-		    document.addEventListener("deviceready", onDeviceReady, false);
+		    //document.addEventListener("deviceready", onDeviceReady, false);
+		    //app.init();
 		    
-		    function onDeviceReady() {
-		    	app.init();
+		    $(document).ready(function() {
+			    app.init();
+		    });
+		    
+		    /*function onDeviceReady() {
+		    	//app.init();
 		    	
-		    }
+		    }*/
 		</script>
 
     </body>

@@ -44,7 +44,7 @@ var app = {
 	},
 	
 	init: function() {
-	
+		
 		/*if (networkState == Connection.NONE){
 		  alert('Interneti ühendus puudub,');
 		  return false;
@@ -84,7 +84,7 @@ var app = {
 		app.translateApp();
 		//app.initTrainingPacks();
 		
-		navigator.splashscreen.hide();
+		//navigator.splashscreen.hide();
 		
 	},
 	

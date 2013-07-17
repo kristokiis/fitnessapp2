@@ -119,7 +119,6 @@ textarea {
 body{
 	font-family: 'epoca', arial;
 	opacity: 0;
-	-moz-transform: translateZ(0);
 	-moz-transform: translate3d(0, 0, 0);
 	
 	-webkit-transition: all 0.30s ease;
@@ -170,11 +169,8 @@ body{
 	
 	text-align: justify;
 
-	
-	-webkit-transform: translateZ(0);
 	-webkit-transform: translate3d(0, 100%, 0);
 	
-	-moz-transform: translateZ(0);
 	-moz-transform: translate3d(0, 100%, 0);
 	
 	-webkit-transition: all 0.30s ease;
@@ -239,11 +235,8 @@ background: radial-gradient(ellipse at center,  rgba(255,255,255,0.71) 0%,rgba(2
 	left: 0;
 	width: 100%;
 	
-	
-	-webkit-transform: translateZ(0);
 	-webkit-transform: translate3d(105%, 0, 0);
 	
-	-moz-transform: translateZ(0);
 	-moz-transform: translate3d(105%, 0, 0);
 	
 	-webkit-transition: all 0s;
@@ -319,12 +312,8 @@ background: radial-gradient(ellipse at center,  rgba(255,255,255,0.71) 0%,rgba(2
 	overflow-y: scroll;
 	-webkit-overflow-scrolling: touch; 
 	
-
-	
-	-webkit-transform: translateZ(0);
 	-webkit-transform: translate3d(-105%, 0, 0);
 	
-	-moz-transform: translateZ(0);
 	-moz-transform: translate3d(-105%, 0, 0);
 	
 	-webkit-transition: all 0.30s ease;
@@ -344,12 +333,8 @@ background: radial-gradient(ellipse at center,  rgba(255,255,255,0.71) 0%,rgba(2
 	overflow-y: scroll;
 	-webkit-overflow-scrolling: touch; 
 	
-
-	
-	-webkit-transform: translateZ(0);
 	-webkit-transform: translate3d(135%, 0, 0);
 	
-	-moz-transform: translateZ(0);
 	-moz-transform: translate3d(135%, 0, 0);
 	
 	-webkit-transition: all 0.30s ease;
@@ -549,11 +534,8 @@ background: radial-gradient(ellipse at center,  rgba(255,255,255,0.71) 0%,rgba(2
 	top: 0;
 	width: 100%;
 	
-	
-	-webkit-transform: translateZ(0);
 	-webkit-transform: translate3d(0, -100%, 0);
 	
-	-moz-transform: translateZ(0);
 	-moz-transform: translate3d(0, -100%, 0);
 	
 	-webkit-transition: all 0.30s ease;
@@ -1360,10 +1342,8 @@ input.error {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
 	opacity: 0;
 	
-	-webkit-transform: translateZ(0);
 	-webkit-transform: translate3d(0, 0, 0);
 	
-	-moz-transform: translateZ(0);
 	-moz-transform: translate3d(0, 0, 0);
 	
 	-webkit-transition: all 0.20s ease;
@@ -1969,10 +1949,6 @@ div.select:after {
 .scale{
 	left: 0;
 
-	
-	-webkit-transform: translateZ(0);
-	-moz-transform: translateZ(0);
-
 	-webkit-transform: scale(.5);
     -moz-transform: scale(.5);
 	
@@ -2019,9 +1995,6 @@ div.select:after {
   position: relative;
   z-index: 2;
   
-  
-	-webkit-transform: translateZ(0);
-	-moz-transform: translateZ(0);
 	-webkit-transition: all 0.30s ease;
 	-moz-transition: all 0.30s ease;
 	transition: all 0.30s ease;
@@ -2186,8 +2159,7 @@ div.select:after {
   width: 51%;
   z-index: 100;
   opacity: 0;
-	-webkit-transform: translateZ(0);
-	-webkit-transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
 }
 
 .carusel .normal{
@@ -2651,10 +2623,8 @@ div.select:after {
 	left: -5%;
 	z-index: 10000;
 	
-	-webkit-transform: translateZ(0);
 	-webkit-transform: translate3d(0, 0, 0);
 	
-	-moz-transform: translateZ(0);
 	-moz-transform: translate3d(0, 0, 0);
 	
 	-webkit-transition: all 0.20s;
