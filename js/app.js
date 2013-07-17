@@ -81,8 +81,10 @@ var app = {
 		}*/
 
 		app.initLogin(false);
-		//app.translateApp();
+		app.translateApp();
 		//app.initTrainingPacks();
+		
+		navigator.splashscreen.hide();
 		
 	},
 	
