@@ -52,14 +52,14 @@ var app = {
 		
 		/*db = window.openDatabase("fitness", "1.0", "Fitness DB", 1000000);
 		*/
-		/*setTimeout(function() {
+		setTimeout(function() {
 			try {
 				FB.init({ appId: "161092774064906", nativeInterface: CDV.FB, useCachedDialogs: false });
 			} catch (e) {
 				deliverError(e, 'app.js', '216');
 			}
 			
-		}, 1500);*/
+		}, 1500);
 		//lang = 'en';
 		/*if (localStorage.getItem('fit_lang')) {
 			lang = localStorage.getItem('fit_lang');
