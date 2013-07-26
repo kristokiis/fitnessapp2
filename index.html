@@ -325,7 +325,7 @@
         
         <script src="js/app.js"></script>
         
-        <!-- <script src="js/main.js"></script> -->
+        <script src="js/main.js"></script>
         
         <script type="text/javascript" charset="utf-8">
 		    // Wait for Cordova to load
@@ -336,7 +336,11 @@
 		    });*/
 		    
 		    function onDeviceReady() {
-		    	app.init();
+		    	console.log('device ready, but waiting for extra stuff..');
+		    	setTimeout(function() {
+			    	console.log('lets init this stuff..');
+			    	app.init();
+		    	}, 3000);
 		    	
 		    }
 		</script>
