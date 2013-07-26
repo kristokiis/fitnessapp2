@@ -26,8 +26,8 @@
 					<img class="logo teleport" src="i/logo.png" alt="" data-page="frontpage" data-level="0" />
 					
 					<hgroup>
-						<h2>Sinu uus ja mugav</h2>
-						<h3>treeningpäevik</h3>
+						<h2 class="translate" data-keyword="slogan-1"></h2>
+						<h3 class="translate" data-keyword="slogan-2"></h3>
 					</hgroup>
 					
 					<div class="w50">
@@ -60,34 +60,28 @@
 			
 			</section>
 			
-			<section id="selectiveoverlay" class="overlay ">
-					<section class="header">
-						<div class="closebtn"></div>
-						<h2>Kokkupuude spordiga viimasel aastal </h2>
-					</section>
-		
-					<section class="contentfield">
+			<section id="selectiveoverlay" class="overlay">
+				<section class="header">
+					<div class="closebtn"></div>
+					<h2 class="selection-title"></h2>
+				</section>
+				<section class="contentfield">
+					<section class="selection-content">
 						
-						<section class="nobg_item small touchhover">
-								<h4>< 1 korda nädalas</h4>		
-						</section>
-						<section class="nobg_item small touchhover">
-								<h4>1x nädalas</h4>		
-						</section>
-						<section class="nobg_item small touchhover">
-								<h4>2x korda nädalas</h4>		
-						</section>
-						
-						<textarea name="txt" id="txt" class="txt"></textarea>
-							
-						<section class="nobg_item touchhover">
-							<h3>SALVESTA</h3>		
-						</section>
-
 					</section>
-			
+					<section class="nobg_item touchhover">
+						<h3>SALVESTA</h3>		
+					</section>
+				</section>
+				<section class="selection-template">
+					<section class="nobg_item small touchhover">
+						<h4>1 korda nädalas</h4>		
+					</section>
+				</section>
+				<section class="text-template">
+					<textarea name="txt" id="txt" class="txt"></textarea>
+				</section>
 			</section>
-
 			
 			<section id="yesnooverlay" class="overlay ">
 		
@@ -148,12 +142,7 @@
 						<h4>Maksimaalne tulemus:</h4>
 						<h3>500 p</h3>
 					</div>
-					
-					
-			
 			</section>
-			
-			
 			
 			<section id="timeroverlay" class="overlay ">
 				<div class="backbtn"></div>
@@ -184,11 +173,11 @@
 			
 			
 			<section id="bottombar" class="bottombar">
-				<a href="#" class="homebtn teleport" data-page="homepage" data-level="1"><span><img src="i/kodu.png" alt=""/></span>KODU</a>
+				<a href="#" class="homebtn teleport" data-page="homepage" data-level="1"><span><img src="i/kodu.png" alt=""/></span><span class="translate" data-keyword="home"></span></a>
 					<div class="devider1"><img src="i/bar_devider.png" alt=""/></div>
-				<a href="#" class="treeningbtn alustatreeningutbtn teleport" data-page="uustreening" data-level="1"><span><img src="i/treening.png" alt=""/></span>TREENING</a>
+				<a href="#" class="treeningbtn alustatreeningutbtn teleport" data-page="uustreening" data-level="1"><span><img src="i/treening.png" alt=""/></span><span class="translate" data-keyword="training"></span></a>
 					<div class="devider2"><img src="i/bar_devider.png" alt=""/></div>
-				<a href="#" class="harjutusedbtn teleport" data-page="harjutused" data-level="1"><span><img src="i/harjutused.png" alt=""/></span>HARJUTUSED</a>
+				<a href="#" class="harjutusedbtn teleport" data-page="harjutused" data-level="1"><span><img src="i/harjutused.png" alt=""/></span><span class="translate" data-keyword="exercises"></span></a>
 				<span></span>
 			</section>
 			
@@ -371,15 +360,15 @@
 			
 			<section id="themenu">
 				<section id="menuscroll">
-					<a href="#" class="menu home teleport selected" data-page="homepage" data-level="1"><span></span><p>Avaleht</p></a>
-					<a href="#"  class="menu pank teleport" data-page="harjutused" data-level="1"><span></span><p>Harjutuste pank</p></a>
-					<a href="#" class="menu kavad teleport" data-page="uustreening" data-level="2"><span></span><p>Treeningkavad</p></a>
-					<a href="#" data-level="1" class="menu toit teleport" data-page="toitumiskavad" data-level="1"><span></span><p>Toitumiskavad</p></a>
-					<a href="#" class="menu ostmine teleport" data-page="kavade_ostmine" data-level="1"><span></span><p>Kavade ostmine</p></a>
-					<a href="#" class="menu lisandid teleport" data-page="lisandid" data-level="1"><span></span><p>Toidulisandid</p></a>
-					<a href="#" class="menu paevik teleport" data-page="diary" data-level="1"><span></span><p>Treeningupäevik</p></a>
-					<a href="#" class="menu profile teleport" data-page="profile" data-level="1"><span></span><p>Profiil ja seaded</p></a>
-					<a href="#" class="menu test  teleport" data-page="test" data-level="1"><span></span><p>Fitness test</p></a>
+					<a href="#" class="menu home teleport selected" data-page="homepage" data-level="1"><span></span><p class="translate" data-keyword="mainpage"></p></a>
+					<a href="#"  class="menu pank teleport" data-page="harjutused" data-level="1"><span></span><p class="translate" data-keyword="exercises_list"></p></a>
+					<a href="#" class="menu kavad teleport" data-page="uustreening" data-level="2"><span></span><p class="translate" data-keyword="training_packages"></p></a>
+					<a href="#" data-level="1" class="menu toit teleport" data-page="toitumiskavad" data-level="1"><span></span><p class="translate" data-keyword="nutrition_packages"></p></a>
+					<a href="#" class="menu ostmine teleport" data-page="kavade_ostmine" data-level="1"><span></span><p class="translate" data-keyword="package_ordering"></p></a>
+					<a href="#" class="menu lisandid teleport" data-page="lisandid" data-level="1"><span></span><p class="translate" data-keyword="food_nutritions"></p></a>
+					<a href="#" class="menu paevik teleport" data-page="diary" data-level="1"><span></span><p class="translate" data-keyword="training_diary"></p></a>
+					<a href="#" class="menu profile teleport" data-page="profile" data-level="1"><span></span><p class="translate" data-keyword="profile_settings"></p></a>
+					<a href="#" class="menu test  teleport" data-page="test" data-level="1"><span></span><p class="translate" data-keyword="fitness_test"></p></a>
 				</section>
 			</section>
 			
@@ -399,20 +388,20 @@
 
         <script src="js/swipe.js"></script>
         
-        <script src="js/app.js"></script>
+        <!-- <script src="js/app.js"></script> -->
         
-        <script src="js/main.js"></script>
+        <!-- <script src="js/main.js"></script> -->
         
         <script type="text/javascript" charset="utf-8">
 		    // Wait for Cordova to load
 		    document.addEventListener("deviceready", onDeviceReady, false);
 		    
 		    /*$(document).ready(function() {
-			    app.init();
+			    //app.init();
 		    });*/
 		    
 		    function onDeviceReady() {
-		    	app.init();
+		    	//app.init();
 		    	
 		    }
 		</script>

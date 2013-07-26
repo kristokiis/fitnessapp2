@@ -176,8 +176,8 @@ var app = {
 	
 	translateApp: function() {
 		$.getScript("js/translations/" + lang + ".js", function() {
-			//app.replaceWords();
-			console.log('going not to replace words');
+			app.replaceWords();
+			console.log('going to replace words');
 		});	
 	},
 	replaceWords: function() {
