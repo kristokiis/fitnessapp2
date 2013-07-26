@@ -28,6 +28,7 @@ firstLoad = true;
 totalSteps = 10;
 
 var club_id = 2;
+var trainer = {};
 
 var app = {
 	
@@ -45,14 +46,14 @@ var app = {
 	
 	init: function() {
 		
-		/*if (networkState == Connection.NONE){
-		  alert('Interneti ühendus puudub,');
-		  return false;
-		};*/
+		con = checkConnection();
+		
+		console.log('checking connection');
 		
 		/*db = window.openDatabase("fitness", "1.0", "Fitness DB", 1000000);
 		*/
 		setTimeout(function() {
+			console.log('starting fb init');
 			try {
 				FB.init({ appId: "161092774064906", nativeInterface: CDV.FB, useCachedDialogs: false });
 			} catch (e) {
@@ -79,10 +80,15 @@ var app = {
 					
 			}, 'Teade', 'eesti, english, русский');
 		}*/
-
+		
+		console.log('going to initlogin');
+		
 		app.initLogin(false);
+		
+		console.log('going to translate');
+		
 		app.translateApp();
-		//app.initTrainingPacks();
+		//
 		
 		//navigator.splashscreen.hide();
 		
@@ -109,15 +115,18 @@ var app = {
 			
 			data = {};
 			data.firstTime = false;
+			data.user_id = user.id;
+			
 			$.get(app.apiUrl + '?action=getTrainings', data, function(result) {
-				
-				db.transaction(function(tx) {
-					tx.executeSql('INSERT INTO TRAININGS (id, type, name, data) VALUES (1, "training", "Test kava1", "andmed")');
-					tx.executeSql('INSERT INTO TRAININGS (id, type, name, data) VALUES (2, "training", "Test kava2", "andmed")');
-				}, errorCB, function() {
-					console.log('Success');
+				$.each(result, function(i, item) {
+					db.transaction(function(tx) {
+						tx.executeSql('INSERT INTO TRAININGS (id, type, name, data) VALUES (1, "training", "Test kava1", "andmed")');
+					}, errorCB, function() {
+						if (item.trainer) {
+							
+						}
+					});
 				});
-				
 			});
 			
 			
@@ -132,18 +141,26 @@ var app = {
 			
 			data = {};
 			data.firstTime = true;
+			data.user_id = user.id;
 			$.get(app.apiUrl + '?action=getTrainings', data, function(result) {
-		   		
-		   		db.transaction(function(tx) {
-			   		tx.executeSql('INSERT INTO TRAININGS (id, type, name, data) VALUES (1, "training", "Test kava1", "andmed")');
-					tx.executeSql('INSERT INTO TRAININGS (id, type, name, data) VALUES (2, "training", "Test kava2", "andmed")');
+		   		$.each(result, function(i, item) {
+			   		db.transaction(function(tx) {
+				   		tx.executeSql('INSERT INTO TRAININGS (id, type, name, data) VALUES (1, "training", "Test kava1", "andmed")');
+			   		});
 		   		});
-		   		
 				localStorage.setItem('notFirstTime', true);
 			
 			}, 'jsonp');
 			
 		}
+	},
+	
+	getTrainer: function(trainer) {
+		data = {};
+		data.trainer_id = trainer;
+		$.get(app.apiUrl + '?action=getTrainer', data, function(result) {
+		   	trainer = result;
+		}, 'jsonp'); 
 	},
 	
 	parseTrainingPacks: function(tx, results) {
@@ -160,6 +177,7 @@ var app = {
 	translateApp: function() {
 		$.getScript("js/translations/" + lang + ".js", function() {
 			app.replaceWords();
+			console.log('going to replace words');
 		});	
 	},
 	replaceWords: function() {
@@ -176,19 +194,25 @@ var app = {
 	
 	initLogin: function(cameFrom) {
 		
-		console.log('inited ' + cameFrom);
-		
 		$('.fb').unbind('click');
 		$('.fb').click(function(e) {
 			e.preventDefault();
-			FB.getLoginStatus(function(response) {
-				app.curFunction = 'FBLOGINSTATUS';
-				if (response.status == 'connected') {
-					app.getFacebookMe();
-				} else {
-					app.authFacebook();
-				}
-			});
+			var con = checkConnection();
+		
+			if (con == 'No') {
+				navigator.notification.alert('Peate olema sisselogitud', {}, 'Teade', 'Ok');
+				return false;
+			} else {
+				FB.getLoginStatus(function(response) {
+					app.curFunction = 'FBLOGINSTATUS';
+					if (response.status == 'connected') {
+						app.getFacebookMe();
+					} else {
+						app.authFacebook();
+					}
+				});
+
+			}
 		});
 		
 		$('.loginformbtn').unbind(eventEnd).bind(eventEnd, function (e) {
@@ -269,28 +293,74 @@ var app = {
 		//user = data;
 		data.club_id = club_id;
 		
-		$.get(app.apiUrl + '?action=userLogin', data, function(result) {
-	   		if (result.login == false) {
-		   		$('#clientNr').addClass('error');
+		var con = checkConnection();
+		
+		if (con == 'No') {
+			user = localStorage.getObject('fitUser');
+			console.log(user);
+			console.log(data);
+			if (user.club_nr != data.client_nr) {
+				$('#clientNr').addClass('error');
 		   		$('#clientPass').addClass('error');
 		   		navigator.notification.vibrate(200);
-	   		} else {
-	   			if (result.user_new)
-	   				user = data;
-	   			else
-		   			user = result;
-		   		
-		   		console.log('LOG IN');
+			} else {
+				console.log('LOG IN');
 				LEVEL = 1;
 				teleportMe('homepage', {});
-	   		}
-	   		
-	   		
-	   	}, 'jsonp');
-		
+			}
+		} else {
+			$.get(app.apiUrl + '?action=userLogin', data, function(result) {
+		   		if (result.login == false) {
+			   		$('#clientNr').addClass('error');
+			   		$('#clientPass').addClass('error');
+			   		navigator.notification.vibrate(200);
+		   		} else {
+		   			if (result.user_new)
+		   				user = data;
+		   			else
+			   			user = result;
+			   		
+			   		console.log('LOG IN');
+					LEVEL = 1;
+					teleportMe('homepage', {});
+		   		}
+		   		
+		   		
+		   	}, 'jsonp');
+		}
 		
 	},
-	
+	/*
+	age: "26"
+club_id: "2"
+club_nr: "12345678"
+club_pass: "a94a8fe5ccb19ba61c4c0873d391e987982fbbd3"
+created: "0000-00-00 00:00:00"
+currently_training: "Jah, olen jaganud lihasgrupid päevadeks ning selle järgi käin trennis. 
+↵
+↵1.päev rind ja biitseps
+↵2.päev selg ja triitseps
+↵3.päev jalad ning õlad.
+↵
+↵Igapäevasel ka kõhulihaseid."
+exercises: "12"
+fb_id: "1300065888"
+firstname: "Kristo"
+health_condition: "Tervis on korras ning ei ole esinenud tervisehäireid lähiajal."
+houres: "32"
+id: "1"
+last_active: "2013-05-29 17:00:00"
+lastname: "Kiis"
+length: "182"
+mail: "kristo@efley.ee"
+orders: "4"
+per_week: "3 korda nädalas."
+sex: "male"
+trainer_id: "3"
+training_activity: "2-3 korda nädalas, vahepeal jõusaal, üldiselt tantsimine ja akrobaatika."
+training_target: "Lihasmassi juurde saada."
+weight: "70"
+	*/
 	parseUser: function() {
 		if (user.fb_id) {
 			$('.me').find('img').attr('src','https://graph.facebook.com/' + user.fb_id + '/picture');
@@ -305,6 +375,39 @@ var app = {
 		
 		localStorage.setObject('fitUser', user);
 			
+	},
+	
+	parseUserDetails: function() {
+		console.log(user);
+		$('#firstname').val(user.firstname);
+		$('#lastname').val(user.lastname);
+		$('#mail').val(user.mail);
+		$('#phone').val(user.phone);
+		$('#sex').val(user.sex);
+		$('#age').val(user.age);
+		$('#weight').val(user.weight);
+		$('#length').val(user.length);
+		$('#training_activity').val(user.training_activity);
+		$('#training_target').val(user.training_target);
+		$('#per_week').val(user.per_week);
+		$('#currently_training').val(user.currently_training);
+		$('#health_condition').val(user.health_condition);
+		
+		$('#nobg_special_button').click(function() {
+			user.firstname = $('#firstname').val();
+			user.lastname = $('#lastname').val();
+			user.mail = $('#mail').val();
+			user.phone = $('#phone').val();
+			user.sex = $('#sex').val();
+			user.age = $('#age').val();
+			user.weight = $('#weight').val();
+			user.length = $('#length').val();
+			user.training_activity = $('#training_activity').val();
+			user.training_target = $('#training_target').val();
+			user.per_week = $('#per_week').val();
+			user.currently_training = $('#currently_training').val();
+			user.health_condition = $('#health_condition').val();
+		});
 	},
 	
 	loadExercisePage: function() {
@@ -602,7 +705,7 @@ var app = {
 		
 	},
 	
-	getFitshop: function() {
+	getFitshop: function(isTrainer) {
 	
 		items = [];
 	
@@ -612,6 +715,11 @@ var app = {
 		
 		data = {};
 		data.club_id = club_id;
+		data.user_id = user.id;
+		
+		if (isTrainer) {
+			data.trainer_id = trainer.id;
+		}
 		
 		$.get(app.apiUrl + '?action=getFitshop', data, function(result) {
 	   		$.each(result, function(i, item) {
@@ -727,6 +835,24 @@ window.onerror = function (msg, url, line) {
 }
 
 function errorCB(e) {
+	deliverError('Error in DB: ' + e, 'app.js', 800);
 	alert('Error in DB: ' + e);
 	console.error(e);
+}
+
+function checkConnection() {
+	var networkState = navigator.network.connection.type;
+
+    var states = {};
+    states[Connection.UNKNOWN]  = 'Unknown';
+    states[Connection.ETHERNET] = 'Ethernet';
+    states[Connection.WIFI]     = 'WiFi';
+    states[Connection.CELL_2G]  = '2G';
+    states[Connection.CELL_3G]  = '3G';
+    states[Connection.CELL_4G]  = '4G';
+    states[Connection.NONE]     = 'No';
+    
+    console.log(states[networkState]);
+    
+    return states[networkState];
 }

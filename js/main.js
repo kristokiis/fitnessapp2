@@ -207,8 +207,6 @@ function hideMenu() {
 	//console.log( LATEST );
 }
 
-
-
 $(window).load(function () {
 	setTimeout(function () {
 
@@ -238,8 +236,15 @@ function afterTeleport(where, extra) {
 		case 'homepage':
 			app.parseUser();
 			break;
+		case 'lisandid':
+			if(trainer.length != 0)
+				$('.treenerpakkumisedbtn').hide();
+			break;
 		case 'soodustused':
-			app.getFitshop();
+			app.getFitshop(false);
+			break;
+		case 'treenerpakkumised':
+			app.getFitshop(true);
 			break;
 		case 'harjutused':
 			app.loadExercisePage();
@@ -256,7 +261,9 @@ function afterTeleport(where, extra) {
 		case 'vali_kava':
 			app.initPackageBuying(2);
 			break;
-			
+		case 'minuandmed':
+			app.parseUserDetails();
+			break;
 		
 		/*
 		* huge stuff gathering here..
