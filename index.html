@@ -336,8 +336,10 @@
 		    });*/
 		    
 		    function onDeviceReady() {
+		    	showLoading();
 		    	console.log('device ready, but waiting for extra stuff..');
 		    	setTimeout(function() {
+		    		$('#loading').hide();
 			    	console.log('lets init this stuff..');
 			    	app.init();
 		    	}, 3000);

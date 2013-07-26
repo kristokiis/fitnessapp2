@@ -330,37 +330,7 @@ var app = {
 		}
 		
 	},
-	/*
-	age: "26"
-club_id: "2"
-club_nr: "12345678"
-club_pass: "a94a8fe5ccb19ba61c4c0873d391e987982fbbd3"
-created: "0000-00-00 00:00:00"
-currently_training: "Jah, olen jaganud lihasgrupid päevadeks ning selle järgi käin trennis. 
-↵
-↵1.päev rind ja biitseps
-↵2.päev selg ja triitseps
-↵3.päev jalad ning õlad.
-↵
-↵Igapäevasel ka kõhulihaseid."
-exercises: "12"
-fb_id: "1300065888"
-firstname: "Kristo"
-health_condition: "Tervis on korras ning ei ole esinenud tervisehäireid lähiajal."
-houres: "32"
-id: "1"
-last_active: "2013-05-29 17:00:00"
-lastname: "Kiis"
-length: "182"
-mail: "kristo@efley.ee"
-orders: "4"
-per_week: "3 korda nädalas."
-sex: "male"
-trainer_id: "3"
-training_activity: "2-3 korda nädalas, vahepeal jõusaal, üldiselt tantsimine ja akrobaatika."
-training_target: "Lihasmassi juurde saada."
-weight: "70"
-	*/
+
 	parseUser: function() {
 		if (user.fb_id) {
 			$('.me').find('img').attr('src','https://graph.facebook.com/' + user.fb_id + '/picture');
@@ -407,6 +377,7 @@ weight: "70"
 			user.per_week = $('#per_week').val();
 			user.currently_training = $('#currently_training').val();
 			user.health_condition = $('#health_condition').val();
+			user.modified = new Date().getTime();
 		});
 	},
 	

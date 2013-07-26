@@ -1,3 +1,4 @@
+
 (function($){
  
 $.fn.autoResize = function(options) {
