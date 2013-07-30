@@ -65,13 +65,13 @@
 					<h2 class="selection-title"></h2>
 				</section>
 				<section class="contentfield">
-					<section class="nobg_item touchhover" data-lang="et">
+					<section class="nobg_item" data-lang="et">
 						<h3>Eesti</h3>		
 					</section>
-					<section class="nobg_item touchhover" data-lang="en">
+					<section class="nobg_item" data-lang="en">
 						<h3>English</h3>		
 					</section>
-					<section class="nobg_item touchhover" data-lang="ru">
+					<section class="nobg_item" data-lang="ru">
 						<h3>Poruski</h3>		
 					</section>
 				</section>
@@ -348,18 +348,24 @@
 		    // Wait for Cordova to load
 		    document.addEventListener("deviceready", onDeviceReady, false);
 		    
-		    /*$(document).ready(function() {
-			    //app.init();
-		    });*/
-		    
-		    function onDeviceReady() {
-		    	showLoading();
+		    $(document).ready(function() {
+			    showLoading();
 		    	console.log('device ready, but waiting for extra stuff..');
 		    	setTimeout(function() {
 		    		$('#loading').hide();
 			    	console.log('lets init this stuff..');
 			    	app.init();
 		    	}, 1500);
+		    });
+		    
+		    function onDeviceReady() {
+		    	/*showLoading();
+		    	console.log('device ready, but waiting for extra stuff..');
+		    	setTimeout(function() {
+		    		$('#loading').hide();
+			    	console.log('lets init this stuff..');
+			    	app.init();
+		    	}, 1500);*/
 		    	
 		    }
 		    

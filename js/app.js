@@ -64,20 +64,28 @@ var app = {
 		//lang = 'en';
 		localStorage.removeItem('fit_lang');
 		if (localStorage.getItem('fit_lang')) {
+		
 			lang = localStorage.getItem('fit_lang');
 			app.translateApp();
 		} else {
-			
+		
 			$('#languageoverlay').addClass('scale');
 			setTimeout(function () {
 				$('#languageoverlay').addClass('scaleIn');
 			}, 100);
 		
-			$('#languageoverlay').find('.touchhover').click(function(e) {
+			$('#languageoverlay').find('.nobg_item').click(function(e) {
+				e.preventDefault();
 				lang = $(this).data('lang');
-				localStorage.setItem('fit_lang', lang);
-				app.translateApp();
-				$('#languageoverlay').removeClass('scale').removeClass('scaleIn');
+				$(this).addClass('hover');
+				setTimeout(function() {
+					$(this).removeClass('hover');
+					
+					localStorage.setItem('fit_lang', lang);
+					app.translateApp();
+					$('#languageoverlay').removeClass('scale').removeClass('scaleIn');
+				}, 200);
+				
 			});
 		}
 		
@@ -846,6 +854,7 @@ function errorCB(e) {
 }
 
 function checkConnection() {
+	return '3G';
 	var networkState = navigator.network.connection.type;
 
     var states = {};
