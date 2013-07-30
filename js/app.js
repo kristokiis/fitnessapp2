@@ -62,35 +62,30 @@ var app = {
 			
 		}, 1500);
 		//lang = 'en';
-		/*if (localStorage.getItem('fit_lang')) {
+		localStorage.removeItem('fit_lang');
+		if (localStorage.getItem('fit_lang')) {
 			lang = localStorage.getItem('fit_lang');
 			app.translateApp();
 		} else {
-			navigator.notification.confirm('Vali keel / Choose language / Выбрать язык', function(button) {
-				
-				if (button == 1)
-					lang = 'et';
-				else if (button == 2)
-					lang = 'en';
-				else if (button == 3)
-					lang = 'ru';
-					
+			
+			$('#languageoverlay').addClass('scale');
+			setTimeout(function () {
+				$('#languageoverlay').addClass('scaleIn');
+			}, 100);
+		
+			$('#languageoverlay').find('.touchhover').click(function(e) {
+				lang = $(this).data('lang');
 				localStorage.setItem('fit_lang', lang);
 				app.translateApp();
-					
-			}, 'Teade', 'eesti, english, русский');
-		}*/
+				$('#languageoverlay').removeClass('scale').removeClass('scaleIn');
+			});
+		}
 		
 		console.log('going to initlogin');
 		
 		app.initLogin(false);
 		
 		console.log('going to translate');
-		
-		app.translateApp();
-		//
-		
-		//navigator.splashscreen.hide();
 		
 	},
 	
@@ -343,6 +338,13 @@ var app = {
 			$('.me').find('h2').html('Päärn Brauer');
 		}
 		
+		$('.me').unbind('click');
+		$('.me').bind('click', function(e) {
+			LEVEL = 1;
+			teleportMe('profile');
+		});
+		
+		
 		localStorage.setObject('fitUser', user);
 			
 	},
@@ -469,8 +471,7 @@ var app = {
 	   	}, 'jsonp');
 
 	},
-	
-	
+
 	parseExercise: function(extra) {
 		console.log('HERE:');
 		console.log(items[extra]);
@@ -614,7 +615,7 @@ var app = {
 			
 				$('.buybtn').unbind(eventEnd).bind(eventEnd, function (e) {
 					//e.preventDefault();
-					
+					app.parseUserDetails();
 					$('#minuandmed').addClass('scale');
 					setTimeout(function () {
 						$('#minuandmed').addClass('scaleIn');
@@ -655,13 +656,12 @@ var app = {
 						var name = $('.box33[data-id=' + id + ']').children('h4.name').text();
 						var price = $('.box33[data-id=' + id + ']').children('h4.price').text();
 						
-			
 						html += '<div class="inbasket"><div class="naming">'+ name +'</div><div class="pricing">'+ price +'</div><div class="erase"></div><div class="clear"></div></div>';
 			
 						price = price.replace(' €', '');
 						totalprice = Number(totalprice) + Number(price);
 						//console.log( Number(totalprice), Number(price));
-			
+
 					}
 					
 					totalprice = totalprice.toFixed(2);
@@ -669,10 +669,49 @@ var app = {
 					html += '<div class="intotal"><div class="naming">Summa:</div><div class="pricing">'+ totalprice +'  €</div><div class="clear"></div></div>';
 					
 					here.append(html);
+					
+					$('.bank-link').click(function(e) {
+						e.preventDefault();
+						app.createOrder($(this).data('bank'), toBuy[0]);
+					});
+					
 		   		});
 			}, 'jsonp');
 			
 		}	
+		
+	},
+	
+	createOrder: function(type, buyed) {
+		
+		console.log(type);
+		console.log(buyed);
+		console.log(user);
+		
+		data = {};
+		
+		data.type = type;
+		data.user = user.id;
+		data.item = buyed.id;
+		
+		$.get(app.apiUrl + '?action=createOrder', data, function(result) {
+			
+			iabRef = window.open('http://projects.efley.ee/fitnessapp/api/book.php', '_blank', 'location=yes');
+			iabRef.addEventListener('loadstart', function() {
+				console.log('started');
+			});
+			iabRef.addEventListener('loadstop', function() {
+				console.log('stoped');
+			});
+			iabRef.addEventListener('exit', function() {
+				console.log('closed');
+			});
+		
+		});
+		
+		/*
+		* save order TO DB and open bank link stuff in browser and listen the url... / 2H
+		*/	
 		
 	},
 	
@@ -729,11 +768,6 @@ var app = {
 	   	}, 'jsonp');
 		
 	},
-	
-	/*
-	*
-	*/
-	
 	
 }
 
