@@ -700,20 +700,26 @@ var app = {
 		
 		data.type = type;
 		data.user = user.id;
-		data.item = buyed.id;
+		data.item = buyed;
 		
 		$.get(app.apiUrl + '?action=createOrder', data, function(result) {
 			
-			iabRef = window.open('http://projects.efley.ee/fitnessapp/api/book.php', '_blank', 'location=yes');
-			iabRef.addEventListener('loadstart', function() {
-				console.log('started');
-			});
-			iabRef.addEventListener('loadstop', function() {
-				console.log('stoped');
-			});
-			iabRef.addEventListener('exit', function() {
-				console.log('closed');
-			});
+			var order_id = result.id;
+			
+			if (type != 'bill') {
+			
+				iabRef = window.open('http://projects.efley.ee/fitnessapp/admin/payment.php?order=' + order_id + '&bank=' + type, '_blank', 'location=yes');
+				iabRef.addEventListener('loadstart', function() {
+					console.log('started');
+				});
+				iabRef.addEventListener('loadstop', function() {
+					console.log('stoped');
+				});
+				iabRef.addEventListener('exit', function() {
+					console.log('closed');
+				});
+			
+			}
 		
 		});
 		
