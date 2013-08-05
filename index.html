@@ -231,36 +231,35 @@
 		    document.addEventListener("deviceready", onDeviceReady, false);
 		    
 		    $(document).ready(function() {
-			    showLoading();
+			    /*showLoading();
 		    	console.log('device ready, but waiting for extra stuff..');
 		    	setTimeout(function() {
 		    		$('#loading').hide();
 			    	console.log('lets init this stuff..');
 			    	app.init();
-		    	}, 1500);
+		    	}, 1500);*/
 		    });
 		    
 		    function onDeviceReady() {
-		    /*	showLoading();
+		    	showLoading();
 		    	console.log('device ready, but waiting for extra stuff..');
 		    	setTimeout(function() {
 		    		$('#loading').hide();
 			    	console.log('lets init this stuff..');
 			    	app.init();
 		    	}, 2500);
-		    */	
-		    }
+		    	document.addEventListener("backbutton", onBackButton, false);
 		    
-		    document.addEventListener("backbutton", function(e) {
-				e.preventDefault();
+		    }
+		    function onBackButton(e) {
+			    e.preventDefault();
 				//if in subpage trigger correct 
 				if (LEVEL != 0) {
 					goBack();
 				} else {
 					navigator.app.exitApp();
 				}
-				
-			}, false);
+		    }
 		    
 		</script>
 
