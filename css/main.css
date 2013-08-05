@@ -592,7 +592,7 @@ background: radial-gradient(ellipse at center,  rgba(255,255,255,0.71) 0%,rgba(2
 }
 
 #frontpage hgroup {
-  margin-bottom: 50%;
+  margin-bottom: 30%;
   text-shadow: 2px 2px 0 #000000;
 }
 
@@ -664,6 +664,29 @@ background: radial-gradient(ellipse at center,  rgba(255,255,255,0.71) 0%,rgba(2
 	
 	text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.5);
 }
+
+
+.langselector {
+  background: none repeat scroll 0 0 rgba(0, 0, 0, 0.5);
+  border-radius: 4px 4px 4px 4px;
+  margin: 10% 30% 0;
+  padding: 8px 0;
+  text-align: center;
+  width: 40%;
+}
+
+.langselector a{
+	color: #B1B1B1;
+	font-weight: 600;
+	padding: 0 4px;
+	text-shadow: 0 1px 0 #000;
+	font-size: 14px;
+}
+
+.langselector a.active {
+	color: #fff;
+}
+
 
 #login .tagasibtn{
 	background: #999;
@@ -826,8 +849,8 @@ input.error {
 	background: -webkit-linear-gradient(top,  rgba(20,20,20,1) 0%,rgba(85,103,113,1) 100%);
 	background: linear-gradient(to bottom,  rgba(20,20,20,1) 0%,rgba(85,103,113,1) 100%);
 	
-	-webkit-transform: rotate(180deg);
-	-moz-transform: rotate(180deg);
+	/* -webkit-transform: rotate(180deg);
+	-moz-transform: rotate(180deg); */
 }
 
 
@@ -1010,6 +1033,19 @@ input.error {
 
 .diary .last_update{
 	color: #000;
+}
+
+.video:before {
+	position: absolute;
+	width: 23px;
+	height: 23px;
+	background: url(../i/icon_play.png) no-repeat center center #373737;
+	background-size: 80% auto;
+	border-radius: 50%;
+	top: 50%;
+	margin-top: -12px;
+	left: 4%;
+	content: "";
 }
 
 .uuskava:before {
@@ -1414,9 +1450,8 @@ input.error {
 	float: left;
 }
 
-.altertimer .timer {
-    margin-right: 2% !important;
-    width: 21%;
+.nobg_item.timer {
+	width: 70%;
 	background: -moz-linear-gradient(top, rgba(235,203,89,1) 0%, rgba(175,143,29,1) 100%);
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(235,203,89,1)), color-stop(100%,rgba(175,143,29,1)));
 	background: -webkit-linear-gradient(top, rgba(235,203,89,1) 0%,rgba(175,143,29,1) 100%);
@@ -1425,18 +1460,15 @@ input.error {
 	border: medium none;
 }
 
-.altertimer .timer img {
+.nobg_item.timer img {
   padding: 10px 0 3px;
   width: 42%;
-  max-width: 23px;
+  max-width: 35px;
 }
 
-.altertimer .arrow {
-    width: 75%;
-}
-
-.altertimer{
-	margin-bottom: 20px;
+.nobg_item.alternative {
+    width: 70%;
+	margin-bottom: 45px !important;
 }
 
 .exercise .nobg_item{
@@ -3648,5 +3680,10 @@ div.select:after {
 	
 	#video{
 		height: 180px;
+	}
+	
+	.langselector a{
+		padding: 0 2px;
+		font-size: 12px;
 	}
 }

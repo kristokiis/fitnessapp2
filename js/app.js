@@ -62,32 +62,25 @@ var app = {
 			
 		}, 1500);
 		//lang = 'en';
-		localStorage.removeItem('fit_lang');
+		//localStorage.removeItem('fit_lang');
 		if (localStorage.getItem('fit_lang')) {
-		
 			lang = localStorage.getItem('fit_lang');
 			app.translateApp();
+			$('.langselector').find('a').removeClass('active');
+			$('.langselector').find('a[data-lang="'+lang+'"]').addClass('active');
 		} else {
-		
-			$('#languageoverlay').addClass('scale');
-			setTimeout(function () {
-				$('#languageoverlay').addClass('scaleIn');
-			}, 100);
-		
-			$('#languageoverlay').find('.nobg_item').click(function(e) {
-				e.preventDefault();
-				lang = $(this).data('lang');
-				$(this).addClass('hover');
-				setTimeout(function() {
-					$(this).removeClass('hover');
+			lang = 'et';
+			app.translateApp();
 					
-					localStorage.setItem('fit_lang', lang);
-					app.translateApp();
-					$('#languageoverlay').removeClass('scale').removeClass('scaleIn');
-				}, 200);
-				
-			});
 		}
+		$('.langselector').find('a').click(function(e) {
+			e.preventDefault();
+			lang = $(this).data('lang');
+			localStorage.setItem('fit_lang', 'et');
+			app.translateApp();
+			$('.langselector').find('a').removeClass('active');
+			$(this).addClass('active');
+		});
 		
 		console.log('going to initlogin');
 		
@@ -398,6 +391,7 @@ var app = {
 		
 		if (!navigator.onLine) {
 			result = localStorage.getObject('fitCats');
+			app.parseCategories(result);
 		} else {
 			$.get(app.apiUrl + '?action=getCategories', data, function(result) {
 				localStorage.setObject('fitCats', result);
@@ -429,6 +423,8 @@ var app = {
 		   
 	   });
 	},
+	
+	//offline huinja
 	
 	loadExercises: function() {
 		

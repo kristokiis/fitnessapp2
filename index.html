@@ -38,6 +38,14 @@
 						<a href="javascript:void(0);" class="acc loginbtn teleport" data-page="login" data-level="0" ><span class="translate" data-keyword="login"></span></a>
 					</div>
 					<div class="clear"></div>
+					
+					<div class="langselector">
+						<a href="#" class="active" data-lang="et">EST</a>
+						<a href="#" class="" data-lang="ru">RUS</a>
+						<a href="#" class="" data-lang="en">ENG</a>
+					</div>
+					
+					<div class="clear"></div>
 				</section>
 			</section>
 			
@@ -58,23 +66,6 @@
 						
 					</section>
 			
-			</section>
-			
-			<section id="languageoverlay" class="overlay">
-				<section class="header">
-					<h2 class="selection-title"></h2>
-				</section>
-				<section class="contentfield">
-					<section class="nobg_item" data-lang="et">
-						<h3>Eesti</h3>		
-					</section>
-					<section class="nobg_item" data-lang="en">
-						<h3>English</h3>		
-					</section>
-					<section class="nobg_item" data-lang="ru">
-						<h3>Poruski</h3>		
-					</section>
-				</section>
 			</section>
 			
 			<section id="selectiveoverlay" class="overlay">
@@ -238,7 +229,7 @@
         <script type="text/javascript" charset="utf-8">
 		    // Wait for Cordova to load
 		    document.addEventListener("deviceready", onDeviceReady, false);
-		    /*
+		    
 		    $(document).ready(function() {
 			    showLoading();
 		    	console.log('device ready, but waiting for extra stuff..');
@@ -248,16 +239,16 @@
 			    	app.init();
 		    	}, 1500);
 		    });
-		    */
+		    
 		    function onDeviceReady() {
-		    	showLoading();
+		    /*	showLoading();
 		    	console.log('device ready, but waiting for extra stuff..');
 		    	setTimeout(function() {
 		    		$('#loading').hide();
 			    	console.log('lets init this stuff..');
 			    	app.init();
 		    	}, 2500);
-		    	
+		    */	
 		    }
 		    
 		    document.addEventListener("backbutton", function(e) {
