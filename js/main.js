@@ -458,12 +458,12 @@ function bindEvents() {
 			$(this).addClass('active');
 			$('#thefilter').addClass('showR');
 			$('.topbar, .bottombar, ' + aligner).addClass('showmenuR');
-			$('.toclose').show();
+			//$('.toclose').show();
 		} else {
 			$(this).removeClass('active');
 			$('#thefilter').removeClass('showR');
 			$('.topbar, .bottombar, ' + aligner).removeClass('showmenuR');
-			$('.toclose').hide();
+			//$('.toclose').hide();
 			hideMenu();
 		}
 		

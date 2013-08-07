@@ -588,11 +588,11 @@ var app = {
 			   		
 		   		});
 		   		
-		   		$('.detailsbtn:not(:first)').unbind(eventEnd).bind(eventEnd, function (e) {
+		   		$('.detailsbtn:not(:first)').parent().unbind(eventEnd).bind(eventEnd, function (e) {
 			   		
 			   		$('.voucher').hide();	
 			   		
-		   			var id = $(this).parent().data('id');
+		   			var id = $(this).data('id');
 		   			toBuy = [];
 		   			toBuy.push(id);
 		   			
