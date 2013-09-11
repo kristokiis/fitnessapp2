@@ -394,13 +394,13 @@ var nutritions = {
 	getNutritionsMain: function() {
 		$('.main-contents').html('');	
 		
-		console.log(this.orderNutritions);
+		console.log(nutritions.orderNutritions);
 		
-		if (this.sampleNutritions.length) {
+		if (nutritions.sampleNutritions.length) {
 			$('.main-contents').append('<section class="item noicon treenerpakkumisedbtn teleport" data-page="naidiskavad" data-level="2" data-type="sample"><div class="item_wrap"><h3>Näidiskavad</h3></div></section>');
 		}
 		
-		if (this.orderNutritions.length) {
+		if (nutritions.orderNutritions.length) {
 			$('.main-contents').append('<section class="item noicon soodustusedbtn teleport" data-page="naidiskavad" data-level="2" data-type="order"><div class="item_wrap"><h3>Personaalsed kavad</h3></div></section>');
 		} else {
 			$('.main-contents').append('<section class="item noicon soodustusedbtn teleport" data-page="personaalsed_toitumiskavad" data-level="2"><div class="item_wrap"><h3>Personaalsed kavad</h3></div></section>');
@@ -461,7 +461,7 @@ var nutritions = {
 			}
 		});
 		
-		$('#toitumisplaan1').find('h3').html('TOITUMISPLAAN:<br>' + currentNutrition.name);
+		$('#toitumisplaan1').find('h3').html('TOITUMISPLAAN:<br>' + nutritions.currentNutrition.name);
 		
 		$.each(nutritions.currentNutrition.meals, function(type, meal) {
 			
