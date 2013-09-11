@@ -3,11 +3,9 @@ var translations = [];
 var data = {};  //data object for querying data from server, should be emptied all the time.
 var user = {};  //object for holding user data / gets from local DB or remote DB
 var items = []; //array for holding module items for inside navigation, without regetting them from server. should be emtied all the time
-
 var db = {};
 
 var categories = [];
-var trainings = {};
 
 var muscle_groups = [];
 muscle_groups[1] = 'Trapets';
@@ -18,10 +16,10 @@ muscle_groups[5] = 'Säär';
 muscle_groups[6] = 'Õlg';
 muscle_groups[7] = 'Biitseps';
 muscle_groups[8] = 'Ranne';
-muscle_groups[9] = 'Ülaselg';
+muscle_groups[9] = 'Tuhar';
 muscle_groups[10] = 'Alaselg';
 muscle_groups[11] = 'Tuhar';
-muscle_groups[12] = 'Tagareis';
+muscle_groups[12] = 'Tagareis'
 muscle_groups[13] = 'Triitseps';
 
 firstLoad = true;
@@ -29,6 +27,8 @@ totalSteps = 10;
 
 var club_id = 2;
 var trainer = {};
+
+
 
 var app = {
 	
@@ -46,12 +46,12 @@ var app = {
 	
 	init: function() {
 		
+		$('#frontpage').find('.w50').show();
+		
 		con = checkConnection();
 		
 		console.log('checking connection');
 		
-		/*db = window.openDatabase("fitness", "1.0", "Fitness DB", 1000000);
-		*/
 		setTimeout(function() {
 			console.log('starting fb init');
 			try {
@@ -94,7 +94,15 @@ var app = {
 	* if first time, get from
 	*/
 	
-	initTrainingPacks: function() {
+	
+	
+	initPackages: function() {
+	
+		console.log('what..what');
+	
+	
+		localStorage.removeItem('notFirstTime');
+	
 		if (localStorage.getItem('notFirstTime')) {
 			
 			/*
@@ -102,11 +110,12 @@ var app = {
 			*/
 			
 			db.transaction(function(tx) {
-				tx.executeSql('SELECT * FROM DEMO', [], function() {
+				tx.executeSql('SELECT * FROM TRAININGS', [], function() {
 					
 				}, errorCB);
-			}, errorCB, function() {
-				console.log('Success');
+			}, errorCB, function(e) {
+				console.log('error:');
+				console.log(e);
 			});
 			
 			data = {};
@@ -115,14 +124,37 @@ var app = {
 			
 			$.get(app.apiUrl + '?action=getTrainings', data, function(result) {
 				$.each(result, function(i, item) {
+					if(item.order_id) {
+						packages.orderPackages.push(item);
+					} else {
+						packages.samplePackages.push(item);
+					}
 					db.transaction(function(tx) {
+						console.log(item);
 						tx.executeSql('INSERT INTO TRAININGS (id, type, name, data) VALUES (1, "training", "Test kava1", "andmed")');
+					}, errorCB, function() {
+						
+						/*
+						* get all trainings from DB
+						*/
+						
+					});
+				});
+				trainings = result;
+			});
+			
+			$.get(app.apiUrl + '?action=getNutritions', data, function(result) {
+				$.each(result, function(i, item) {
+					console.log(item);
+					db.transaction(function(tx) {
+						tx.executeSql('INSERT INTO NUTRITIONS (id, type, name, data) VALUES (1, "training", "Test kava1", "andmed")');
 					}, errorCB, function() {
 						if (item.trainer) {
 							
 						}
 					});
 				});
+				nutritions = result;
 			});
 			
 			
@@ -131,24 +163,59 @@ var app = {
 			db.transaction(function(tx) {
 				tx.executeSql('DROP TABLE IF EXISTS TRAININGS');
 				tx.executeSql('CREATE TABLE IF NOT EXISTS TRAININGS (id unique, type, name, data)');
+				tx.executeSql('DROP TABLE IF EXISTS NUTRITIONS');
+				tx.executeSql('CREATE TABLE IF NOT EXISTS NUTRITIONS (id unique, type, name, data)');
 			}, errorCB, function() {
-				console.log('Success');
+				console.log('Success2');
 			});
 			
 			data = {};
 			data.firstTime = true;
 			data.user_id = user.id;
 			$.get(app.apiUrl + '?action=getTrainings', data, function(result) {
+				
 		   		$.each(result, function(i, item) {
+		   			if(item.order_id) {
+						packages.orderPackages.push(item);
+					} else {
+						packages.samplePackages.push(item);
+					}
 			   		db.transaction(function(tx) {
 				   		tx.executeSql('INSERT INTO TRAININGS (id, type, name, data) VALUES (1, "training", "Test kava1", "andmed")');
-			   		});
+			   		}, errorCB, function() {
+						console.log('Success3');
+					});
 		   		});
-				localStorage.setItem('notFirstTime', true);
 			
 			}, 'jsonp');
 			
+			$.get(app.apiUrl + '?action=getNutritions', data, function(result) {
+				console.log(result);
+		   		$.each(result, function(i, item) {
+		   			console.log(item);
+		   			if (item.order_id) {
+						nutritions.orderNutritions.push(item);
+					} else {
+						nutritions.sampleNutritions.push(item);
+					}
+			   		db.transaction(function(tx) {
+				   		tx.executeSql('INSERT INTO NUTRITIONS (id, type, name, data) VALUES (1, "training", "Test kava1", "andmed")');
+			   		}, errorCB, function() {
+						console.log('Success4');
+					});
+		   		});
+			
+			}, 'jsonp');
+			
+			localStorage.setItem('notFirstTime', true);
+			
 		}
+	},
+	
+	getTrainingsFromDB: function() {
+		
+		
+			
 	},
 	
 	getTrainer: function(trainer) {
@@ -303,6 +370,7 @@ var app = {
 				console.log('LOG IN');
 				LEVEL = 1;
 				teleportMe('homepage', {});
+				app.initLogged();
 			}
 		} else {
 			$.get(app.apiUrl + '?action=userLogin', data, function(result) {
@@ -319,12 +387,18 @@ var app = {
 			   		console.log('LOG IN');
 					LEVEL = 1;
 					teleportMe('homepage', {});
+					app.initLogged();
 		   		}
 		   		
 		   		
 		   	}, 'jsonp');
 		}
 		
+	},
+	
+	initLogged: function() {
+		db = window.openDatabase("fitness", "1.0", "Fitness DB", 1000000);
+		app.initPackages();
 	},
 
 	parseUser: function() {
@@ -360,11 +434,11 @@ var app = {
 		$('#age').val(user.age);
 		$('#weight').val(user.weight);
 		$('#length').val(user.length);
-		$('#training_activity').val(user.training_activity);
-		$('#training_target').val(user.training_target);
-		$('#per_week').val(user.per_week);
-		$('#currently_training').val(user.currently_training);
-		$('#health_condition').val(user.health_condition);
+		$('#training_activity').val(user.training_activity).autoResize();
+		$('#training_target').val(user.training_target).autoResize();
+		$('#per_week').val(user.per_week).autoResize();
+		$('#currently_training').val(user.currently_training).autoResize();
+		$('#health_condition').val(user.health_condition).autoResize();
 		
 		$('#nobg_special_button').click(function() {
 			user.firstname = $('#firstname').val();
@@ -413,6 +487,8 @@ var app = {
    			template.find('.harjutus_item').attr('data-cat', item.cat_id);
 	   		content.append(template.html());
    		});
+   		
+   		app.muscleGroup = 0;
    		
    		$('.harjutus_item').click(function(e) {
 		   app.exerciseCat = $(this).data('cat');
@@ -595,10 +671,6 @@ var app = {
 		   			var id = $(this).data('id');
 		   			toBuy = [];
 		   			toBuy.push(id);
-		   			
-		   			console.log(items);
-		   			console.log(id);
-		   			console.log(template2.html());
 		   			
 					addHover(this);
 					

@@ -265,7 +265,21 @@ function afterTeleport(where, extra) {
 		case 'minuandmed':
 			app.parseUserDetails();
 			break;
-		
+		case 'uustreening':
+			app.getTrainingsMain();
+			break;
+		case 'toitumiskavad':
+			nutritions.getNutritionsMain();
+			break;
+		case 'naidiskavad':
+			nutritions.getNutritions(extra);
+			break;
+		case 'toitumisplaan1':
+			nutritions.getNutrition(extra);
+			break;
+		case 'menuu1_hommikusook1':
+			nutritions.getNutritionDetail(extra);
+			break;
 		/*
 		* huge stuff gathering here..
 		*/
@@ -321,6 +335,8 @@ function goBack(_this, caller) {
 
 function teleportMe( where, extra ){
 	//if(updating){
+	
+	console.log(extra);
 	
 		LATEST = '#' + $('.open').attr('id');
 
@@ -404,11 +420,11 @@ function showLoading(){
 
 function bindEvents() {
 	
-	console.log('binding..');
+	//console.log('binding..');
 	
 	//$('textarea').autoResize();
 	
-	console.log('binding this shit..');
+	//console.log('binding this shit..');
 	
 	var diaryscroll = $('#diaryscroll').length;
 	if(diaryscroll){
@@ -416,7 +432,7 @@ function bindEvents() {
 		scroll.enableStickyHeaders('h4');
 	}
 
-	console.log('binding this shit still..');
+	//console.log('binding this shit still..');
 
 	$('.teleport').unbind(eventEnd).bind(eventEnd, function (e) {
 		e.preventDefault();
@@ -447,7 +463,7 @@ function bindEvents() {
 
 	});
 	
-	console.log('binding this shit over..');
+	//console.log('binding this shit over..');
 
 	$('.filter').unbind(eventEnd).bind(eventEnd, function (e) {
 		e.preventDefault();
@@ -464,6 +480,9 @@ function bindEvents() {
 			$('#thefilter').removeClass('showR');
 			$('.topbar, .bottombar, ' + aligner).removeClass('showmenuR');
 			//$('.toclose').hide();
+			extra = {};
+			extra.refresh = true;
+			teleportMe('harjutused_subpage1', extra);
 			hideMenu();
 		}
 		
@@ -504,10 +523,7 @@ $('#svgFront g').unbind(eventEnd).bind(eventEnd, function (e) {
 		app.exerciseCat = 0;
 	LEVEL = 2;
 	setTimeout(function() {
-		$('.filter').click();
-		extra = {};
-		extra.refresh = true;
-		teleportMe('harjutused_subpage1', extra);
+		
 	}, 400);
 	
 })
@@ -544,10 +560,8 @@ $('#svgBack g').unbind(eventEnd).bind(eventEnd, function (e) {
 		app.exerciseCat = 0;
 	LEVEL = 2;
 	setTimeout(function() {
-		$('.filter').click();
-		extra = {};
-		extra.refresh = true;
-		teleportMe('harjutused_subpage1', extra);
+		/*$('.filter').click();
+		*/
 	}, 400);
 	
 	
@@ -667,8 +681,73 @@ $('.manFlip').unbind(eventEnd).bind(eventEnd, function (e) {
 		}, 100);
 	});
 	
+	
+	
+	
+	$('.overlay .jargminetest').unbind(eventEnd).bind(eventEnd, function(e) {
+		e.preventDefault();
+		
+		var next = $(this).attr('data-test');
+		var h = $('#test' + next ).height();
+		var top = Number(h) * next;
+		
+		$('.toscroll').animate( {scrollTop: top + 'px'}, 300);
+		
+		$('#caruseloverlay').addClass('scaleOut');
+		var _this = $('#caruseloverlay');
+		setTimeout(function () {
+			_this.removeClass('scaleIn').removeClass('scaleOut');
+			
+			setTimeout(function () {
+				_this.removeClass('scale');
+			}, 50);
+			$('#caruseloverlay .tulemus, #caruseloverlay .results, #caruseloverlay .jargminetest').removeClass('anim_in');
+			$('#caruseloverlay .carusel .normal').removeClass('anim_' + anim + '0');
+			
+		}, 350);
+		
+		addHover( this );
+	});
+	
+	$('.overlay .kogutulemus').unbind(eventEnd).bind(eventEnd, function(e) {
+		e.preventDefault();
+		
+		$('#caruselTOTALoverlay .finalresults h3').text(TOTALRESULT + ' p');
+						
+		$('#caruselTOTALoverlay').addClass('scale');
+		setTimeout(function () {
+			$('#caruselTOTALoverlay').addClass('scaleIn');
+		}, 100);
+		
+		addHover( this );
+	});
+	
+	
+	
+	$('.overlay .sulge').unbind(eventEnd).bind(eventEnd, function(e) {
+		e.preventDefault();
+		
+		$('#caruseloverlay, #caruselTOTALoverlay').addClass('scaleOut');
+
+		setTimeout(function () {
+			$('#caruseloverlay, #caruselTOTALoverlay').removeClass('scaleIn').removeClass('scaleOut');
+			
+			setTimeout(function () {
+				$('#caruseloverlay, #caruselTOTALoverlay').removeClass('scale');
+			}, 50);
+			$('#caruseloverlay .tulemus, #caruseloverlay .results, #caruseloverlay .jargminetest, #caruseloverlay .kogutulemus').removeClass('anim_in');
+			$('#caruseloverlay .carusel .normal').removeClass('anim_' + anim + '0');
+			
+		}, 350);
+		
+		addHover( this );
+	});
+	
+	
 	$('.overlay .backbtn').unbind(eventEnd).bind(eventEnd, function (e) {
 		e.preventDefault();
+		
+		//console.log('a');
 
 		$(this).parent().addClass('scaleOut');
 		//$(this).parent().removeClass('scaleIn');
@@ -780,12 +859,29 @@ $('.manFlip').unbind(eventEnd).bind(eventEnd, function (e) {
 						$('.result span').text( tulemus );
 					}, 500);
 
+					
+					$('.jargminetest').attr('data-test', n);
+					
+					
 					setTimeout(function(){
 						$('.tulemus, .results').addClass('anim_in');
+						
+						if(n < 5){
+							$('.jargminetest').addClass('anim_in');
+						}
+						
+						if(n == 5){
+							$('.kogutulemus').addClass('anim_in');
+						}
 					}, 5000);
 					
+					if (n == '1') {
+						var top = $('.test2').position().top;
+						console.log(top);
+						$('body').scrollTop(top);
+					}
 					
-					if(n == '5'){
+					/* if(n == '5'){
 						setTimeout(function(){
 							
 							$('#caruselTOTALoverlay .finalresults h3').text(TOTALRESULT + ' p');
@@ -795,7 +891,7 @@ $('.manFlip').unbind(eventEnd).bind(eventEnd, function (e) {
 									$('#caruselTOTALoverlay').addClass('scaleIn');
 							}, 100);
 						}, 7000);
-					}
+					} */
 					
 					addHover( this );
 			
@@ -803,6 +899,8 @@ $('.manFlip').unbind(eventEnd).bind(eventEnd, function (e) {
 
 	});
 	});
+	
+	
 	
 	
 	
@@ -892,6 +990,9 @@ $('.manFlip').unbind(eventEnd).bind(eventEnd, function (e) {
 		}
 	
 	});
+	
+	
+	
 	
 	$('.touchhover').on('touchstart', function(e){
 		e.preventDefault();

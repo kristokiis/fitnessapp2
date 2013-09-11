@@ -849,6 +849,10 @@ input.error {
 	background: -webkit-linear-gradient(top,  rgba(20,20,20,1) 0%,rgba(85,103,113,1) 100%);
 	background: linear-gradient(to bottom,  rgba(20,20,20,1) 0%,rgba(85,103,113,1) 100%);
 	
+	-moz-transform: scaleX(-1);
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
+    filter: FlipH;
 	/* -webkit-transform: rotate(180deg);
 	-moz-transform: rotate(180deg); */
 }
@@ -1151,6 +1155,13 @@ input.error {
   text-align: left;
   color: #373737;
 }
+
+#treening_naidiskavad .toscroll, .harjutused .toscroll{
+	text-align: center;
+}
+
+
+
 
 
 .gym h3 {
@@ -2125,6 +2136,24 @@ div.select:after {
 
 .anim_in{
 	opacity: 1 !important;
+}
+
+#caruselTOTALoverlay .sulge{
+	display: block;
+	margin: 30px auto 0;
+}
+
+#caruseloverlay .jargminetest{
+	display: none;
+	margin: 20px auto;
+}
+
+#caruseloverlay .kogutulemus{
+	display: none;
+	margin: 20px auto;
+}
+#caruseloverlay .kogutulemus.anim_in, #caruseloverlay .jargminetest.anim_in{
+	display: block;
 }
 
 #caruseloverlay h1 {

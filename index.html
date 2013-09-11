@@ -30,11 +30,11 @@
 						<h3 class="translate" data-keyword="slogan-2"></h3>
 					</hgroup>
 					
-					<div class="w50">
+					<div class="w50" style="display:none;">
 						<a href="javascript:void(0);" class="fb loginbtn" data-page="homepage" data-level="1" ><span class="translate" data-keyword="login"></span></a>
 					</div>
 					
-					<div class="w50">
+					<div class="w50" style="display:none;">
 						<a href="javascript:void(0);" class="acc loginbtn teleport" data-page="login" data-level="0" ><span class="translate" data-keyword="login"></span></a>
 					</div>
 					<div class="clear"></div>
@@ -128,14 +128,21 @@
 						<div class="result" ><span>nõrk</span></div>
 					</div>
 					
-					<section class="carusel">
-						
+					<section class="carusel">	
 						<div class="tulemus">
 							<img class="greentriangle" src="i/tulemus1.png" alt=""/>
 						</div>
 						
 						<img class="normal" src="i/carusel.png" alt=""/>
-						
+					</section>
+					
+					
+					<section class="nobg_item jargminetest" data-test="1">
+						<h3>Tee järgmine test</h3>		
+					</section>
+					
+					<section class="nobg_item kogutulemus" data-test="1">
+						<h3>Vaata kogu tulemust</h3>		
 					</section>
 			
 			</section>
@@ -150,6 +157,10 @@
 						<h4>Maksimaalne tulemus:</h4>
 						<h3>500 p</h3>
 					</div>
+					
+					<section class="nobg_item sulge" data-test="1">
+						<h3>Sulge</h3>		
+					</section>
 			</section>
 			
 			<section id="timeroverlay" class="overlay ">
@@ -226,6 +237,8 @@
         
         <script src="js/main.js"></script>
         
+        <script src="js/packs.js"></script>
+        
         <script type="text/javascript" charset="utf-8">
 		    // Wait for Cordova to load
 		    document.addEventListener("deviceready", onDeviceReady, false);
@@ -237,7 +250,8 @@
 		    		$('#loading').hide();
 			    	console.log('lets init this stuff..');
 			    	app.init();
-		    	}, 1500);*/
+		    	}, 2500);
+		    	document.addEventListener("backbutton", onBackButton, false);*/
 		    });
 		    
 		    function onDeviceReady() {
