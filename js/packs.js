@@ -171,17 +171,41 @@ var trainings = {
 		
 		$.each(_trainings, function(i, training) {
 				
-			$('#treening_naidiskavad').find('.toscroll').append('<section class="item noicon treenerpakkumisedbtn teleport" data-page="treening_naidiskava" data-level="3" data-id="' + training.id + '"><div class="item_wrap"><h3>' + training.name + '</h3></div></section>');
+			$('#treening_naidiskavad').find('.toscroll').append('<section class="item noicon treenerpakkumisedbtn teleport" data-page="treening_naidiskava" data-level="3" data-id="' + training.id + '"><div class="item_wrap"><h3>' + training.name + '</h3></div><div class="remove-overlay"><span class="remove-icon"></span></div></section>');
 				
 		});
 		
 		trainings.trainings = _trainings;
+		
+		$('#treening_naidiskavad').find('.item_wrap').on('swipe', function(e, Dx, Dy){
+			if (Dx == -1) {
+				$(this).parent().addClass('remove-item');
+			} else if(Dx == 1) {
+				$(this).parent().removeClass('remove-item');
+			}
+	   });
 		
 		$('#treening_naidiskavad').find('.teleport').click(function(e) {
 			e.preventDefault();
 			//currenttraining = $(this).data('id');
 			LEVEL = 3;
 			teleportMe('treening_naidiskava', $(this).data('id'));
+			
+		});
+		
+		$('#treening_naidiskavad').find('.remove-overlay').click(function(e) {
+			e.preventDefault();
+			e.stopPropagation();
+			$(this).parent().slideUp('fast', function() {
+				var id = parseInt($(this).data('id'));
+				
+				db.transaction(function(tx) {
+					var statement = 'DELETE FROM TRAININGS WHERE id = ' + id;
+					console.log(statement);
+				   	tx.executeSql(statement);
+				   	$(this).remove();
+			   	});
+			});
 			
 		});
 		

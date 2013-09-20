@@ -919,12 +919,15 @@ input.error {
 
 .item{
 	background: url(../i/row_btn_bg.jpg) repeat-x 0 0 transparent;
-
+	-webkit-transition: all 300ms;
 	border-top: 1px solid #FFF;
 	border-bottom: 1px solid #B3B3B3;
 	height: auto;
 	width: 100%;
 	position: relative;
+}
+.item.remove-item {
+	-webkit-transform: translate3d(-35%, 0, 0);
 }
 .bigitem .item_wrap h2, .item .item_wrap h3{
 	text-shadow: 0 1px 0 #fff;
@@ -1012,6 +1015,9 @@ input.error {
 	padding: 3% 17% 3% 14%;
 	background: url("../i/arrow2.png") no-repeat scroll 93% center transparent;
 	background-size: 3% auto;
+}
+.item_wrap.no_bg {
+	background: none !important;
 }
 
 .pump .item_wrap {
@@ -1153,6 +1159,21 @@ input.error {
 	content: "";
 }
 
+.unread-bullet, .place-holder {
+	display: none;
+	margin-right: 15px;
+	margin-top: 20px;
+	float: left;
+	width: 12px;
+	height: 32px;
+}
+.unread-bullet {
+	background: url(../i/yellow-dot.png) no-repeat;
+}
+.heading-date {
+	font-size: 11px;
+}
+
 .item_wrap h2 {
   font-size: 28px;
   font-weight: normal;
@@ -1184,8 +1205,24 @@ input.error {
 	text-align: center;
 }
 
-
-
+.remove-overlay {
+	box-shadow:inset 0 0 10px #000000;
+	top: 0;
+	height: 100%;
+	width: 35%;
+	position: absolute;
+	right: -35%;
+	background-color: red;
+}
+.remove-overlay span {
+	height: 100% !important;
+	background-image: url(../i/remove_item.png);
+	background-repeat: no-repeat; 
+	background-position: center;
+	background-size: 50%;
+	display: inline-block;
+	width: 100%;
+}
 
 
 .gym h3 {

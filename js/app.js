@@ -374,7 +374,9 @@ var app = {
 	},
 	
 	getNotifications: function(){
-	
+		
+		template = $('.notifications-template');
+		
 		db.transaction(function(tx) {
 			query = 'SELECT * FROM NOTIFICATIONS ORDER BY send DESC';
 			console.log(query);
@@ -384,16 +386,52 @@ var app = {
 				for (i = 0; i < len; i++) {
 				
 					notification = results.rows.item(i);
-					var shortText = notification.message;
-					$('#teated').find('.training-content').append('<section class="item noicon teleport" data-page="treening_naidiskavad_1paev" data-level="3" data-id="' + notification.id + '"><div class="item_wrap"><h6>' + notification.heading + '</h6><h3>' + shortText + '</h3></div></section>');
+					var shortText = jQuery.trim(notification.message).substring(0, 40).split(" ").slice(0, -1).join(" ") + '...';
+					template.find('.item').attr('data-id', notification.id);
+					template.find('h6').html(notification.heading);
+					template.find('h4').html(notification.send);
+					template.find('h3').html(shortText);
+					if (notification.is_read && notification.is_read == '1') {
+						template.find('.unread-bullet').hide();
+						template.find('.place-holder').show();
+					} else {
+						template.find('.unread-bullet').show();
+						template.find('.place-holder').hide();
+					}
+					$('#teated').find('.training-content').append(template.html());
 				}
+				
+				//e.stopPropagation();
+				$('#teated').find('.item_wrap').on('swipe', function(e, Dx, Dy){
+					if (Dx == -1) {
+						$(this).parent().addClass('remove-item');
+					} else if(Dx == 1) {
+						$(this).parent().removeClass('remove-item');
+					}
+			   });
 				
 				$('#teated').find('.teleport').click(function(e) {
 					e.preventDefault();
 					LEVEL = 3;
-					teleportMe('teated_sisu', $(this).data('id'));
+					teleportMe('teated_detail', parseInt($(this).data('id')));
 					
 				});
+				$('#teated').find('.remove-overlay').click(function(e) {
+					e.preventDefault();
+					e.stopPropagation();
+					$(this).parent().slideUp('fast', function() {
+						var id = parseInt($(this).data('id'));
+						
+						db.transaction(function(tx) {
+							var statement = 'DELETE FROM NOTIFICATIONS WHERE id = ' + id;
+							console.log(statement);
+						   	tx.executeSql(statement);
+						   	$(this).remove();
+					   	});
+					});
+					
+				});
+				
 				
 			}, function(tx, results) {
 				console.error('Error in selecting test result');
@@ -416,21 +454,26 @@ var app = {
 			tx.executeSql(query, [], function(tx, results) {
 			
 				notification = results.rows.item(0);
-				var shortText = notification.message;
-				$('#teated').find('.training-content').append('<section class="item noicon teleport" data-page="treening_naidiskavad_1paev" data-level="3" data-id="' + notification.id + '"><div class="item_wrap"><h6>' + notification.heading + '</h6><h3>' + shortText + '</h3></div></section>');
+				var template = $('#teated_detail').find('.toscroll');
+				template.find('.item').attr('data-id', notification.id);
+				template.find('h6').html(notification.heading);
+				template.find('h4').html(notification.send);
+				template.find('h3').html(notification.message);
+				
+				console.log('what');
 				
 				if (!notification.is_read || notification.is_read == '0') {
 					var count = parseInt(localStorage.getItem('fitNotificationsCount'));
 					count = count-1;
 					if(count < 1)
 						count = 0;	
-					localStorage.setItem('fitNotificationsCount', count)
+					localStorage.setItem('fitNotificationsCount', count);
+					var statement = 'UPDATE NOTIFICATIONS SET is_read = "1" WHERE id = ' + id;
+					console.log(statement);
+				   	tx.executeSql(statement);
 				}
 				
-				var statement = 'UPDATE NOTIFICATIONS SET is_read = "1" WHERE id = "' + id + '"';
-				console.log(statement);
-					//return false;
-			   	tx.executeSql(statement);
+				
 				
 			}, function(tx, results) {
 				console.error('Error in selecting test result');

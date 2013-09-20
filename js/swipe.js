@@ -1,10 +1,60 @@
 /**
- * jQuery Plugin to obtain touch gestures from iPhone, iPod Touch and iPad, should also work with Android mobile phones (not tested yet!)
- * Common usage: wipe images (left and right to show the previous or next image)
+ * jQuery Plugin to add basic "swipe" support on touch-enabled devices
  * 
- * @author Andreas Waltl, netCU Internetagentur (http://www.netcu.de)
- * @version 1.1.1 (9th December 2010) - fix bug (older IE's had problems)
- * @version 1.1 (1st September 2010) - support wipe up and wipe down
- * @version 1.0 (15th July 2010)
+ * @author Yair Even Or
+ * @version 1.0.0 (March 20, 2013)
  */
-(function($){$.fn.touchwipe=function(settings){var config={min_move_x:20,min_move_y:20,wipeLeft:function(){},wipeRight:function(){},wipeUp:function(){},wipeDown:function(){},preventDefaultEvents:true};if(settings)$.extend(config,settings);this.each(function(){var startX;var startY;var isMoving=false;function cancelTouch(){this.removeEventListener('touchmove',onTouchMove);startX=null;isMoving=false}function onTouchMove(e){if(config.preventDefaultEvents){e.preventDefault()}if(isMoving){var x=e.touches[0].pageX;var y=e.touches[0].pageY;var dx=startX-x;var dy=startY-y;if(Math.abs(dx)>=config.min_move_x){cancelTouch();if(dx>0){config.wipeLeft()}else{config.wipeRight()}}else if(Math.abs(dy)>=config.min_move_y){cancelTouch();if(dy>0){config.wipeDown()}else{config.wipeUp()}}}}function onTouchStart(e){if(e.touches.length==1){startX=e.touches[0].pageX;startY=e.touches[0].pageY;isMoving=true;this.addEventListener('touchmove',onTouchMove,false)}}if('ontouchstart'in document.documentElement){this.addEventListener('touchstart',onTouchStart,false)}});return this}})(jQuery);
+(function($){ 
+	//if( 'ontouchstart' in document.documentElement )
+	$.event.special.swipe = {
+		setup: function(){
+			$(this).bind('touchstart', $.event.special.swipe.handler);
+		},
+
+		teardown: function(){
+			$(this).unbind('touchstart', $.event.special.swipe.handler);
+		},
+
+		handler: function(event){
+			var args = [].slice.call( arguments, 1 ), // clone arguments array, remove original event from cloned array
+				touches = event.originalEvent.touches,
+				startX, startY,
+				deltaX = 0, deltaY = 0,
+				that = this;
+
+			event = $.event.fix(event);
+
+			if( touches.length == 1 ){
+				startX = touches[0].pageX;
+				startY = touches[0].pageY;
+				this.addEventListener('touchmove', onTouchMove, false);
+			}
+				
+			function cancelTouch(){
+				that.removeEventListener('touchmove', onTouchMove);
+				startX = startY = null;
+			}	
+			 
+			function onTouchMove(e){
+				//e.preventDefault();
+
+				var Dx = startX - e.touches[0].pageX,
+					Dy = startY - e.touches[0].pageY;
+
+				if( Math.abs(Dx) >= 40 ){
+					e.preventDefault();
+					cancelTouch();
+					deltaX = (Dx > 0) ? -1 : 1;
+				}
+				/*else if( Math.abs(Dy) >= 20 ){
+					cancelTouch();
+					deltaY = (Dy > 0) ? 1 : -1;
+				}*/
+				
+				event.type = "swipe";
+				args.unshift(event, deltaX, deltaY); // add back the new event to the front of the arguments with the delatas
+				return ($.event.dispatch || $.event.handle).apply(that, args);
+			}
+		}
+	};
+})(window.jQuery || window.Zepto);

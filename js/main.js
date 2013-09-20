@@ -952,8 +952,14 @@ function hideKeyBoard() {
 		});
 		
 
-		$('body').touchwipe({
-			wipeLeft : function () {
+		$('body').on('swipe', function(e, Dx, Dy) {
+		
+			console.log($(e.currentTarget));
+			
+			if(($('#teated') && $('#teated').html()) || ($('#treening_naidiskavad') && $('#treening_naidiskavad').html()))
+				return true;
+				
+			if(Dx == -1) {
 				if(LEVEL >= 1){
 					var diaryscroll = $('.filter').length;
 		
@@ -970,8 +976,7 @@ function hideKeyBoard() {
 						$('.toclose').hide();
 					}
 				}
-			},
-			wipeRight : function () {
+			} else if(Dx == 1) {
 				if(LEVEL >= 1){
 					
 					
@@ -987,12 +992,7 @@ function hideKeyBoard() {
 						$('.toclose').show();
 					}
 				}
-			},
-			//wipeUp: function() { alert("up"); },
-			//wipeDown: function() { alert("down"); },
-			min_move_x : 24,
-			min_move_y : 24,
-			preventDefaultEvents : false
+			}
 		});
 		
 		bindEvents();
