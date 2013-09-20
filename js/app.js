@@ -113,8 +113,17 @@ var app = {
 		if (!localStorage.getItem('notFirstTime')) {
 		
 			//empty all the databases
-			localStorage.removeItem('fitNotificationsCount')
-			localStorage.removeItem('fitNotifications')
+			localStorage.removeItem('fitCats');
+			
+			localStorage.removeItem('fitNotificationsCount');
+			localStorage.removeItem('fitNotifications');
+			
+			localStorage.removeItem('fitTrainingsCount');
+			localStorage.removeItem('fitTrainings');
+			localStorage.removeItem('fitNutritionsCount');
+			localStorage.removeItem('fitNutritions');
+			
+			localStorage.removeItem('fitExercises');
 		
 			//create tables, approx 2,5MB size database, 5MB maximum
 			db.transaction(function(tx) {
@@ -174,13 +183,51 @@ var app = {
 			
 			localStorage.setItem('notFirstTime', true);
 		}
-	
+		
+		/*
+		* EXERCISES
+		*/
+		var notIDs = [];
+		notIDs = localStorage.getObject('fitExercises');
+		if (!notIDs)
+			notIDs = [];
+			
+		data.ids = notIDs;
+		data.user = user.id;
+		data.club = club_id;
+		$.get(app.apiUrl + '?action=getExercises', data, function(result) {
+			db.transaction(function(tx) {
+				$.each(result, function(i, item) {
+					
+					var statement = 'INSERT INTO EXERCISES (id, type, name, name_en, name_ru, data, video, description, description_en, description_ru, category, muscle) VALUES (' + parseInt(item.id) + ', "' + item.heading + '", "' + item.name + '", "' + item.name_en + '", "' + item.name_ru + '", "0", "0", "' + item.description + '", "' + item.description_en + '", "' + item.description_ru + '", "' + item.category + '", "' + item.muscle_group + '")';
+					console.log(statement);
+						//return false;
+				   	tx.executeSql(statement);
+				
+					notIDs.push(item.id);
+				});
+				
+				notIDs = notIDs.filter(function (e, i, notIDs) {
+				    return notIDs.lastIndexOf(e) === i;
+				});
+				
+				localStorage.setObject('fitExercises', notIDs);
+				
+			}, errorCB, function() {
+				console.log('Inserted all rows');
+			});
+		}, 'jsonp');
+		
+		/*
+		* NOTIFICATIONS
+		*/
+		var notIDs = [];
 		var notificationsCount = parseInt(localStorage.getItem('fitNotificationsCount'));
 		if(!notificationsCount)
 			var notificationsCount = 0;
-		var notIDs = localStorage.getObject('fitNotifications');
+		notIDs = localStorage.getObject('fitNotifications');
 		if (!notIDs)
-			var notIDs = [];
+			notIDs = [];
 			
 		data.ids = notIDs;
 		data.user = user.id;
@@ -211,12 +258,16 @@ var app = {
 			});
 		}, 'jsonp');
 		
+		/*
+		* TRAININGS
+		*/
+		var notIDs = [];
 		var trainingsCount = parseInt(localStorage.getItem('fitTrainingsCount'));
 		if(!trainingsCount)
 			var trainingsCount = 0;
-		var notIDs = localStorage.getObject('fitTrainings');
+		notIDs = localStorage.getObject('fitTrainings');
 		if (!notIDs)
-			var notIDs = [];
+			notIDs = [];
 		
 		data = {};
 		data.user_id = user.id;
@@ -306,7 +357,7 @@ var app = {
 		
 		/*
 		* rare sync:
-		* EXERCISES - 
+		* EXERCISES - OK
 		* NOTIFICATIONS - OK
 		* TRAINING PLANS - 30%
 		* NUTRITION PLANS - 30%
@@ -725,10 +776,12 @@ var app = {
 		
 		data = {};
 		data.club_id = club_id;
+		var where = '';
 		
 		if (app.exerciseCat) {
 			data.category = app.exerciseCat;
 			$('#harjutused_subpage1').find('h3:first').html(categories[app.exerciseCat]).css('font-size', '15px');
+			where = ' WHERE category = "' + app.exerciseCat + '"';
 		} 
 		if (app.muscleGroup) {
 			data.muscle_group = app.muscleGroup;
@@ -738,6 +791,7 @@ var app = {
 			} else {
 				$('#harjutused_subpage1').find('h3:first').html(muscle_groups[app.muscleGroup]).css('font-size', '15px');
 			}
+			where = where + ' AND muscle = "' + app.muscleGroup + '"';
 		}
 		
 		items = [];
@@ -746,55 +800,80 @@ var app = {
 		container = $('.content-content');
 		container.html('');
 		
-		if (!navigator.onLine) {
-			result = localStorage.getObject('fitExercises');
-			app.parseExercises(result);
-		} else {
-			$.get(app.apiUrl + '?action=getExercises', data, function(result) {
-				localStorage.setObject('fitExercises', result);
-				app.parseExercises(result);
-		   }, 'jsonp');
-		}
-
-	},
-	
-	parseExercises: function(result) {
-		
-		$.each(result, function(i, item) {
-	   		
-   			items[item.id] = item;
-	   		
-	   		if (lang == 'et')
-	   			template.find('h3').html(item.name);
-	   		else
-	   			template.find('h3').html(item['name_' + lang]);
-	   		
-	   		template.find('img:last').attr('src', app.serverUrl + 'pics/exercises/' + item.id + '.jpg');
-	   		template.find('.harjutus_item').attr('data-id', item.id);
-	   		
-	   		container.append(template.html());
-	   		
-   		});
-   		
-   		$('.harjutus_item').unbind(eventEnd).bind(eventEnd, function (e) {
-   		
-   			var id = $(this).data('id');
-   		
-			LEVEL = 3;
-			teleportMe('video', id);
+		db.transaction(function(tx) {
+			query = 'SELECT * FROM EXERCISES ' + where + ' ORDER BY id DESC';
+			console.log(query);
+			tx.executeSql(query, [], function(tx, results) {
+				
+				var len = results.rows.length, i;
+				for (i = 0; i < len; i++) {
+				
+					exercise = results.rows.item(i);
+					
+			   		if (lang == 'et')
+			   			template.find('h3').html(exercise.name);
+			   		else
+			   			template.find('h3').html(exercise['name_' + lang]);
+			   		
+			   		template.find('img:last').attr('src', app.serverUrl + 'pics/exercises/' + exercise.id + '.jpg');
+			   		template.find('.harjutus_item').attr('data-id', exercise.id);
+			   		
+			   		container.append(template.html());
+			   		
+				}
+				$('.harjutus_item').unbind(eventEnd).bind(eventEnd, function (e) {
+		   			var id = $(this).data('id');
+					LEVEL = 3;
+					teleportMe('video', id);
+				});
+				
+			}, function(tx, results) {
+				console.error('Error in selecting test result');
+				console.log(tx);
+				console.log(results);
+			});
+		}, function(error) {
+			console.error('Error in selecting test result');
+			console.log(error);
 		});
-			
+
 	},
 
-	parseExercise: function(extra) {
+	parseExercise: function(id) {
 		console.log('HERE:');
-		console.log(items[extra]);
+		var exercise = {};
+		db.transaction(function(tx) {
 		
-		$('#video').find('h3:first').html(items[extra].name);
-		$('#video').find('.text_wrap').html(items[extra].description);
-		//$('#video').find('source').attr('src', app.serverUrl + 'videos/' + items[extra].id + '.mp4').attr('poster', app.serverUrl + 'videos/' + items[extra].id + '.png');
-		$('#video').find('.video-container').html('<video id="video" height="41%" width="100%" controls="" preload="" autoplay="" poster="' + app.serverUrl + 'videos/' + items[extra].id + '.png" onclick="this.play();" onload="this.play();"><source src="' + app.serverUrl + 'videos/' + items[extra].id + '.mp4" poster="' + app.serverUrl + 'videos/' + items[extra].id + '.png"></video>');
-		
+			query = 'SELECT * FROM EXERCISES WHERE id = ' + parseInt(id);
+			console.log(query);
+			tx.executeSql(query, [], function(tx, results) {
+				console.log(results);
+				exercise = results.rows.item(0);
+				if (lang == 'et') {
+			   		$('#video').find('h3:first').html(exercise.name);
+			   		$('#video').find('.text_wrap').html(exercise.description);
+			   	} else {
+			   		$('#video').find('h3:first').html(exercise['name_' + lang]);
+			   		$('#video').find('.text_wrap').html(exercise['name_' + description]);
+			   	}
+				if (exercise.video && exercise.video != "0") {
+					$('#video').find('.video-container').html('<video id="video" height="41%" width="100%" controls="" preload="" autoplay="" poster="' + app.serverUrl + 'videos/' + exercise.id + '.png" onclick="this.play();" onload="this.play();"><source src="' + app.serverUrl + 'videos/' + exercise.id + '.mp4" poster="' + app.serverUrl + 'videos/' + exercise.id + '.png"></video>');
+				} else {
+					$('#video').find('.video-container').html('<video id="video" height="41%" width="100%" controls="" preload="" autoplay="" poster="' + app.serverUrl + 'videos/' + exercise.id + '.png" onclick="this.play();" onload="this.play();"><source src="' + app.serverUrl + 'videos/' + exercise.id + '.mp4" poster="' + app.serverUrl + 'videos/' + exercise.id + '.png"></video>');
+				}
+				
+				//return false;
+			   	tx.executeSql(statement);
+				
+			}, function(tx, results) {
+				console.error('Error in selecting test result');
+				console.log(tx);
+				console.log(results);
+			});
+		}, function(error) {
+			console.error('Error in selecting test result');
+			console.log(error);
+		});		
 		
 	},
 	
@@ -806,6 +885,8 @@ var app = {
 		content1 = $('.items-container1');
 		content2 = $('.items-container2');
 		
+		
+		//maybe to work on DB side ?
    		$.each(trainings.samplePackages, function(i, item) {
    			template.find('.downloadtitle').html(item.name);
    			template.find('.downloadcircle').find('span').html('0/' + item.exercises_count);

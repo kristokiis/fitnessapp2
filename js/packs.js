@@ -6,6 +6,11 @@ var packs = {
 		$('.nutrition-count').html(nutritions.orderNutritions.length);
 	},
 	
+	/*
+	* Get diary !!!
+	* 4-5h
+	*/
+	
 	getDiary: function() {
 	
 		template = $('.diary-template');
@@ -63,6 +68,8 @@ var packs = {
 	},
 	getDiaryDetail: function(id) {
 		
+		template = $('.diary-template');
+		content = $('.diary-content');
 		
 		db.transaction(function(tx) {
 		
@@ -97,8 +104,7 @@ var packs = {
 			console.log(error);
 		});
 		
-		template = $('.diary-template');
-		content = $('.diary-content');
+		
 		
 	},
 	
@@ -212,7 +218,7 @@ var trainings = {
 	},
 	
 	getTrainingsDetail: function(day) {
-		if(day)
+		if (day >= 0)
 			trainings.currentDay = day;
 		
 		var exercises = trainings.currentTraining.exercises[trainings.currentDay];
