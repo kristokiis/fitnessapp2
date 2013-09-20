@@ -1,4 +1,4 @@
-<section id="tavatest" class="centered frame">
+		<section id="tavatest" class="centered frame">
 				<section class="me title">
 					<img src="i/icon_test.png" alt=""/>
 					<h3>TAVATEST</h3>
@@ -12,11 +12,11 @@
 							<h3>Sisesta sünniaasta</h3>	
 					</section>
 					
-					<section class="nobg_item meesbtn teleport" data-page="fitnesstest" data-level="3">
+					<section class="nobg_item meesbtn" data-page="fitnesstest" data-level="2" data-sex="male">
 							<h3>Mees</h3>		
 					</section>
 					
-					<section class="nobg_item nainebtn teleport" data-page="fitnesstest" data-level="3">
+					<section class="nobg_item nainebtn" data-page="fitnesstest" data-level="2" data-sex="female">
 							<h3>Naine</h3>		
 					</section>
 				
@@ -25,3 +25,46 @@
 				</section>
 			
 			</section> <!-- tavatest -->
+			
+<section id="birthdaySelect" class="overlay selectiveoverlay">
+		<section class="header">
+			<div class="closebtn"></div>
+			<h2 class="selection-title">Sisesta sünniaasta</h2>
+		</section>
+		<section class="contentfield">
+			<section class="selection-template">
+				<section class="nobg_item touchhover">
+					<label>Päev: </label>
+					<div class="select" style="position:relative;width:50%;">
+						<select style="width:100%" id="daySelect">
+						</select>	
+					</div>	
+				</div>
+			</section>
+			<section class="selection-template">
+				<section class="nobg_item touchhover">
+					<label>Kuu: </label>
+					<div class="select" style="position:relative;width:50%;">
+						<select style="width:100%" id="monthSelect">
+						</select>	
+					</div>
+				</div>
+			</section>
+			<section class="selection-template">
+				<section class="nobg_item touchhover">
+					<label>Aasta: </label>
+					<div class="select" style="position:relative;width:50%;">
+						<select id="yearSelect">
+						</select>	
+					</div>
+				</section>
+			</section>
+			<section class="nobg_item touchhover save-stuff">
+				<h3>SALVESTA</h3>		
+			</section>
+		</section>
+		
+		<section class="text-template" style="display:none;>
+			<textarea name="txt" id="txt" class="txt"></textarea>
+		</section>
+	</section>

@@ -1,3 +1,4 @@
+//finish this file on weekends!!
 var lang = 'et';
 var translations = [];
 var data = {};  //data object for querying data from server, should be emptied all the time.
@@ -88,131 +89,317 @@ var app = {
 		
 		console.log('going to translate');
 		
+		
+		setTimeout(function() {
+			app.syncData();
+		}, 300000);
+		
 	},
 	
 	/*
 	* if first time, get from
 	*/
 	
-	
-	
-	initPackages: function() {
-	
-		console.log('what..what');
-	
-	
+	syncData: function() {
+		
+		showLoading();
+		
+		setTimeout(function() {
+			$('#loading').hide();
+		}, 5000);
+		
 		localStorage.removeItem('notFirstTime');
 	
-		if (localStorage.getItem('notFirstTime')) {
-			
-			/*
-			* get packets from db
-			*/
-			
+		if (!localStorage.getItem('notFirstTime')) {
+		
+			//empty all the databases
+			localStorage.removeItem('fitNotificationsCount')
+			localStorage.removeItem('fitNotifications')
+		
+			//create tables, approx 2,5MB size database, 5MB maximum
 			db.transaction(function(tx) {
-				tx.executeSql('SELECT * FROM TRAININGS', [], function() {
-					
-				}, errorCB);
-			}, errorCB, function(e) {
-				console.log('error:');
-				console.log(e);
-			});
-			
-			data = {};
-			data.firstTime = false;
-			data.user_id = user.id;
-			
-			$.get(app.apiUrl + '?action=getTrainings', data, function(result) {
-				$.each(result, function(i, item) {
-					if(item.order_id) {
-						packages.orderPackages.push(item);
-					} else {
-						packages.samplePackages.push(item);
-					}
-					db.transaction(function(tx) {
-						console.log(item);
-						tx.executeSql('INSERT INTO TRAININGS (id, type, name, data) VALUES (1, "training", "Test kava1", "andmed")');
-					}, errorCB, function() {
-						
-						/*
-						* get all trainings from DB
-						*/
-						
-					});
-				});
-				trainings = result;
-			});
-			
-			$.get(app.apiUrl + '?action=getNutritions', data, function(result) {
-				$.each(result, function(i, item) {
-					console.log(item);
-					db.transaction(function(tx) {
-						tx.executeSql('INSERT INTO NUTRITIONS (id, type, name, data) VALUES (1, "training", "Test kava1", "andmed")');
-					}, errorCB, function() {
-						if (item.trainer) {
-							
-						}
-					});
-				});
-				nutritions = result;
-			});
-			
-			
-		} else {
-			
-			db.transaction(function(tx) {
+				//20 rows max, 250kb
 				tx.executeSql('DROP TABLE IF EXISTS TRAININGS');
-				tx.executeSql('CREATE TABLE IF NOT EXISTS TRAININGS (id unique, type, name, data)');
+				tx.executeSql('CREATE TABLE IF NOT EXISTS TRAININGS (id unique, type, name, description, data)');
+				//20 rows max, 250kb
 				tx.executeSql('DROP TABLE IF EXISTS NUTRITIONS');
-				tx.executeSql('CREATE TABLE IF NOT EXISTS NUTRITIONS (id unique, type, name, data)');
-			}, errorCB, function() {
-				console.log('Success2');
+				tx.executeSql('CREATE TABLE IF NOT EXISTS NUTRITIONS (id unique, type, name, description, data)');
+				//250 rows max, 300kb
+				tx.executeSql('DROP TABLE IF EXISTS EXERCISES');
+				tx.executeSql('CREATE TABLE IF NOT EXISTS EXERCISES (id unique, type, name, name_en, name_ru, data, video, description, description_en, description_ru, category, muscle)');
+				//50 rows max, 20kb
+				tx.executeSql('DROP TABLE IF EXISTS NOTIFICATIONS');
+				tx.executeSql('CREATE TABLE IF NOT EXISTS NOTIFICATIONS (id unique, is_read, heading, message, `from`, send)');
+				//700 rows max, 224kb
+				tx.executeSql('DROP TABLE IF EXISTS TEST');
+				tx.executeSql('CREATE TABLE IF NOT EXISTS TEST (id unique, exercise, sex, min_age, max_age, min_score, max_score, grade)');
+				//300 rows max 1mb
+				tx.executeSql('DROP TABLE IF EXISTS DIARY');
+				tx.executeSql('CREATE TABLE IF NOT EXISTS DIARY (id unique, day, month, year, package, training_day, length, day_data)');
+			}, function(error) {
+				console.error('Error on line 134:');
+				console.log(error);
+			}, function() {
+				console.log('Tables created');
 			});
 			
-			data = {};
-			data.firstTime = true;
-			data.user_id = user.id;
-			$.get(app.apiUrl + '?action=getTrainings', data, function(result) {
-				
-		   		$.each(result, function(i, item) {
-		   			if(item.order_id) {
-						packages.orderPackages.push(item);
-					} else {
-						packages.samplePackages.push(item);
-					}
-			   		db.transaction(function(tx) {
-				   		tx.executeSql('INSERT INTO TRAININGS (id, type, name, data) VALUES (1, "training", "Test kava1", "andmed")');
-			   		}, errorCB, function() {
-						console.log('Success3');
-					});
-		   		});
-			
+			$.get(app.apiUrl + '?action=getTestResults', data, function(result) {
+				db.transaction(function(tx) {
+					$.each(result, function(i, item) {
+					
+					
+						var statement = 'INSERT INTO TEST (id, exercise, sex, min_age, max_age, min_score, max_score, grade) VALUES ("' + (i+1) + '", "' + item.exercise + '", "' + item.sex + '", "' + item.min_age + '", "' + item.max_age + '", "' + item.min_score + '", "' + item.max_score + '", "' + item.grade + '")';
+						//console.log(statement);
+						//return false;
+				   		tx.executeSql(statement);
+			   		
+					
+				   	});
+				}, errorCB, function() {
+					console.log('Inserted all rows');
+				});
 			}, 'jsonp');
 			
-			$.get(app.apiUrl + '?action=getNutritions', data, function(result) {
-				console.log(result);
-		   		$.each(result, function(i, item) {
-		   			console.log(item);
-		   			if (item.order_id) {
-						nutritions.orderNutritions.push(item);
-					} else {
-						nutritions.sampleNutritions.push(item);
-					}
-			   		db.transaction(function(tx) {
-				   		tx.executeSql('INSERT INTO NUTRITIONS (id, type, name, data) VALUES (1, "training", "Test kava1", "andmed")');
-			   		}, errorCB, function() {
-						console.log('Success4');
-					});
-		   		});
+			data = {};
+			data.club_id = club_id;
 			
+			$.get(app.apiUrl + '?action=getCategories', data, function(result) {
+				localStorage.setObject('fitCats', result);
+				
+				/*
+				* pic download
+				*/
+				
 			}, 'jsonp');
 			
 			localStorage.setItem('notFirstTime', true);
-			
 		}
+	
+		var notificationsCount = parseInt(localStorage.getItem('fitNotificationsCount'));
+		if(!notificationsCount)
+			var notificationsCount = 0;
+		var notIDs = localStorage.getObject('fitNotifications');
+		if (!notIDs)
+			var notIDs = [];
+			
+		data.ids = notIDs;
+		data.user = user.id;
+		data.club = club_id;
+		$.get(app.apiUrl + '?action=getNotifications', data, function(result) {
+			db.transaction(function(tx) {
+				$.each(result, function(i, item) {
+					
+					var statement = 'INSERT INTO NOTIFICATIONS (id, is_read, heading, message, `from`, send) VALUES (' + parseInt(item.id) + ', 0, "' + item.heading + '", "' + item.message + '", "' + item.from + '", "' + item.send + '")';
+					console.log(statement);
+						//return false;
+				   	tx.executeSql(statement);
+				
+					notIDs.push(item.id);
+					notificationsCount = notificationsCount + 1;
+				});
+				
+				notIDs = notIDs.filter(function (e, i, notIDs) {
+				    return notIDs.lastIndexOf(e) === i;
+				});
+				
+				localStorage.setObject('fitNotifications', notIDs);
+				localStorage.setItem('fitNotificationsCount', notificationsCount);
+				if($('#homepage').length)
+					$('#homepage').find('#notificationsCount').html('(' + localStorage.getItem('fitNotificationsCount') + ')');
+			}, errorCB, function() {
+				console.log('Inserted all rows');
+			});
+		}, 'jsonp');
+		
+		var trainingsCount = parseInt(localStorage.getItem('fitTrainingsCount'));
+		if(!trainingsCount)
+			var trainingsCount = 0;
+		var notIDs = localStorage.getObject('fitTrainings');
+		if (!notIDs)
+			var notIDs = [];
+		
+		data = {};
+		data.user_id = user.id;
+		data.club_id = club_id;
+		data.ids = notIDs;
+		$.get(app.apiUrl + '?action=getTrainings', data, function(result) {
+			
+	   		$.each(result, function(i, item) {
+	   			
+	   			if (item.order_id && item.order_id != '0' && item.order_id != 0) {
+	   				console.log('order');
+					trainings.orderPackages.push(item);
+				} else {
+					console.log('sample');
+					trainings.samplePackages.push(item);
+				}
+		   		db.transaction(function(tx) {
+		   			var sql = "INSERT INTO TRAININGS (id, type, name, description, data) VALUES ("+item.id+", 'training', '"+item.name+"', '"+item.description+"', '"+JSON.stringify(item.exercises)+"')";
+		   			console.log(sql);
+			   		tx.executeSql(sql);
+		   		}, errorCB, function() {
+		   		
+		   			notIDs.push(item.id);
+					trainingsCount = trainingsCount + 1;
+		   		
+					console.log('Success3');
+				});
+	   		});
+	   		
+	   		notIDs = notIDs.filter(function (e, i, notIDs) {
+			    return notIDs.lastIndexOf(e) === i;
+			});
+			
+			localStorage.setObject('fitTrainings', notIDs);
+			localStorage.setItem('fitTrainingsCount', trainingsCount);
+		
+		}, 'jsonp');
+		
+		var nutritionsCount = parseInt(localStorage.getItem('fitNutritionsCount'));
+		if(!nutritionsCount)
+			var nutritionsCount = 0;
+		var notIDs = localStorage.getObject('fitNutritions');
+		if (!notIDs)
+			var notIDs = [];
+		data.ids = notIDs;
+		$.get(app.apiUrl + '?action=getNutritions', data, function(result) {
+			//console.log(result);
+	   		$.each(result, function(i, item) {
+	   		
+	   			if (item.order_id && item.order_id != '0' && item.order_id != 0) {
+					nutritions.orderNutritions.push(item);
+				} else {
+					nutritions.sampleNutritions.push(item);
+				}
+		   		db.transaction(function(tx) {
+			   		tx.executeSql("INSERT INTO NUTRITIONS (id, type, name, description, data) VALUES ("+item.id+", 'training', '"+item.name+"', '"+item.description+"', '"+JSON.stringify(item.meals)+"')");
+		   		}, errorCB, function() {
+		   			notIDs.push(item.id);
+					nutritionsCount = nutritionsCount + 1;
+		   		
+					console.log('Success4');
+				});
+	   		});
+	   		
+	   		notIDs = notIDs.filter(function (e, i, notIDs) {
+			    return notIDs.lastIndexOf(e) === i;
+			});
+			
+			localStorage.setObject('fitNutritions', notIDs);
+			localStorage.setItem('fitNutritionsCount', nutritionsCount);
+		
+		}, 'jsonp');
+	
+		/*
+		* if online, check new templates, send test results
+		* userData
+		*/
+		
+		//app.initPackages();
+		
+		//stuff to be synced outside the app:
+		/*
+		* firsttime sync:
+		* TEST - OK
+		* CATEGORIES - OK
+		*/
+		
+		/*
+		* rare sync:
+		* EXERCISES - 
+		* NOTIFICATIONS - OK
+		* TRAINING PLANS - 30%
+		* NUTRITION PLANS - 30%
+		*/
+		
+		
+		//stuff to be synced outside the app, often
+		/*
+		* user profile
+		* user test
+		* user diary
+		*/
+		
+	},
+	
+	getNotifications: function(){
+	
+		db.transaction(function(tx) {
+			query = 'SELECT * FROM NOTIFICATIONS ORDER BY send DESC';
+			console.log(query);
+			tx.executeSql(query, [], function(tx, results) {
+				
+				var len = results.rows.length, i;
+				for (i = 0; i < len; i++) {
+				
+					notification = results.rows.item(i);
+					var shortText = notification.message;
+					$('#teated').find('.training-content').append('<section class="item noicon teleport" data-page="treening_naidiskavad_1paev" data-level="3" data-id="' + notification.id + '"><div class="item_wrap"><h6>' + notification.heading + '</h6><h3>' + shortText + '</h3></div></section>');
+				}
+				
+				$('#teated').find('.teleport').click(function(e) {
+					e.preventDefault();
+					LEVEL = 3;
+					teleportMe('teated_sisu', $(this).data('id'));
+					
+				});
+				
+			}, function(tx, results) {
+				console.error('Error in selecting test result');
+				console.log(tx);
+				console.log(results);
+			});
+		}, function(error) {
+			console.error('Error in selecting test result');
+			console.log(error);
+		});
+		
+		
+	},
+	getNotificationDetail: function(id) {
+		
+		db.transaction(function(tx) {
+		
+			query = 'SELECT * FROM NOTIFICATIONS WHERE id = ' + parseInt(id);
+			console.log(query);
+			tx.executeSql(query, [], function(tx, results) {
+			
+				notification = results.rows.item(0);
+				var shortText = notification.message;
+				$('#teated').find('.training-content').append('<section class="item noicon teleport" data-page="treening_naidiskavad_1paev" data-level="3" data-id="' + notification.id + '"><div class="item_wrap"><h6>' + notification.heading + '</h6><h3>' + shortText + '</h3></div></section>');
+				
+				if (!notification.is_read || notification.is_read == '0') {
+					var count = parseInt(localStorage.getItem('fitNotificationsCount'));
+					count = count-1;
+					if(count < 1)
+						count = 0;	
+					localStorage.setItem('fitNotificationsCount', count)
+				}
+				
+				var statement = 'UPDATE NOTIFICATIONS SET is_read = "1" WHERE id = "' + id + '"';
+				console.log(statement);
+					//return false;
+			   	tx.executeSql(statement);
+				
+			}, function(tx, results) {
+				console.error('Error in selecting test result');
+				console.log(tx);
+				console.log(results);
+			});
+		}, function(error) {
+			console.error('Error in selecting test result');
+			console.log(error);
+		});	
+		
 	},
 	
 	getTrainingsFromDB: function() {
+		
+		
+			
+	},
+	
+	getNutritionsFromDB: function() {
 		
 		
 			
@@ -284,19 +471,24 @@ var app = {
 		
 			e.preventDefault();
 			console.log('submit');
+			
+			console.log($('#login').find('#clientNr'));
+			
 			error = false;
-			if ($('#clientNr').val() == '') {
-				$('#clientNr').addClass('error');
+			if ($('#login').find('#clientNr').val() == '') {
+				$('#login').find('#clientNr').addClass('error');
 				error = true;
+				console.log('nr');
 			} else {
-				$('#clientNr').removeClass('error');
+				$('#login').find('#clientNr').removeClass('error');
 			}
 				
-			if ($('#clientPass').val() == '') {
-				$('#clientPass').addClass('error');
+			if ($('#login').find('#clientPass').val() == '') {
+				$('#login').find('#clientPass').addClass('error');
 				error = true;
+				console.log('pass');
 			} else {
-				$('#clientPass').removeClass('error');
+				$('#login').find('#clientPass').removeClass('error');
 			}
 			
 			if (!error) {
@@ -357,7 +549,7 @@ var app = {
 		data.club_id = club_id;
 		
 		var con = checkConnection();
-		
+		console.log(con);
 		if (con == 'No') {
 			user = localStorage.getObject('fitUser');
 			console.log(user);
@@ -397,11 +589,19 @@ var app = {
 	},
 	
 	initLogged: function() {
-		db = window.openDatabase("fitness", "1.0", "Fitness DB", 1000000);
-		app.initPackages();
+		db = window.openDatabase("fitness", "1.0", "Fitness DB", 5000000);
+		app.syncData();
 	},
-
-	parseUser: function() {
+	
+	initHome: function() {
+	
+		if (localStorage.getObject('fitTest')) {
+			$('#homepage').find('.fitnesstest').hide();
+		}
+		if (localStorage.getItem('fitNotificationsCount')) {
+			$('#homepage').find('#notificationsCount').html('(' + localStorage.getItem('fitNotificationsCount') + ')');
+		}
+	
 		if (user.fb_id) {
 			$('.me').find('img').attr('src','https://graph.facebook.com/' + user.fb_id + '/picture');
 			$('.me').find('h2').html(user.firstname + ' ' + user.lastname);
@@ -423,6 +623,17 @@ var app = {
 		localStorage.setObject('fitUser', user);
 			
 	},
+
+	
+	loadProfile: function() {
+		$('#profile').find('h3:first').html('PROFIIL: ' + user.firstname + ' ' + user.lastname);	
+	},
+	//approx 1hour todo
+	initSettings: function() {
+		$('.log-out').click(function(e) {
+			//logout and to home
+		});
+	},
 	
 	parseUserDetails: function() {
 		console.log(user);
@@ -439,6 +650,8 @@ var app = {
 		$('#per_week').val(user.per_week).autoResize();
 		$('#currently_training').val(user.currently_training).autoResize();
 		$('#health_condition').val(user.health_condition).autoResize();
+		
+		$('textarea').autoResize();
 		
 		$('#nobg_special_button').click(function() {
 			user.firstname = $('#firstname').val();
@@ -459,36 +672,42 @@ var app = {
 	},
 	
 	loadExercisePage: function() {
-		
-		data = {};
-		data.club_id = club_id;
-		
-		if (!navigator.onLine) {
-			result = localStorage.getObject('fitCats');
-			app.parseCategories(result);
-		} else {
-			$.get(app.apiUrl + '?action=getCategories', data, function(result) {
-				localStorage.setObject('fitCats', result);
-				app.parseCategories(result);
-		   }, 'jsonp');
-		}
+			
+		result = localStorage.getObject('fitCats');
+		app.parseCategories(result);
 	},
 	
 	parseCategories: function(result) {
+	
+		console.log(app.muscleGroup);
+		
 		content = $('.module-content');
+		content.html('');
 		template = $('.module-template');
 		template.hide();
 		
    		$.each(result, function(i, item) {
+   		
+   			console.log(item);
    			categories[item.cat_id] = item.name;
    			template.find('h3').html(item.name);
-   			template.find('.bubble').html(item.total);
+   			
+   			console.log(app.muscleGroup + '_total');
+   			
+   			if (app.muscleGroup) {
+   				if(item[app.muscleGroup + '_total'])
+   					template.find('.bubble').html(item[app.muscleGroup + '_total']);
+   				else
+   					template.find('.bubble').html('0');
+   			} else {
+   				template.find('.bubble').html(item.total);
+   			}	
    			template.find('img').attr('src', app.serverUrl + 'pics/categories/' + item.cat_id + '.jpg');
    			template.find('.harjutus_item').attr('data-cat', item.cat_id);
 	   		content.append(template.html());
    		});
    		
-   		app.muscleGroup = 0;
+   		//app.muscleGroup = 0;
    		
    		$('.harjutus_item').click(function(e) {
 		   app.exerciseCat = $(this).data('cat');
@@ -527,29 +746,44 @@ var app = {
 		container = $('.content-content');
 		container.html('');
 		
-		$.get(app.apiUrl + '?action=getExercises', data, function(result) {
-	   		$.each(result, function(i, item) {
-	   		
-	   			items[item.id] = item;
-		   		
-		   		template.find('h3').html(item.name);
-		   		template.find('img:last').attr('src', app.serverUrl + 'pics/exercises/' + item.id + '.jpg');
-		   		template.find('.harjutus_item').attr('data-id', item.id);
-		   		
-		   		container.append(template.html());
-		   		
-	   		});
-	   		
-	   		$('.harjutus_item').unbind(eventEnd).bind(eventEnd, function (e) {
-	   		
-	   			var id = $(this).data('id');
-	   		
-				LEVEL = 3;
-				teleportMe('video', id);
-			});
-	   		
-	   	}, 'jsonp');
+		if (!navigator.onLine) {
+			result = localStorage.getObject('fitExercises');
+			app.parseExercises(result);
+		} else {
+			$.get(app.apiUrl + '?action=getExercises', data, function(result) {
+				localStorage.setObject('fitExercises', result);
+				app.parseExercises(result);
+		   }, 'jsonp');
+		}
 
+	},
+	
+	parseExercises: function(result) {
+		
+		$.each(result, function(i, item) {
+	   		
+   			items[item.id] = item;
+	   		
+	   		if (lang == 'et')
+	   			template.find('h3').html(item.name);
+	   		else
+	   			template.find('h3').html(item['name_' + lang]);
+	   		
+	   		template.find('img:last').attr('src', app.serverUrl + 'pics/exercises/' + item.id + '.jpg');
+	   		template.find('.harjutus_item').attr('data-id', item.id);
+	   		
+	   		container.append(template.html());
+	   		
+   		});
+   		
+   		$('.harjutus_item').unbind(eventEnd).bind(eventEnd, function (e) {
+   		
+   			var id = $(this).data('id');
+   		
+			LEVEL = 3;
+			teleportMe('video', id);
+		});
+			
 	},
 
 	parseExercise: function(extra) {
@@ -562,6 +796,69 @@ var app = {
 		$('#video').find('.video-container').html('<video id="video" height="41%" width="100%" controls="" preload="" autoplay="" poster="' + app.serverUrl + 'videos/' + items[extra].id + '.png" onclick="this.play();" onload="this.play();"><source src="' + app.serverUrl + 'videos/' + items[extra].id + '.mp4" poster="' + app.serverUrl + 'videos/' + items[extra].id + '.png"></video>');
 		
 		
+	},
+	
+	initVideosDownload: function() {
+		
+		result = localStorage.getObject('fitCats');
+		
+		template = $('.item-template');
+		content1 = $('.items-container1');
+		content2 = $('.items-container2');
+		
+   		$.each(trainings.samplePackages, function(i, item) {
+   			template.find('.downloadtitle').html(item.name);
+   			template.find('.downloadcircle').find('span').html('0/' + item.exercises_count);
+   			template.find('img').attr('src', app.serverUrl + 'pics/categories/2.jpg');
+   			template.find('h4').attr('data-cat', item.id).attr('data-type', 'package');
+	   		content1.append(template.html());
+   		});
+   		
+   		$.each(trainings.orderPackages, function(i, item) {
+   			template.find('.downloadtitle').html(item.name);
+   			template.find('.downloadcircle').find('span').html('0/' + item.exercises_count);
+   			template.find('img').attr('src', app.serverUrl + 'pics/categories/2.jpg');
+   			template.find('h4').attr('data-cat', item.id).attr('data-type', 'package');
+	   		content1.append(template.html());
+   		});
+   		
+   		$.each(result, function(i, item) {
+   			template.find('.downloadtitle').html(item.name);
+   			template.find('.downloadcircle').find('span').html('0/' + item.total);
+   			template.find('img').attr('src', app.serverUrl + 'pics/categories/' + item.cat_id + '.jpg');
+   			template.find('h4').attr('data-cat', item.cat_id).attr('data-type', 'category');
+	   		content2.append(template.html());
+   		});
+   		
+   		$('.items-container1, .items-container2').find('h4').click(function(e) {
+   			
+   			//statuses
+   			
+	   		$(this).html('Laen..');
+   		});
+		
+		/*
+		* each packages & each categories
+		*/
+				
+	},
+	//approx 2-3h to finish this shit
+	downloadExerciseVideos: function(type) {
+		
+		//download sources: categories, training plans
+		//get category, get training plan
+		//foreach exercises check if this exercise has video already, 
+		//if not then download add to category or training plan count
+			
+	},
+	//approx 2-3h to finish this shit
+	downloadPics: function() {
+		
+		//download sources: categories, exercises
+		//foreach categories download pic, if download add checkmark to cats
+		//foreach all the exercises download pic and add checkmark downloaded
+		//finish this shit...
+			
 	},
 	
 	initPackageBuying: function(step) {
@@ -850,6 +1147,317 @@ var app = {
 	   	}, 'jsonp');
 		
 	},
+	initTest: function() {
+		
+		for(i=1;i<32;i++) {
+			if(i < 10) day = '0' + i; else day = i;
+			$('#daySelect').append('<option value="' + day + '">' + i + '</option>')
+		}
+		for(i=1;i<13;i++) {
+			if(i < 10) month = '0' + i; else month = i;
+			$('#monthSelect').append('<option value="' + month + '">' + i + '</option>')
+		}
+		for(i=1930;i<2000;i++) {
+			$('#yearSelect').append('<option value="' + i + '">' + i + '</option>')
+		}
+	
+		$('.datepicker').click(function(e) {
+			
+			$('#birthdaySelect').addClass('scale');
+			setTimeout(function () {
+				$('#birthdaySelect').addClass('scaleIn');
+				
+				$('.save-stuff').click(function(e) {
+					//e.preventDefault();
+					
+					user.birthday = $('#yearSelect').val() + '-' + $('#monthSelect').val() + '-' + $('#daySelect').val();
+					user.age = calcAge(user.birthday);
+					
+					$('#birthdaySelect').find('.closebtn').click();
+				});
+				
+			}, 100);
+			
+		});
+		
+		$('.meesbtn, .nainebtn').click(function(e) {
+			e.preventDefault();
+			if (user.age) {
+				
+				user.sex = $(this).data('sex');
+				LEVEL = 2;
+				
+				console.log('You are: ' + user.sex + ' and ' + user.age);
+				
+				teleportMe('fitnesstest');
+				
+			} else {
+				$('.datepicker').css('color', 'red');
+			}
+		});
+		/*
+		* retrieve sex + age
+		*/
+			
+	},
+	initTestQuestions: function() {
+	
+		var selectedExercise = 'running';
+		//var testResults = {};
+		testResults = localStorage.getObject('fitTest');
+		if(testResults && testResults.length) {
+			$.each(testResults, function(item, score) {
+				$('#tulemusinput' + item).val(score);
+			});
+		}
+		if(!testResults)
+			var testResults = {};
+		
+		$('.nobg_item.tiny').click(function(e) {
+			$('.nobg_item.tiny').addClass('grey');
+			$(this).removeClass('grey');
+			lastExercise = $(this).data('type');
+		});
+		
+		$('.save-results').click(function(e) {
+			if(!$(this).hasClass('grey')) {
+				localStorage.setObject('fitTest', testResults);
+			}
+		})
+		
+		$('.answer input').unbind('focus').bind('focus', function (e) {
+			$('.tulemusbtn').unbind(eventEnd);
+		});
+	
+		$('.answer input').unbind('blur').bind('blur', function (e) {
+			$('.tulemusbtn').unbind(eventEnd).bind(eventEnd, function (e) {
+			//e.preventDefault();
+				
+				var exercise = $(this).data('exercise');
+				
+				var n = $(this).attr('data-result');
+				
+				testResults[n] = r;
+				
+				var r = $('#tulemusinput' + n).val();
+				r = Number(r);
+				
+				if(n == '5' || n == 5) {
+					if (selectedExercise == 'running') {
+						r = r;
+					} else if (selectedExercise == 'bicycle') {
+						r = r*2.5;
+					} else if (selectedExercise == 'boat') {
+						r = r*1.2;
+					}
+				}
+				
+				console.log(n, r);
+				if(r && r < 1000){
+					
+					testResults[n] = r;
+					
+					var grade = 1;
+					
+					showLoading();
+					
+					db.transaction(function(tx) {
+						query = 'SELECT grade, min_score, max_score FROM TEST WHERE exercise = "' + exercise + '" AND sex = "' + user.sex + '" AND min_age <= "' + user.age + '" AND max_age >= "' + user.age + '"';
+						console.log(query);
+						tx.executeSql(query, [], function(tx, results) {
+							
+							var len = results.rows.length, i;
+							for (i = 0; i < len; i++) {
+							
+								item = results.rows.item(i);
+								console.log(item);
+							
+								if (item.min_score == '0' && item.max_score == '0') {
+									$('.grade-' + item.grade).html('0');
+								} else if(item.min_score == '0') {
+									$('.grade-' + item.grade).html('<' + item.max_score);
+								} else if(item.max_score == '1000' || item.max_score == '0') {
+									$('.grade-' + item.grade).html('>' + item.min_score);
+								} else {
+									$('.grade-' + item.grade).html(item.min_score + '-' + item.max_score);
+								}
+								
+								if (item.min_score <= r && item.max_score >= r) {
+									console.log(item);
+									if (item.min_score == '0' && item.max_score == '0') {
+										$('.result-text').html('0');
+									} else if(item.min_score == '0') {
+										$('.result-text').html('<' + item.max_score);
+									} else if(item.max_score == '1000' || item.max_score == '0') {
+										$('.result-text').html('>' + item.min_score);
+									} else {
+										$('.result-text').html(item.min_score + '-' + item.max_score);
+									}
+									
+									grade = item.grade;
+									
+								}
+								
+							}
+							
+							$('#loading').hide();
+							$('#caruseloverlay').addClass('scale');
+							setTimeout(function () {
+									$('#caruseloverlay').addClass('scaleIn');
+							}, 100);
+							
+							
+							var grades = {
+								1: 0,
+								2: 1,
+								3: 3,
+								4: 6,
+								5: 10,
+								6: 15,
+								7: 20
+							}
+							
+							var score = grades[grade];
+							
+							var newresult = Number(TOTALRESULT) + Number(score);
+							
+							TOTALRESULT = newresult.toFixed(0);
+							
+							if (grade == 7) {
+								anim = '7';
+								tulemus = 'Suurepärane';
+							} else if(grade == 6) {
+								anim = '6';
+								tulemus = 'Hea';
+							} else if(grade == 5) {
+								anim = '5';
+								tulemus = 'Üle keskmise';
+							} else if(grade == 4) {
+								anim = '4';
+								tulemus = 'Keskmine';
+							} else if(grade == 3) {
+								anim = '3';
+								tulemus = 'Alla keskmise';
+							} else if(grade == 2) {
+								anim = '2';
+								tulemus = 'Nõrk';
+							} else if(grade == 1) {
+								anim = '1';
+								tulemus = 'Väga nõrk';
+							}
+							
+							setTimeout(function(){
+								$('.carusel-texts').addClass('anim_' + anim + '0');
+								$('.carusel .normal').addClass('anim_' + anim + '0');
+								$('.carusel .greentriangle').attr('src', 'i/test/tulemus.png');
+								$('.result span').text( tulemus );
+							}, 500);
+		
+							$('.jargminetest').attr('data-test', n);
+							
+							setTimeout(function(){
+								$('.tulemus, .results').addClass('anim_in');
+								$('.result-text').fadeIn();
+								
+								if(n < 5){
+									$('.jargminetest').addClass('anim_in');
+								}
+								
+								if(n == 5){
+									$('.kogutulemus').addClass('anim_in');
+									$('.save-results').removeClass('grey');
+								}
+							}, 3000);
+							
+							if (n == '1') {
+								var top = $('.test2').position().top;
+								console.log(top);
+								$('body').scrollTop(top);
+							}
+							
+							addHover( this );
+							
+						}, function(tx, results) {
+							console.error('Error in selecting test result');
+							console.log(tx);
+							console.log(results);
+						});
+					}, function(error) {
+						console.error('Error in selecting test result');
+						console.log(error);
+					});
+					/*$.get(app.apiUrl + '?action=getTestResults', data, function(result) {
+						
+					
+					}, 'jsonp');*/
+					
+					$('.overlay .jargminetest').unbind(eventEnd).bind(eventEnd, function(e) {
+						e.preventDefault();
+						
+						var next = $(this).attr('data-test');
+						var h = $('#test' + next ).height();
+						var top = Number(h) * next;
+						
+						$('.toscroll').animate( {scrollTop: top + 'px'}, 300);
+						
+						$('#caruseloverlay').addClass('scaleOut');
+						var _this = $('#caruseloverlay');
+						setTimeout(function () {
+							_this.removeClass('scaleIn').removeClass('scaleOut');
+							
+							setTimeout(function () {
+								_this.removeClass('scale');
+							}, 50);
+							$('#caruseloverlay .tulemus, #caruseloverlay .results, #caruseloverlay .jargminetest').removeClass('anim_in');
+							$('.result-text').hide();
+							$('.carusel-texts').removeClass('anim_' + anim + '0');
+							$('#caruseloverlay .carusel .normal').removeClass('anim_' + anim + '0');
+							
+						}, 350);
+						
+						addHover( this );
+					});
+					
+					$('.overlay .kogutulemus').unbind(eventEnd).bind(eventEnd, function(e) {
+						e.preventDefault();
+						
+						$('#caruselTOTALoverlay .finalresults h3').text(TOTALRESULT + ' p');
+										
+						$('#caruselTOTALoverlay').addClass('scale');
+						setTimeout(function () {
+							$('#caruselTOTALoverlay').addClass('scaleIn');
+						}, 100);
+						
+						addHover( this );
+					});
+					
+					$('.overlay .sulge').unbind(eventEnd).bind(eventEnd, function(e) {
+						e.preventDefault();
+						
+						$('#caruseloverlay, #caruselTOTALoverlay').addClass('scaleOut');
+				
+						setTimeout(function () {
+							$('#caruseloverlay, #caruselTOTALoverlay').removeClass('scaleIn').removeClass('scaleOut');
+							
+							setTimeout(function () {
+								$('#caruseloverlay, #caruselTOTALoverlay').removeClass('scale');
+							}, 50);
+							$('#caruseloverlay .tulemus, #caruseloverlay .results, #caruseloverlay .jargminetest, #caruseloverlay .kogutulemus').removeClass('anim_in');
+							$('.result-text').hide();
+							$('#caruseloverlay .carusel .normal').removeClass('anim_' + anim + '0');
+							$('.carusel-texts').removeClass('anim_' + anim + '0');
+							
+						}, 350);
+						
+						addHover( this );
+					});
+				
+				}
+	
+			});
+		});
+		
+	}
 	
 }
 
@@ -923,7 +1531,7 @@ window.onerror = function (msg, url, line) {
 
 function errorCB(e) {
 	deliverError('Error in DB: ' + e, 'app.js', 800);
-	alert('Error in DB: ' + e);
+	//alert('Error in DB: ' + e);
 	console.error(e);
 }
 
@@ -943,4 +1551,8 @@ function checkConnection() {
     console.log(states[networkState]);
     
     return states[networkState];
+}
+function calcAge(dateString) {
+  var birthday = +new Date(dateString);
+  return ~~((Date.now() - birthday) / (31557600000));
 }

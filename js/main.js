@@ -17,22 +17,22 @@ limit: 1000
 // Only textarea's auto-resize:
 this.filter('textarea').each(function(){
  
-// Get rid of scrollbars and disable WebKit resizing:
-var textarea = $(this).css({resize:'none','overflow-y':'hidden'}),
- 
-// Cache original height, for use later:
-origHeight = textarea.height(),
- 
-// Need clone of textarea, hidden off screen:
-clone = (function(){
- 
-// Properties which may effect space taken up by chracters:
-var props = ['height','width','lineHeight','textDecoration','letterSpacing'],
-propOb = {};
- 
-// Create object of styles to apply:
-$.each(props, function(i, prop){
-propOb[prop] = textarea.css(prop);
+	// Get rid of scrollbars and disable WebKit resizing:
+	var textarea = $(this).css({resize:'none','overflow-y':'hidden'}),
+	 
+	// Cache original height, for use later:
+	origHeight = textarea.height(),
+	 
+	// Need clone of textarea, hidden off screen:
+	clone = (function(){
+	 
+	// Properties which may effect space taken up by chracters:
+	var props = ['height','width','lineHeight','textDecoration','letterSpacing'],
+	propOb = {};
+	 
+	// Create object of styles to apply:
+	$.each(props, function(i, prop){
+	propOb[prop] = textarea.css(prop);
 });
  
 // Clone the actual textarea removing unique properties
@@ -141,6 +141,11 @@ function resizeby(_this, _plus) {
 	
 	jQuery('.page-wrap').css('height', wind + 'px');
 	//setTimeout(function () {
+	
+		if(_this == '#homepage')
+			toscrollheight = toscrollheight - 46;
+		
+		
 		jQuery('.toscroll').css('height', toscrollheight + 'px');
 
 		if (LEVEL >= 2) {
@@ -235,10 +240,10 @@ function afterTeleport(where, extra) {
 			app.initLogin(where);
 			break;
 		case 'homepage':
-			app.parseUser();
+			app.initHome();
 			break;
 		case 'lisandid':
-			if(trainer.length != 0)
+			if(!packs.offers.length)
 				$('.treenerpakkumisedbtn').hide();
 			break;
 		case 'soodustused':
@@ -265,8 +270,29 @@ function afterTeleport(where, extra) {
 		case 'minuandmed':
 			app.parseUserDetails();
 			break;
+		case 'ostetud':
+			packs.getMain();
+			break;
+		case 'diary':
+			packs.getDiary();
+			break;
+		case 'diary_detail':
+			packs.getDiaryDetail(extra);
+			break;
+		
 		case 'uustreening':
-			app.getTrainingsMain();
+			trainings.getTrainingsMain();
+			break;
+		case 'treening_naidiskavad':
+			trainings.getTrainings(extra);
+			break;
+		case 'treening_naidiskava':
+			trainings.getTraining(extra);
+			break;
+		case 'treening_naidiskavad_1paev':
+			trainings.getTrainingsDetail(extra);
+		case 'treening_naidiskavad_1paev_nXn':
+			trainings.getTrainingsExercise(extra);
 			break;
 		case 'toitumiskavad':
 			nutritions.getNutritionsMain();
@@ -279,6 +305,31 @@ function afterTeleport(where, extra) {
 			break;
 		case 'menuu1_hommikusook1':
 			nutritions.getNutritionDetail(extra);
+			break;
+			
+		
+		case 'profile':
+			app.loadProfile();
+			break;
+		case 'alusta_laadimist':
+			app.initVideosDownload();
+			break;
+		case 'seaded':
+			app.initSettings();
+			break;
+			
+		case 'fitnesstest':
+			app.initTestQuestions();
+			break;
+		case 'tavatest':
+			app.initTest();
+			break;
+		
+		case 'teated':
+			app.getNotifications();
+			break;
+		case 'teated_detail':
+			app.getNotificationDetail(extra);
 			break;
 		/*
 		* huge stuff gathering here..
@@ -336,15 +387,15 @@ function goBack(_this, caller) {
 function teleportMe( where, extra ){
 	//if(updating){
 	
-	console.log(extra);
+	console.log(where + ' - ' + extra);
 	
 		LATEST = '#' + $('.open').attr('id');
 
-		if (LATEST != '#'+where) {
+		if (LATEST != '#' + where) {
 			showLoading();
 			
 			$('#topbar .backbtn').attr('data-deep', LEVEL);
-			
+			console.log('cmon..');
 			$.get('templates/' + where + '.html',{ "_": $.now() }, function(data){
 				$(data).insertAfter( LATEST )
 				
@@ -381,6 +432,9 @@ function teleportMe( where, extra ){
 					
 					updating = false;
 					
+					if(trainings.doingExercise)
+						$('.toscroll').prepend('<section class="kestus"><span>Treening käib: 12:50</span></section>');
+					
 					afterTeleport(where, extra);
 					
 				}, 20);
@@ -388,10 +442,10 @@ function teleportMe( where, extra ){
 			});
 			
 		// if category sorting..
-		} else if (extra && extra.refresh) {
+		} else if ((extra && extra.refresh) || where == 'menuu1_hommikusook1') {
 			console.log('REFRESH');
 			showLoading();
-			
+			console.log(extra);
 			afterTeleport(where, extra);
 			
 			setTimeout(function () {
@@ -426,11 +480,7 @@ function bindEvents() {
 	
 	//console.log('binding this shit..');
 	
-	var diaryscroll = $('#diaryscroll').length;
-	if(diaryscroll){
-		var scroll = new iScroll('diaryscroll');
-		scroll.enableStickyHeaders('h4');
-	}
+	
 
 	//console.log('binding this shit still..');
 
@@ -458,8 +508,17 @@ function bindEvents() {
 		
 		if ($(this).data('extra_id'))
 			extra.extra_id = $(this).data('extra_id');
+			
+		if (where == '.tavatest') {
+			if(user.sex && user.age)
+				teleportMe( 'fitnesstest', extra );
+		} else if (where == 'lisandid') {
+			if(!app.specialOffers)
+				teleportMe( 'soodustused', extra );
+		} else {
+			teleportMe( where, extra );
+		}
 		
-		teleportMe( where, extra );
 
 	});
 	
@@ -482,7 +541,7 @@ function bindEvents() {
 			//$('.toclose').hide();
 			extra = {};
 			extra.refresh = true;
-			teleportMe('harjutused_subpage1', extra);
+			teleportMe($('.open').attr('id'), extra);
 			hideMenu();
 		}
 		
@@ -573,6 +632,10 @@ $('.resetfilter').unbind(eventEnd).bind(eventEnd, function (e) {
 			$(this).attr("class", clas.replace(' pathOver',''));
 		});
 		
+		app.muscleGroup = false;
+		
+		console.log('ok');
+		
 		$('#svgBack g').each(function(){
 			var clas = $(this).attr("class");
 			$(this).attr("class", clas.replace(' pathOver',''));
@@ -582,6 +645,7 @@ $('.resetfilter').unbind(eventEnd).bind(eventEnd, function (e) {
 		$('#harjutused .me h3').text('HARJUTUSED');
 		
 		addHover( this );
+		
 });
 
 
@@ -654,14 +718,14 @@ $('.manFlip').unbind(eventEnd).bind(eventEnd, function (e) {
 		}, 100);
 	});
 	
-	$('.theicon').unbind(eventEnd).bind(eventEnd, function (e) {
+	/*$('.theicon').unbind(eventEnd).bind(eventEnd, function (e) {
 		//e.preventDefault();
 		
 		$('#yesnooverlay').addClass('scale');
 		setTimeout(function () {
 			$('#yesnooverlay').addClass('scaleIn');
 		}, 100);
-	});
+	});*/
 	
 	$('.bagbtn').unbind(eventEnd).bind(eventEnd, function (e) {
 		//e.preventDefault();
@@ -670,7 +734,7 @@ $('.manFlip').unbind(eventEnd).bind(eventEnd, function (e) {
 		
 		$('#ajaxoverlay').addClass('scale');
 		setTimeout(function () {
-			$.get(where + '.html',{ "_": $.now() }, function(data){
+			$.get('templates/' + where + '.html',{ "_": $.now() }, function(data){
 
 				$('#ajaxoverlay .mybag').html(data);
 				$('#ajaxoverlay').addClass('scaleIn');
@@ -679,68 +743,6 @@ $('.manFlip').unbind(eventEnd).bind(eventEnd, function (e) {
 
 			
 		}, 100);
-	});
-	
-	
-	
-	
-	$('.overlay .jargminetest').unbind(eventEnd).bind(eventEnd, function(e) {
-		e.preventDefault();
-		
-		var next = $(this).attr('data-test');
-		var h = $('#test' + next ).height();
-		var top = Number(h) * next;
-		
-		$('.toscroll').animate( {scrollTop: top + 'px'}, 300);
-		
-		$('#caruseloverlay').addClass('scaleOut');
-		var _this = $('#caruseloverlay');
-		setTimeout(function () {
-			_this.removeClass('scaleIn').removeClass('scaleOut');
-			
-			setTimeout(function () {
-				_this.removeClass('scale');
-			}, 50);
-			$('#caruseloverlay .tulemus, #caruseloverlay .results, #caruseloverlay .jargminetest').removeClass('anim_in');
-			$('#caruseloverlay .carusel .normal').removeClass('anim_' + anim + '0');
-			
-		}, 350);
-		
-		addHover( this );
-	});
-	
-	$('.overlay .kogutulemus').unbind(eventEnd).bind(eventEnd, function(e) {
-		e.preventDefault();
-		
-		$('#caruselTOTALoverlay .finalresults h3').text(TOTALRESULT + ' p');
-						
-		$('#caruselTOTALoverlay').addClass('scale');
-		setTimeout(function () {
-			$('#caruselTOTALoverlay').addClass('scaleIn');
-		}, 100);
-		
-		addHover( this );
-	});
-	
-	
-	
-	$('.overlay .sulge').unbind(eventEnd).bind(eventEnd, function(e) {
-		e.preventDefault();
-		
-		$('#caruseloverlay, #caruselTOTALoverlay').addClass('scaleOut');
-
-		setTimeout(function () {
-			$('#caruseloverlay, #caruselTOTALoverlay').removeClass('scaleIn').removeClass('scaleOut');
-			
-			setTimeout(function () {
-				$('#caruseloverlay, #caruselTOTALoverlay').removeClass('scale');
-			}, 50);
-			$('#caruseloverlay .tulemus, #caruseloverlay .results, #caruseloverlay .jargminetest, #caruseloverlay .kogutulemus').removeClass('anim_in');
-			$('#caruseloverlay .carusel .normal').removeClass('anim_' + anim + '0');
-			
-		}, 350);
-		
-		addHover( this );
 	});
 	
 	
@@ -766,8 +768,10 @@ $('.manFlip').unbind(eventEnd).bind(eventEnd, function (e) {
 				_this.parent().removeClass('scale');
 			}, 50);
 			if(id == 'caruseloverlay'){
+				$('.result-text').hide();
 				$('.tulemus, .results').removeClass('anim_in');
 				$('.carusel .normal').removeClass('anim_' + anim + '0');
+				$('.carusel-texts').removeClass('anim_' + anim + '0');
 			}
 			
 			if(id == 'ajaxoverlay'){
@@ -796,179 +800,6 @@ $('.manFlip').unbind(eventEnd).bind(eventEnd, function (e) {
 			}, 50);
 			
 		}, 350);
-	});
-	
-	$('.answer input').unbind('focus').bind('focus', function (e) {
-		$('.tulemusbtn').unbind(eventEnd);
-	});
-
-	$('.answer input').unbind('blur').bind('blur', function (e) {
-		$('.tulemusbtn').unbind(eventEnd).bind(eventEnd, function (e) {
-		//e.preventDefault();
-		
-			var n = $(this).attr('data-result');
-			var r = $('#tulemusinput' + n).val();
-			r = Number(r);
-				//console.log(n, r);
-				if(r && r < 101){
-			
-		
-					$('#caruseloverlay').addClass('scale');
-					setTimeout(function () {
-							$('#caruseloverlay').addClass('scaleIn');
-					}, 100);
-					
-					var newresult = Number(TOTALRESULT) + Number(r);
-					
-					TOTALRESULT = newresult.toFixed(0);
-					
-					if(r > 70) {
-						anim = '7';
-						tulemus = 'Suurepärane';
-					}
-					if(r < 70) {
-						anim = '6';
-						tulemus = 'hea';
-					}
-					if(r < 60) {
-						anim = '5';
-						tulemus = 'ülekeskmine';
-					}
-					if(r < 50){
-						 anim = '4';
-						 tulemus = 'Keskmine';
-					}
-					if(r < 40) {
-						anim = '3';
-						tulemus = 'alla keskmise';
-					}
-					if(r < 30) {
-						anim = '2';
-						tulemus = 'nõrk';
-					}
-					if(r < 10) {
-						anim = '1'; 
-						tulemus = 'Väga nõrk';
-					}
-					
-					//console.log(n, r, anim);
-					
-					setTimeout(function(){
-						$('.carusel .normal').addClass('anim_' + anim + '0');
-						$('.carusel .greentriangle').attr('src', 'i/tulemus' + anim + '.png');
-						$('.result span').text( tulemus );
-					}, 500);
-
-					
-					$('.jargminetest').attr('data-test', n);
-					
-					
-					setTimeout(function(){
-						$('.tulemus, .results').addClass('anim_in');
-						
-						if(n < 5){
-							$('.jargminetest').addClass('anim_in');
-						}
-						
-						if(n == 5){
-							$('.kogutulemus').addClass('anim_in');
-						}
-					}, 5000);
-					
-					if (n == '1') {
-						var top = $('.test2').position().top;
-						console.log(top);
-						$('body').scrollTop(top);
-					}
-					
-					/* if(n == '5'){
-						setTimeout(function(){
-							
-							$('#caruselTOTALoverlay .finalresults h3').text(TOTALRESULT + ' p');
-						
-							$('#caruselTOTALoverlay').addClass('scale');
-							setTimeout(function () {
-									$('#caruselTOTALoverlay').addClass('scaleIn');
-							}, 100);
-						}, 7000);
-					} */
-					
-					addHover( this );
-			
-			}
-
-	});
-	});
-	
-	
-	
-	
-	
-	$('.times .plus').unbind(eventEnd).bind(eventEnd, function (e) {
-		var par = $(this).parent();
-		var max = 7;
-		var current = par.children('span').text();	
-		if(current <= max){
-			par.children('span').text( Number(current) + Number(1) );
-		}
-	});
-	
-	$('.times .minus').unbind(eventEnd).bind(eventEnd, function (e) {
-		var par = $(this).parent();
-		var min = 2;
-		var current = par.children('span').text();		
-		if(current >= min){
-			par.children('span').text( Number(current) - Number(1) );
-		}
-	});
-	
-	
-	$('.weight .plus').unbind(eventEnd).bind(eventEnd, function (e) {
-	
-		var par = $(this).parent();
-		var max = 295;
-		var current = par.children('span').text();
-		
-		if(current <= max){
-			par.children('span').text( Number(current) + Number(5) );
-		}
-	
-		//console.log( par.children('span').text() );
-	});
-	
-	$('.weight .minus').unbind(eventEnd).bind(eventEnd, function (e) {
-	
-		var par = $(this).parent();
-		var min = 15;
-		var current = par.children('span').text();
-		
-		if(current >= min){
-			par.children('span').text( Number(current) - Number(5) );
-		}
-	});
-	
-
-	$('.timeractions').unbind(eventEnd).bind(eventEnd, function (e) {
-		if( !$(this).hasClass('started') ){
-		$(this).addClass('started');
-			$(this).addClass('started');
-
-			$('.timeractions h3').text('PAUSE');
-
-		}else{
-			$(this).removeClass('started');
-
-			$('.timeractions h3').text('START');
-		}
-	});
-	
-	$('.altertimer .timer').unbind(eventEnd).bind(eventEnd, function (e) {
-		$('#timeroverlay').addClass('scale');
-		setTimeout(function () {
-			$('#timeroverlay').addClass('scaleIn');
-			
-		}, 100);
-		
 	});
 	
 	
