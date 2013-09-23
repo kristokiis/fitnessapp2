@@ -431,10 +431,13 @@ function teleportMe( where, extra ){
 					bindEvents();
 					
 					updating = false;
-					
-					if(trainings.doingExercise)
-						$('.toscroll').prepend('<section class="kestus"><span>Treening käib: 12:50</span></section>');
-					
+						
+					if(trainings.doingExercise) {
+						$('.toscroll').prepend('<section class="kestus"><span>Kogu treeningu kestus: <strong class="dayTimer">00:00</strong></span></section>');
+						setTimeout(function() {
+							$('.kestus').slideDown();
+						}, 1000);
+					}
 					afterTeleport(where, extra);
 					
 				}, 20);
@@ -442,7 +445,7 @@ function teleportMe( where, extra ){
 			});
 			
 		// if category sorting..
-		} else if ((extra && extra.refresh) || where == 'menuu1_hommikusook1') {
+		} else if ((extra && extra.refresh) || where == 'menuu1_hommikusook1' || where == 'treening_naidiskavad_1paev_nXn') {
 			console.log('REFRESH');
 			showLoading();
 			console.log(extra);
@@ -508,7 +511,12 @@ function bindEvents() {
 		
 		if ($(this).data('extra_id'))
 			extra.extra_id = $(this).data('extra_id');
+		
+		
+		$('#buyoverlay').remove();
+		$('#minuandmed').remove();
 			
+		
 		if (where == '.tavatest') {
 			if(user.sex && user.age)
 				teleportMe( 'fitnesstest', extra );
@@ -840,6 +848,7 @@ function hideKeyBoard() {
 	
 	var field = document.createElement('input');
 	field.setAttribute('type', 'text');
+	field.setAttribute('style', 'position:absolute;top:0;');
 	document.body.appendChild(field);
 	
 	setTimeout(function() {

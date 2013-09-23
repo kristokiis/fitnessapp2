@@ -1186,6 +1186,9 @@ input.error {
   font-weight: normal;
   text-align: left;
 }
+.item_wrap h6 {
+  text-align: left;
+}
 
 #treening_naidiskavad .item_wrap h6 {
   font-size: 16px;
@@ -1266,8 +1269,8 @@ input.error {
 	background: #51970C;
     text-align: center;
 	position: relative;
+	display: none;
 }
-
 .kestus span {
   color: #FFFFFF;
   font-size: 14px;
@@ -1374,7 +1377,7 @@ input.error {
 
 .seeria .w50 .plus{
 	top: -40px;
-	left: 35px;
+	left: 65px;
 }
 
 .seeria .minus{
@@ -1391,7 +1394,7 @@ input.error {
 
 .seeria .w50 .minus{
 	bottom: -40px;
-	left: 35px;
+	left: 65px;
 }
 
 .lefttimericon:before{
@@ -1866,7 +1869,7 @@ div.select:after {
 
 
 
-#pakkumised .toscroll, #soodustused .toscroll, #treenerpakkumised .toscroll, #uustreening .toscroll, #personaalsed_treeningkavad .toscroll, #ise_tehtud_kavad .toscroll{
+#pakkumised .toscroll, #soodustused .toscroll, #treenerpakkumised .toscroll, #uustreening .toscroll, #personaalsed_treeningkavad .toscroll, #ise_tehtud_kavad .toscroll, #treening_naidiskava .toscroll, #treening_naidiskavad_1paev .toscroll{
 	text-align: center;
 }
 

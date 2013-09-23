@@ -26,3 +26,22 @@ translations.et['exercises'] = 'HARJUTUSED';
 translations.et['start_training'] = 'Alustra treeningut';
 translations.et['special_offers'] = 'Eripakkumised';
 translations.et['all_special_offers'] = 'Kõik sooduspakkumised';
+
+
+translations.et['date'] = 'Kuupäev';
+translations.et['pack'] = 'Kava';
+translations.et['trainingday'] = 'Treeningpäev';
+translations.et['training_length'] = 'Treeningu kestus';
+
+translations.et['month_1'] = 'Jaanuar';
+translations.et['month_2'] = 'Veebruar';
+translations.et['month_3'] = 'Märts';
+translations.et['month_4'] = 'Aprill';
+translations.et['month_5'] = 'Mai';
+translations.et['month_6'] = 'Juuni';
+translations.et['month_7'] = 'Juuli';
+translations.et['month_8'] = 'August';
+translations.et['month_9'] = 'September';
+translations.et['month_10'] = 'Oktoober';
+translations.et['month_11'] = 'November';
+translations.et['month_12'] = 'Detsember';
