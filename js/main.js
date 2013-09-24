@@ -433,7 +433,8 @@ function teleportMe( where, extra ){
 					updating = false;
 						
 					if(trainings.doingExercise) {
-						$('.toscroll').prepend('<section class="kestus"><span>Kogu treeningu kestus: <strong class="dayTimer">00:00</strong></span></section>');
+						if(!$('.toscroll').find('.kestus').length)
+							$('.toscroll').prepend('<section class="kestus"><span>Kogu treeningu kestus: <strong class="dayTimer">00:00</strong></span></section>');
 						setTimeout(function() {
 							$('.kestus').slideDown();
 						}, 1000);

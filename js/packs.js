@@ -46,12 +46,14 @@ var packs = {
 				
 					
 				content.html(template.html());
+				setTimeout(function() {
+					var diaryscroll = $('#diaryscroll').length;
+					if(diaryscroll){
+						var scroll = new iScroll('diaryscroll');
+						scroll.enableStickyHeaders('h4');
+					}
+				}, 500);
 				
-				var diaryscroll = $('#diaryscroll').length;
-				if(diaryscroll){
-					var scroll = new iScroll('diaryscroll');
-					scroll.enableStickyHeaders('h4');
-				}
 				
 				$('.treening').click(function(e) {
 					LEVEL = 2;
@@ -617,7 +619,8 @@ var trainings = {
 		console.log(trainings.currentDay);
 		
 		var curDay = localStorage.getObject('fitCurDay');
-		$('.toscroll').prepend('<section class="kestus"><span>Kogu treeningu kestus: <strong class="dayTimer">00:00</strong></span></section>');
+		if(!$('.toscroll').find('.kestus').length)
+			$('.toscroll').prepend('<section class="kestus"><span>Kogu treeningu kestus: <strong class="dayTimer">00:00</strong></span></section>');
 		
 		var updateExercises = [];
 		$.each(trainings.currentTraining.exercises[trainings.currentDay], function(i, exercise) {
@@ -911,13 +914,19 @@ function formatTime(time) {
     return (min > 0 ? pad(min, 2) : "00") + ":" + pad(sec, 2) + ":" + hundredths;
 }
 function unFormatTime(str) {
-	arr = str.split(":");
-	minutes = parseInt(arr[0]);
-	
-	seconds = 60*minutes;
-	seconds = seconds + parseInt(arr[1]);
-	milliseconds = seconds + arr[2];
-	total = parseInt(milliseconds) * 10;
+	console.log(str);
+	if(str) {
+		arr = str.split(":");
+		minutes = parseInt(arr[0]);
+		
+		seconds = 60*minutes;
+		seconds = seconds + parseInt(arr[1]);
+		milliseconds = seconds + arr[2];
+		total = parseInt(milliseconds) * 10;
+		
+	} else {
+		total = 0;
+	}
 	return total;
 }
 function secToHour(time) {

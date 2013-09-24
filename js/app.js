@@ -1127,7 +1127,6 @@ var app = {
 			   		template2.find('.price').html(item.price + ' €');
 			   		template2.find('img:last').attr('src', app.serverUrl + 'pics/trainers/' + item.id + '.jpg');
 			   		template2.find('.selectbtn').attr('data-id', item.id);
-				
 				*/
 				
 				

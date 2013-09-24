@@ -1215,7 +1215,7 @@ input.error {
 	width: 35%;
 	position: absolute;
 	right: -35%;
-	background-color: red;
+	background-color: gray;
 }
 .remove-overlay span {
 	height: 100% !important;
