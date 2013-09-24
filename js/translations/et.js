@@ -24,6 +24,8 @@ translations.et['training'] = 'TREENING';
 translations.et['exercises'] = 'HARJUTUSED';
 //HOME
 translations.et['start_training'] = 'Alustra treeningut';
+translations.et['continue_training'] = 'Jätka treeningut';
+
 translations.et['special_offers'] = 'Eripakkumised';
 translations.et['all_special_offers'] = 'Kõik sooduspakkumised';
 

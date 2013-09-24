@@ -17,7 +17,7 @@ muscle_groups[5] = 'Säär';
 muscle_groups[6] = 'Õlg';
 muscle_groups[7] = 'Biitseps';
 muscle_groups[8] = 'Ranne';
-muscle_groups[9] = 'Tuhar';
+muscle_groups[9] = 'Ülaselg';
 muscle_groups[10] = 'Alaselg';
 muscle_groups[11] = 'Tuhar';
 muscle_groups[12] = 'Tagareis'
@@ -126,13 +126,13 @@ var app = {
 			
 			localStorage.removeItem('fitExercises');
 			
-			//localStorage.removeItem('fitCurDay');
+			localStorage.removeItem('fitCurDay');
 		
 			//create tables, approx 2,5MB size database, 5MB maximum
 			db.transaction(function(tx) {
 				//20 rows max, 250kb
 				tx.executeSql('DROP TABLE IF EXISTS TRAININGS');
-				tx.executeSql('CREATE TABLE IF NOT EXISTS TRAININGS (id unique, type, name, description, exercises)');
+				tx.executeSql('CREATE TABLE IF NOT EXISTS TRAININGS (id unique, type, name, description, exercises, day_names)');
 				//20 rows max, 250kb
 				tx.executeSql('DROP TABLE IF EXISTS NUTRITIONS');
 				tx.executeSql('CREATE TABLE IF NOT EXISTS NUTRITIONS (id unique, type, name, description, meals)');
@@ -146,8 +146,8 @@ var app = {
 				tx.executeSql('DROP TABLE IF EXISTS TEST');
 				tx.executeSql('CREATE TABLE IF NOT EXISTS TEST (id unique, exercise, sex, min_age, max_age, min_score, max_score, grade)');
 				//300 rows max 1mb
-				//tx.executeSql('DROP TABLE IF EXISTS DIARY');
-				//tx.executeSql('CREATE TABLE IF NOT EXISTS DIARY (id INTEGER PRIMARY KEY AUTOINCREMENT, day, month, year, package, training_day, length, plan_name, day_name, day_data)');
+				tx.executeSql('DROP TABLE IF EXISTS DIARY');
+				tx.executeSql('CREATE TABLE IF NOT EXISTS DIARY (id INTEGER PRIMARY KEY AUTOINCREMENT, day, month, year, package, training_day, length, plan_name, day_name, day_data)');
 			}, function(error) {
 				console.error('Error on line 134:');
 				console.log(error);
@@ -281,7 +281,7 @@ var app = {
 	   		$.each(result, function(i, item) {
 	   			
 		   		db.transaction(function(tx) {
-		   			var sql = "INSERT INTO TRAININGS (id, type, name, description, exercises) VALUES ("+item.id+", '" + (item.order_id && item.order_id != '0' && item.order_id != 0 ? 'order' : 'sample') + "', '"+item.name+"', '"+item.description+"', '"+JSON.stringify(item.exercises)+"')";
+		   			var sql = "INSERT INTO TRAININGS (id, type, name, description, exercises, day_names) VALUES ("+item.id+", '" + (item.order_id && item.order_id != '0' && item.order_id != 0 ? 'order' : 'sample') + "', '"+item.name+"', '"+item.description+"', '" + JSON.stringify(item.exercises) + "', '" + JSON.stringify(item.day_names) + "')";
 		   			console.log(sql);
 			   		tx.executeSql(sql);
 			   		
@@ -700,7 +700,7 @@ var app = {
 		
 		if (trainings.doingExercise) {
 			curDay = localStorage.getObject('fitCurDay');
-			$('#homepage').find('.continue-existing').data('extra_id', curDay.plan_id);
+			$('#homepage').find('.continue-existing').data('extra_id', curDay.day);
 			$('#homepage').find('.continue-existing').show();
 			$('#homepage').find('.start-new').hide();
 		} else {

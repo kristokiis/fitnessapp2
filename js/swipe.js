@@ -41,7 +41,7 @@
 				var Dx = startX - e.touches[0].pageX,
 					Dy = startY - e.touches[0].pageY;
 
-				if( Math.abs(Dx) >= 40 ){
+				if( Math.abs(Dx) >= 80 ){
 					e.preventDefault();
 					cancelTouch();
 					deltaX = (Dx > 0) ? -1 : 1;
