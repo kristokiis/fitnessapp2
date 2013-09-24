@@ -24,6 +24,7 @@
     <preference name="target-device"    value="handset" />
     <preference name="fullscreen"       value="false" />
     <preference name="webviewbounce" 	value="false" />
+    <preference name="orientation" 		value="portrait" />
     
     <preference name="splash-screen-duration" value="5000" />
     <preference name="load-url-timeout" value="10000" />
