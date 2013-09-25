@@ -525,6 +525,8 @@ function bindEvents() {
 		if (where == 'tavatest') {
 			if(user.sex && user.age)
 				teleportMe( 'fitnesstest', extra );
+			else
+				teleportMe( 'tavatest', extra );
 		} else if (where == 'lisandid') {
 			if(!app.specialOffers)
 				teleportMe( 'soodustused', extra );
