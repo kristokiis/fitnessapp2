@@ -104,14 +104,14 @@ var app = {
 	syncData: function() {
 		
 		showLoading();
-		
-		setTimeout(function() {
-			$('#loading').hide();
-		}, 5000);
-		
+
 		localStorage.removeItem('notFirstTime');
 	
 		if (!localStorage.getItem('notFirstTime')) {
+		
+			setTimeout(function() {
+				$('#loading').hide();
+			}, 3000);
 		
 			//empty all the databases
 			localStorage.removeItem('fitCats');
@@ -179,7 +179,7 @@ var app = {
 			
 			$.get(app.apiUrl + '?action=getCategories', data, function(result) {
 				localStorage.setObject('fitCats', result);
-				
+				app.downloadPics('categories', result);
 				/*
 				* pic download
 				*/
@@ -347,28 +347,40 @@ var app = {
 			localStorage.setItem('fitNutritionsCount', nutritionsCount);
 		
 		}, 'jsonp');
-	
-		/*
-		* if online, check new templates, send test results
-		* userData
-		*/
+		data = {};
+		data.user = user;
+		data.test = localStorage.setObject('fitTest');
 		
-		//app.initPackages();
+		db.transaction(function(tx) {
+			query = 'SELECT * FROM DIARY ORDER BY day DESC';
+			//console.log(query);
+			tx.executeSql(query, [], function(tx, results) {
+				var len = results.rows.length, i;
+				var days = [];
+				if (len) {
+					for (i = 0; i < len; i++) {
+						days.push(results.rows.item(i));
+					}
+				}
+				data.diary = days;
+				
+				$.get(app.apiUrl + '?action=updateUser', user, function(result) {
+			
+					user.lastSynced = new Date();
+					user = localStorage.setObject('fitUser');
+				},'jsonp');
+				
+			}, function(tx, results) {
+				console.error('Error in selecting test result');
+				//console.log(tx);
+				//console.log(results);
+			});
+		}, function(error) {
+			console.error('Error in selecting test result');
+			//console.log(error);
+		});
+							
 		
-		//stuff to be synced outside the app:
-		/*
-		* firsttime sync:
-		* TEST - OK
-		* CATEGORIES - OK
-		*/
-		
-		/*
-		* rare sync:
-		* EXERCISES - OK
-		* NOTIFICATIONS - OK
-		* TRAINING PLANS - 30%
-		* NUTRITION PLANS - 30%
-		*/
 		
 		
 		//stuff to be synced outside the app, often
@@ -494,35 +506,12 @@ var app = {
 		
 	},
 	
-	getTrainingsFromDB: function() {
-		
-		
-			
-	},
-	
-	getNutritionsFromDB: function() {
-		
-		
-			
-	},
-	
 	getTrainer: function(trainer) {
 		data = {};
 		data.trainer_id = trainer;
 		$.get(app.apiUrl + '?action=getTrainer', data, function(result) {
 		   	trainer = result;
 		}, 'jsonp'); 
-	},
-	
-	parseTrainingPacks: function(tx, results) {
-		//console.log("Returned rows = " + results.rows.length);
-	    // this will be true since it was a select statement and so rowsAffected was 0
-	    if (!results.rowsAffected) {
-	        //console.log('No rows affected!');
-	        return false;
-	    }
-	    // for an insert statement, this property will return the ID of the last inserted row
-	    //console.log("Last inserted row ID = " + results.insertId);
 	},
 	
 	translateApp: function() {
@@ -745,8 +734,6 @@ var app = {
 			console.error('Error in selecting test result');
 			//console.log(error);
 		});
-		
-		localStorage.setObject('fitUser', user);
 			
 	},
 
@@ -756,9 +743,59 @@ var app = {
 	},
 	//approx 1hour todo
 	initSettings: function() {
-		$('.log-out').click(function(e) {
-			//logout and to home
+		
+		/*
+		LANGUAGE SELECT
+		INSERT CLUB NUMBER
+		*/
+		
+		$('#seaded').find('.club-nr').click(function() {
+			
+			template = $('#selectiveoverlay').find('.club-template');
+			$('#selectiveoverlay').find('.selection-content').html(template.html());
+			
+			$('.save-button').show();
+			$('#selectiveoverlay').find('.club-nr').val(user.club_nr)
+			$('#selectiveoverlay').find('.save-button').unbind('click');
+			$('#selectiveoverlay').find('.save-button').click(function(e) {
+				
+				user.club_nr = $('#selectiveoverlay').find('.club-nr').val();
+				//user.club_pass = $('#selectiveoverlay').find('.club-pass').val();
+				$('#selectiveoverlay').removeClass('scale');
+				setTimeout(function () {
+					$('#selectiveoverlay').removeClass('scaleIn');
+				}, 100);
+			});
+			$('#selectiveoverlay').addClass('scale');
+			setTimeout(function () {
+				$('#selectiveoverlay').addClass('scaleIn');
+			}, 100);
 		});
+		
+		$('#seaded').find('.lang-select').click(function() {
+			
+			template = $('#selectiveoverlay').find('.lang-template');
+			$('#selectiveoverlay').find('.selection-content').html(template.html());
+			
+			$('.save-button').hide();
+			
+			$('#selectiveoverlay').find('.selection-content').find('.touchhover').unbind('click');
+			$('#selectiveoverlay').find('.selection-content').find('.touchhover').click(function(e) {
+				
+				lang = $(this).data('lang');
+				app.translateApp();
+				$('#selectiveoverlay').removeClass('scale');
+				setTimeout(function () {
+					$('#selectiveoverlay').removeClass('scaleIn');
+				}, 100);
+					
+			});
+			$('#selectiveoverlay').addClass('scale');
+			setTimeout(function () {
+				$('#selectiveoverlay').addClass('scaleIn');
+			}, 100);
+		});
+		
 	},
 	
 	parseUserDetails: function() {
@@ -794,6 +831,7 @@ var app = {
 			user.currently_training = $('#currently_training').val();
 			user.health_condition = $('#health_condition').val();
 			user.modified = new Date().getTime();
+			localStorage.setObject('fitUser', user);
 		});
 	},
 	
@@ -1134,9 +1172,24 @@ var app = {
 					$('#overlay').addClass('scaleIn');
 				}, 100);
 			});
+			
+			var here = $('#buyoverlay .checkout');
+			
+			here.html('');
+			var html = '';
+			var totalprice = 0;
+			
+			html += '<div class="inbasket"><div class="naming">'+ template.name +'</div><div class="pricing">'+ template.price +'</div><div class="clear"></div></div>';
+			
+			html += '<div class="intotal"><div class="naming">Summa:</div><div class="pricing">'+ template.price +'  €</div><div class="clear"></div></div>';
+			
+			here.append(html);
+			
 			$.get(app.apiUrl + '?action=getTrainers', data, function(result) {
 			//$.get(app.apiUrl + '?action=getTemplates', data, function(result) {
-			
+				
+				var trainer_id = 0;
+				
 		   		$.each(result, function(i, item) {
 		   			
 		   			items[item.id] = item;
@@ -1155,17 +1208,15 @@ var app = {
 			   		
 			   		$('.voucher').hide();	
 			   		
-		   			var id = $(this).data('id');
-		   			toBuy = [];
-		   			toBuy.push(id);
+		   			trainer_id = $(this).data('id');
 		   			
 					addHover(this);
 					
-					$('#overlay').find('img:first').attr('src', app.serverUrl + 'pics/trainers/' + id + '.jpg');
-					$('#overlay').find('h1').html(items[id].realname);
-					$('#overlay').find('h2').html(items[id].category);
+					$('#overlay').find('img:first').attr('src', app.serverUrl + 'pics/trainers/' + trainer_id + '.jpg');
+					$('#overlay').find('h1').html(items[trainer_id].realname);
+					$('#overlay').find('h2').html(items[trainer_id].category);
 					$('#overlay').find('h4').html('');
-					$('#overlay').find('p').html(items[id].description);
+					$('#overlay').find('p').html(items[trainer_id].description);
 					
 					$('#overlay').addClass('scale');
 					setTimeout(function () {
@@ -1193,6 +1244,23 @@ var app = {
 				
 				$('.orderbtn').unbind(eventEnd).bind(eventEnd, function (e) {
 					
+					user.firstname = $('#firstname').val();
+					user.lastname = $('#lastname').val();
+					user.mail = $('#mail').val();
+					user.phone = $('#phone').val();
+					user.sex = $('#sex').val();
+					user.age = $('#age').val();
+					user.weight = $('#weight').val();
+					user.length = $('#length').val();
+					user.training_activity = $('#training_activity').val();
+					user.training_target = $('#training_target').val();
+					user.per_week = $('#per_week').val();
+					user.currently_training = $('#currently_training').val();
+					user.health_condition = $('#health_condition').val();
+					user.modified = new Date().getTime();
+					
+					localStorage.setObject('fitUser', user);
+					
 					$('#minuandmed').removeClass('scale');
 					setTimeout(function () {
 						$('#minuandmed').removeClass('scaleIn');
@@ -1203,39 +1271,10 @@ var app = {
 						$('#buyoverlay').addClass('scaleIn');
 						$('.alternatiivbtn').html('').click();
 					}, 500);
-			
-					var here = $('#buyoverlay .checkout');
-			
-					here.html('');
-					
-					var html = '';
-					
-					var totalprice = 0;
-					
-					for (var i = 0; i < toBuy.length; i++) {
-			
-						var id = toBuy[i];
-			
-						var name = $('.box33[data-id=' + id + ']').children('h4.name').text();
-						var price = $('.box33[data-id=' + id + ']').children('h4.price').text();
-						
-						html += '<div class="inbasket"><div class="naming">'+ name +'</div><div class="pricing">'+ price +'</div><div class="erase"></div><div class="clear"></div></div>';
-			
-						price = price.replace(' €', '');
-						totalprice = Number(totalprice) + Number(price);
-						////console.log( Number(totalprice), Number(price));
-
-					}
-					
-					totalprice = totalprice.toFixed(2);
-					
-					html += '<div class="intotal"><div class="naming">Summa:</div><div class="pricing">'+ totalprice +'  €</div><div class="clear"></div></div>';
-					
-					here.append(html);
 					
 					$('.bank-link').click(function(e) {
 						e.preventDefault();
-						app.createOrder($(this).data('bank'), toBuy[0]);
+						app.createOrder($(this).data('bank'), trainer_id);
 					});
 					
 		   		});
@@ -1245,17 +1284,15 @@ var app = {
 		
 	},
 	
-	createOrder: function(type, buyed) {
-		
-		//console.log(type);
-		//console.log(buyed);
-		//console.log(user);
-		
+	createOrder: function(type, trainer) {
+	
 		data = {};
 		
 		data.type = type;
 		data.user = user.id;
-		data.item = buyed;
+		data.item = app.packageTemplate;
+		data.trainer = trainer;
+		data.lang = lang;
 		
 		$.get(app.apiUrl + '?action=createOrder', data, function(result) {
 			
@@ -1266,17 +1303,40 @@ var app = {
 				iabRef = window.open('http://projects.efley.ee/fitnessapp/admin/payment.php?order=' + order_id + '&bank=' + type, '_blank', 'location=yes');
 				iabRef.addEventListener('loadstart', function() {
 					//console.log('started');
+					//if()
 				});
-				iabRef.addEventListener('loadstop', function() {
+				iabRef.addEventListener('loadstop', function(event) {
+				
+					console.log(event.url);
+					if(event.url == 'http://projects.efley.ee/fitnessapp/admin/payment.php?order=' + order_id + '&bank=' + type + '&success=1') {
+						iabRed.close();
+						
+						$('#buyoverlay').find('.checkoutcontent').hide();
+						$('#buyoverlay').find('.checkout').hide();
+						$('#buyoverlay').find('.checkout-banklink-success').show();
+					}
+					
+					if(event.url == 'http://projects.efley.ee/fitnessapp/admin/payment.php?order=' + order_id + '&bank=' + type + '&error=1') {
+						iabRed.close();
+						
+						$('#buyoverlay').find('.checkoutcontent').hide();
+						$('#buyoverlay').find('.checkout').hide();
+						$('#buyoverlay').find('.checkout-banklink-error').show();
+					}
+				
 					//console.log('stoped');
 				});
 				iabRef.addEventListener('exit', function() {
 					//console.log('closed');
 				});
 			
+			} else {
+				$('#buyoverlay').find('.checkoutcontent').hide();
+				$('#buyoverlay').find('.checkout').hide();
+				$('#buyoverlay').find('.checkout-bill').show();
 			}
 		
-		});
+		}, 'jsonp');
 		
 		/*
 		* save order TO DB and open bank link stuff in browser and listen the url... / 2H
@@ -1672,7 +1732,10 @@ Storage.prototype.setObject = function(key, value) {
 
 Storage.prototype.getObject = function(key) {
     var value = this.getItem(key);
-    return value && JSON.parse(value);
+    if(value && value != 'undefined')
+    	return value && JSON.parse(value);
+    else
+    	return false;
 }
 
 function isOdd(num) { return num % 2;}

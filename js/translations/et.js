@@ -25,7 +25,6 @@ translations.et['exercises'] = 'HARJUTUSED';
 //HOME
 translations.et['start_training'] = 'Alustra treeningut';
 translations.et['continue_training'] = 'Jätka treeningut';
-
 translations.et['special_offers'] = 'Eripakkumised';
 translations.et['all_special_offers'] = 'Kõik sooduspakkumised';
 
@@ -47,3 +46,12 @@ translations.et['month_9'] = 'September';
 translations.et['month_10'] = 'Oktoober';
 translations.et['month_11'] = 'November';
 translations.et['month_12'] = 'Detsember';
+
+
+//SETTINGS
+translations.et['settings'] = 'SEADED';
+translations.et['offline_videos'] = 'Offline videod';
+translations.et['club_nr'] = 'Sparta liikmenumber';
+translations.et['current_language'] = 'Eesti keel';
+translations.et['log_out'] = 'Logi välja';
+translations.et['save'] = 'SALVESTA';

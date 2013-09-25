@@ -1,16 +1,28 @@
 var currentTime = false;
 //finish this file on friday
 var packs = {
-	
 	getMain: function() {
 		$('.training-count').html(trainings.orderPackages.length);
 		$('.nutrition-count').html(nutritions.orderNutritions.length);
+		$('#ostetud').find('.bought-trainings').click(function() {
+			if (trainings.orderPackages.length > 0) {
+				LEVEL = 3;
+				teleportMe('personaalsed_treeningkavad');
+			} else {
+				LEVEL = 3;
+				teleportMe('treening_naidiskavad', 'order');
+			}
+		});
+		$('#ostetud').find('.bought-nutritions').click(function() {
+			if (nutritions.orderNutritions.length > 0) {
+				LEVEL = 3;
+				teleportMe('personaalsed_toitumiskavad');
+			} else {
+				LEVEL = 3;
+				teleportMe('naidiskavad', 'order');
+			}
+		});
 	},
-	
-	/*
-	* Get diary !!!
-	* 4-5h
-	*/  
 	
 	getDiary: function() {
 	
@@ -102,7 +114,7 @@ var packs = {
 				console.log(day_data);
 				$.each(day_data.exercises, function(i, exercise) {
 					if (exercise) {
-						$('.exercise-template').find('h3').html('Harjutus ' + (i+1) + ': ' + exercise.name);
+						$('.exercise-template').find('h3').html(exercise.name);
 						if(exercise.type == 'time') {
 							$('.exercise-template').find('.info-content').html('<p>Kestus: ' + exercise.time + '</p>');
 						} else {
@@ -363,6 +375,9 @@ var trainings = {
 			$('#treening_naidiskava').find('.training-content').append('<section class="item noicon teleport" data-page="treening_naidiskavad_1paev" data-level="3" data-day="' + day + '"><div class="item_wrap"><h6>' + day + '. päev</h6><h3>' + muscle_groups_str + '</h3></div></section>');
 			
 		});
+		
+		$('#treening_naidiskava').find('.description-content').html(trainings.currentTraining.description);
+		
 		$('#treening_naidiskava').find('.teleport').click(function(e) {
 			e.preventDefault();
 			LEVEL = 4;
@@ -625,7 +640,7 @@ var trainings = {
 		$('.weight .minus').unbind(eventEnd).bind(eventEnd, function (e) {
 		
 			var par = $(this).parent();
-			var min = 15;
+			var min = 1;
 			var current = par.children('span').text();
 			
 			if(current >= min){

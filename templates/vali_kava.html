@@ -3,7 +3,19 @@
 			
 				<section class="checkout"></section>
 				
-				<section class="checkoutcontent">
+				<section class="checkoutcontent checkout-bill" style="display:none;">
+					<p>Arve saadeti edukalt teie poolt sisestatud e-maili peale</p> 
+				</section>
+				
+				<section class="checkoutcontent checkout-banklink-success" style="display:none;">
+					<p>Pangalingi maksel ilmnes viga, palun proovige uuesti või pöörduge: <a href="mailt:info@fitnessmobile.ee">info@fitnessmobile.ee</a></p> 
+				</section>
+				
+				<section class="checkoutcontent checkout-banklink-error" style="display:none;">
+					<p>Makse õnnestus ning kava saadetakse teile peatselt</p> 
+				</section>
+				
+				<section class="checkoutcontent checkout-form">
 					<p>Olles valitud kava eest tasunud, ilmub see kas Personaalsete treeningkavade või Personaalsete toitumiskavade lehele, sõltuvalt kava tüübist. Valides sealt ostetud kava, saate hakata seda koheselt kasutama!</p> 
 
 					<p>Valides ja tasudes aga personaaltreeningu eest, võtab treener Sinuga peatselt ühendust ja lepib kohtumiseks sobiva aja kokku!</p>
@@ -40,7 +52,7 @@
 			<section class="toscroll">
 
 				
-				<section class="gray_item icon_ok" >
+					<section class="gray_item icon_ok" >
 						<div class="item_wrap">
 							<label for="firstname">Eesnimi:</label><input id="firstname" type="text" value=""/>
 						</div>
@@ -94,31 +106,68 @@
 						</div>
 					</section>
 					
-					<section class="gray_item" >
+					
+					<section class="gray_item selects" >
 						<div class="item_wrap">
 							<label for="training_activity">Kokkupuude spordiga viimasel aastal:</label>
-							<textarea name="training_activity" id="training_activity" rows="3"></textarea>
+							<div class="select">
+								<div class="icon_select"></div>
+								<select name="sex" id="training_activity">
+									<option value="1">1 korra nädalas</option>
+									<option value="1-2">1-2 korda nädalas</option>
+									<option value="3-4">3-4 korda nädalas</option>
+									<option value="5">üle 5 korra nädalas</option>
+								</select>
+							</div>
+						</div>
+					</section>
+
+					
+					<section class="gray_item selects" >
+						<div class="item_wrap">
+							<label for="training_activity">Treeningu eesmärk:</label>
+							<div class="select">
+								<div class="icon_select"></div>
+								<select name="sex" id="training_target">
+									<option value="vastupidavus">Vastupidavuse arendamine</option>
+									<option value="lihamass">Lihasmassi kasvatamine</option>
+									<option value="kehakaal">Kehakaalu langetamine</option>
+								</select>
+							</div>
 						</div>
 					</section>
 					
-					<section class="gray_item">
+					
+					<section class="gray_item selects" >
 						<div class="item_wrap">
-							<label for="training_target">Treeningu eesmärk:</label>
-							<textarea name="training_target" id="training_target" rows="3"></textarea>
+							<label for="training_activity">Mitu korda nädalas võimalus treenida:</label>
+							<div class="select">
+								<div class="icon_select"></div>
+								<select name="sex" id="per_week">
+									<option value="1">1 kord nädalas</option>
+									<option value="2">2 korda nädalas</option>
+									<option value="3">3 korda nädalas</option>
+									<option value="4">4 korda nädalas</option>
+									<option value="5">5 korda nädalas</option>
+									<option value="6">6 korda nädalas</option>
+									<option value="7">7 korda nädalas</option>
+								</select>
+							</div>
 						</div>
 					</section>
+
 					
-					<section class="gray_item icon_edit2" >
-						<div class="item_wrap">
-							<label for="per_week">Mitu korda nädalas võimalus treenida:</label>
-							<textarea name="per_week" id="per_week" rows="3"></textarea>
-						</div>
-					</section>
 					
-					<section class="gray_item" >
+					<section class="gray_item selects" >
 						<div class="item_wrap">
-							<label for="currently_training">Kas jälgite praegu treeningukava:</label>
-							<textarea name="currently_training" id="currently_training" rows="3"></textarea>
+							<label for="currently_training">Kas kasutate treeningkava:</label>
+							<div class="select">
+								<div class="icon_select"></div>
+								<select name="sex" id="currently_training">
+									<option value="jah">Jah</option>
+									<option value="ei">Ei</option>
+								</select>
+							</div>
 						</div>
 					</section>
 					
@@ -140,7 +189,7 @@
 		<section id="vali_kava" class="centered frame">
 				<section class="me title">
 					<img src="i/icon_lisandid.png" alt=""/>
-					<h4>TREENINGKAVAD</h4>
+					<h4>VALI TREENER</h4>
 					<div class="clear"></div>
 				</section>
 				
