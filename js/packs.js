@@ -1,3 +1,4 @@
+var currentTime = false;
 //finish this file on friday
 var packs = {
 	
@@ -18,7 +19,7 @@ var packs = {
 		
 		db.transaction(function(tx) {
 			query = 'SELECT * FROM DIARY ORDER BY day DESC';
-			console.log(query);
+			//console.log(query);
 			tx.executeSql(query, [], function(tx, results) {
 				timesCounter = 0;
 				month = false;
@@ -30,7 +31,7 @@ var packs = {
 						day = results.rows.item(i);
 							
 						
-						template.find('.trainings-content').append('<div class="treening" data-id="' + day.id + '"><div class="arrow"><div>'+translations.et['date']+': <span class="date">' + day.day + '</span></div><div>'+translations.et['pack']+': <span class="kava">' + day.plan_name + '</span></div><div>'+translations.et['pack']+': <span class="paev">' + day.day_name + '</span></div><div>'+translations.et['pack']+': <span class="length">' + secToHour(day.length) + '</span></div></div></div>');
+						template.find('.trainings-content').append('<div class="treening" data-id="' + day.id + '"><div class="arrow"><div>'+translations.et['date']+': <span class="date">' + day.day + '</span></div><div>'+translations.et['pack']+': <span class="kava">' + day.plan_name + '</span></div><div>'+translations.et['trainingday']+': <span class="paev">' + day.day_name + '</span></div><div>'+translations.et['training_length']+': <span class="length">' + secToHour(day.length) + '</span></div></div></div>');
 						
 						if (!month) {
 							month = parseInt(day.month);
@@ -67,12 +68,12 @@ var packs = {
 				
 			}, function(tx, results) {
 				console.error('Error in selecting test result');
-				console.log(tx);
-				console.log(results);
+				//console.log(tx);
+				//console.log(results);
 			});
 		}, function(error) {
 			console.error('Error in selecting test result');
-			console.log(error);
+			//console.log(error);
 		});
 		
 		
@@ -85,32 +86,37 @@ var packs = {
 		db.transaction(function(tx) {
 		
 			query = 'SELECT * FROM DIARY WHERE id = ' + parseInt(id);
-			console.log(query);
+			//console.log(query);
 			tx.executeSql(query, [], function(tx, results) {
 			
 				day = results.rows.item(0);
 				
 				console.log(day);
+				
+				//console.log(day);
 				$('#diary_detail').find('.date').html(day.day);
 				$('#diary_detail').find('.kava').html(day.plan_name);
 				$('#diary_detail').find('.paev').html(day.day_name);
 				$('#diary_detail').find('.length').html(secToHour(day.length));
 				var day_data = JSON.parse(day.day_data);
+				console.log(day_data);
 				$.each(day_data.exercises, function(i, exercise) {
-					
-					$('.exercise-template').find('h3').html('Harjutus ' + (i+1) + ': ' + exercise.name);
-					if(exercise.type == 'time') {
-						$('.exercise-template').find('.info-content').html('<p>Kestus: ' + exercise.time + '</p>');
-					} else {
-						$('.exercise-template').find('.info-content').html('');
-						$.each(exercise.series, function(j, serie) {
-							$('.exercise-template').find('.info-content').append('<p>Seeria ' + (j+1) + ': ' + serie.times + 'x' + serie.weight + '</p>');
-						});
+					if (exercise) {
+						$('.exercise-template').find('h3').html('Harjutus ' + (i+1) + ': ' + exercise.name);
+						if(exercise.type == 'time') {
+							$('.exercise-template').find('.info-content').html('<p>Kestus: ' + exercise.time + '</p>');
+						} else {
+							$('.exercise-template').find('.info-content').html('');
+							$.each(exercise.series, function(j, serie) {
+								if(serie.status == 'done')
+									$('.exercise-template').find('.info-content').append('<p>Seeria ' + (j+1) + ': ' + serie.repeats + 'x' + serie.weights + '</p>');
+							});
+							
+							
+						}
 						
-						
+						$('.exercises-content').append($('.exercise-template').html());
 					}
-					
-					$('.exercises-content').append($('.exercise-template').html());
 					
 				});
 				
@@ -132,7 +138,7 @@ var packs = {
 		
 		db.transaction(function(tx) {
 			query = 'SELECT * FROM TRAININGS ORDER BY id DESC';
-			console.log(query);
+			//console.log(query);
 			tx.executeSql(query, [], function(tx, results) {
 				
 				var len = results.rows.length, i;
@@ -149,7 +155,7 @@ var packs = {
 					
 					plan.exercises = exercises;
 					plan.day_names = day_names;
-					console.log(plan);
+					//console.log(plan);
 					
 					if (item.type == 'order') {
 						trainings.orderPackages.push(plan);
@@ -160,12 +166,12 @@ var packs = {
 				}
 			}, function(tx, results) {
 				console.error('Error in selecting test result');
-				console.log(tx);
-				console.log(results);
+				//console.log(tx);
+				//console.log(results);
 			});
 		}, function(error) {
 			console.error('Error in selecting test result');
-			console.log(error);
+			//console.log(error);
 		});
 		
 		if(curDay = localStorage.getObject('fitCurDay')) {
@@ -186,7 +192,7 @@ var packs = {
 		
 		db.transaction(function(tx) {
 			query = 'SELECT * FROM NUTRITIONS ORDER BY id DESC';
-			console.log(query);
+			//console.log(query);
 			tx.executeSql(query, [], function(tx, results) {
 				
 				var len = results.rows.length, i;
@@ -201,7 +207,7 @@ var packs = {
 					plan.description = item.description;
 					plan.meals = {};
 					plan.meals = meals;
-					console.log(plan);
+					//console.log(plan);
 					if (plan.type == 'order') {
 						nutritions.orderNutritions.push(plan);
 					} else {
@@ -211,12 +217,12 @@ var packs = {
 				}
 			}, function(tx, results) {
 				console.error('Error in selecting test result');
-				console.log(tx);
-				console.log(results);
+				//console.log(tx);
+				//console.log(results);
 			});
 		}, function(error) {
 			console.error('Error in selecting test result');
-			console.log(error);
+			//console.log(error);
 		});
 		
 	}
@@ -273,7 +279,7 @@ var trainings = {
 	
 	getTrainings: function(type) {
 	
-		console.log(type);
+		//console.log(type);
 		
 		/*
 		* toDo: SELECT trainings from DB
@@ -285,7 +291,7 @@ var trainings = {
 		} else {
 			var _trainings = trainings.samplePackages;
 		}	
-		console.log(_trainings);
+		//console.log(_trainings);
 		
 		$.each(_trainings, function(i, training) {
 				
@@ -319,7 +325,7 @@ var trainings = {
 				
 				db.transaction(function(tx) {
 					var statement = 'DELETE FROM TRAININGS WHERE id = ' + id;
-					console.log(statement);
+					//console.log(statement);
 				   	tx.executeSql(statement);
 				   	$(this).remove();
 			   	});
@@ -337,8 +343,8 @@ var trainings = {
 		$.each(trainings.trainings, function(i, training) {
 			if(training.id == id) {
 				trainings.currentTraining = training;
-				console.log('Found training:');
-				console.log(training);
+				//console.log('Found training:');
+				//console.log(training);
 				
 			}
 		});
@@ -387,7 +393,6 @@ var trainings = {
 		
 		header = day + '. PÄEV ' + muscle_groups_str;	
 		$('#treening_naidiskavad_1paev').find('h3:first').html(header);
-		console.log(trainings.currentTraining);
 		if(day) {
 		
 			var exercises = trainings.currentTraining.exercises[trainings.currentDay];
@@ -395,10 +400,7 @@ var trainings = {
 			var curDay = localStorage.getObject('fitCurDay');
 			
 			$.each(trainings.currentTraining.exercises[trainings.currentDay], function(i, exercise) {
-				console.log(i);
-				console.log(exercise);
-				console.log(curDay);
-				
+			
 				if(!curDay || !curDay.exercises[i]) {
 					if(exercise.type == 'weight' && exercise.series_count)
 						var status = exercise.series_count + 'x' + exercise.series[0].repeats;
@@ -429,6 +431,11 @@ var trainings = {
 			});
 		}
 		
+		if (trainings.doingExercise) 
+			$('.end-day').show();
+		else
+			$('.end-day').hide();
+			
 		$('.end-day').click(function(e) {
 			//update diary and set day length and delete all current day data, also from localStorage
 			
@@ -450,25 +457,44 @@ var trainings = {
 			
 			db.transaction(function(tx) {
 				var statement = "UPDATE DIARY SET length = '" + difference + "' WHERE day = '" + curr_year + "-" + curr_month + "-" + curr_date + "' AND package = " + trainings.currentTraining.id + " AND training_day = " + trainings.currentDay;
-				//console.log(statement);
+				////console.log(statement);
 			   	tx.executeSql(statement);
 			   	localStorage.removeItem('fitCurDay');
 			   	trainings.doingExercise = false;
 		   	}, function(error) {
 				console.error('Error in selecting test result');
-				console.log(error);
+				//console.log(error);
 			});
+			
+			$('.backbtn').click();
 			
 		});
 		
 	},
 	
 	getTrainingsExercise: function(element) {
+		//console.log('called detail page');
 		element = parseInt(element);
+		if(!element)
+			element = trainings.currentExercise.id;
 		//temporary
 		trainings.currentExercise = trainings.currentTraining.exercises[trainings.currentDay][element];
+		j = 0;
+		iteration = false;
+		next = false;
 		
-		if ((element+1) == trainings.currentTraining.exercises[trainings.currentDay].length) {
+		$('.videopreview').attr('data-id', trainings.currentExercise.exercise_id);
+		$('.videopreview').find('img:last').attr('src', app.serverUrl + 'pics/exercises/' + trainings.currentExercise.exercise_id + '.jpg');
+		
+		$.each(trainings.currentTraining.exercises[trainings.currentDay], function(i, item) {
+			j++;
+			if (i == element) 
+				iteration = j;
+			
+			if (iteration && j == (iteration + 1))
+				next = i;
+		});
+		if (iteration == j) {
 			$('.to-back').show();
 			$('.next-exercise').hide();
 		} else {
@@ -482,21 +508,22 @@ var trainings = {
 		$('.next-exercise').click(function(e) {
 			e.preventDefault();
 			LEVEL = null;
-			teleportMe('treening_naidiskavad_1paev_nXn', (element+1));
+			teleportMe('treening_naidiskavad_1paev_nXn', next);
 			$('body').scrollTop(0);
 		});
 		//permanent
 		//localStorage.setObject('currentTrainingExercise', trainings.currentExercise);
 		
-		console.log(trainings.currentExercise);
-		var currentTime = false;
+		//console.log(trainings.currentExercise);
 		
-		$('#treening_naidiskavad_1paev_nXn').find('.text_wrap').html(trainings.currentExercise.comment);
+		if(trainings.currentExercise && trainings.currentExercise.comment)
+			$('#treening_naidiskavad_1paev_nXn').find('.text_wrap').html(trainings.currentExercise.comment);
 		$('#treening_naidiskavad_1paev_nXn').find('h2').html(trainings.currentExercise.name);
 		
+		$('.serias-content').html('');
+		
 		var curDay = localStorage.getObject('fitCurDay');
-		if(curDay)
-			console.log(curDay);
+		
 		if (trainings.currentExercise.type == 'weight') {
 			$('#treening_naidiskavad_1paev_nXn').find('h1').html(trainings.currentExercise.series_count + 'x' + trainings.currentExercise.series[0].repeats);
 			
@@ -505,8 +532,10 @@ var trainings = {
 			
 			$.each(trainings.currentExercise.series, function(i, serie) {
 				
-				if(curDay && curDay.exercises[element] && curDay.exercises[element].series[i]) {
+				if(curDay && curDay.exercises[element] && curDay.exercises[element].series[i]  && curDay.exercises[element].series[i].status  && curDay.exercises[element].series[i].status == 'done') {
 					$('.seria-template').find('.theicon').removeClass('unchecked').addClass('checked').find('img').attr('src', 'i/checked.png');
+				} else {
+					$('.seria-template').find('.theicon').removeClass('checked').addClass('unchecked').find('img').attr('src', 'i/unchecked.png');
 				}
 				
 				$('.seria-template').find('.times').find('span').html(serie.repeats);
@@ -537,6 +566,13 @@ var trainings = {
 			$('.timer-exercise').show();
 		}
 		
+		
+		$('.videopreview').unbind(eventEnd).bind(eventEnd, function (e) {
+   			var id = $(this).data('id');
+			LEVEL = 6;
+			teleportMe('video', id);
+		});
+		
 		$('.theicon').click(function() {
 			if ($(this).hasClass('unchecked')) {
 				trainings.doingExercise = true;
@@ -551,6 +587,8 @@ var trainings = {
 				//$(this).removeClass('checked').addClass('unchecked').find('img').attr('src', 'i/unchecked.png');
 			}
 		});
+		
+		
 		
 		$('.times .plus').unbind(eventEnd).bind(eventEnd, function (e) {
 			var par = $(this).parent();
@@ -581,7 +619,7 @@ var trainings = {
 				par.children('span').text( Number(current) + Number(1) );
 			}
 		
-			//console.log( par.children('span').text() );
+			////console.log( par.children('span').text() );
 		});
 		
 		$('.weight .minus').unbind(eventEnd).bind(eventEnd, function (e) {
@@ -602,19 +640,20 @@ var trainings = {
 			if(current <= max){
 				new_value = Number(current) + Number(60000);
 				new_value = formatTime(new_value);
-				currentTime = unFormatTime();
+				currentTime = unFormatTime(new_value);
 				par.children('span').text( new_value );
 			}
 		});
 		
 		$('.lefttimericon .minus').unbind(eventEnd).bind(eventEnd, function (e) {
 			var par = $(this).parent();
-			var min = 300000;
+			//var min = 300000;
+			var min = 120000;
 			var current = unFormatTime(par.children('span').text());
 			if(current >= min){
 				new_value = Number(current) - Number(60000);
 				new_value = formatTime(new_value);
-				currentTime = unFormatTime();
+				currentTime = unFormatTime(new_value);
 				par.children('span').text( new_value );
 			}
 		});
@@ -643,14 +682,13 @@ var trainings = {
 	    var $form;
 	    var incrementTime = 70;
 	    //var currentTime = 1200000; // 5 minutes (in milliseconds)
-	    
+	    $countdown = $('#timerStuff');
         // Setup the timer
-        $countdown = $('#timerStuff');
         var timer = $.timer(function updateTimer() {
 
 	        // Output timer position
 	        var timeString = formatTime(currentTime);
-	        $countdown.html(timeString);
+	        $('#timerStuff').html(timeString);
 	
 	        // If timer is complete, trigger alert
 	        if (currentTime == 0) {
@@ -658,12 +696,12 @@ var trainings = {
 	            
 	            data = {};
 				data.type = 'time';
-				data.status = 'done';
+				data.status = 'end';
 				data.length = unFormatTime($('#timerStuff').html());
 				trainings.doTraining(data);
 	            
 		        // Stop and reset timer
-		        timer.stop().once();
+		        //timer.stop().once();
 	            return;
 	        }
 	
@@ -676,11 +714,8 @@ var trainings = {
 	},
 	//approx 5-6h to finish this shit
 	doTraining: function(data) {
+	
 		newDay = true;
-		console.log(data);
-		console.log(trainings.currentExercise);
-		console.log(trainings.currentTraining);
-		console.log(trainings.currentDay);
 		
 		var curDay = localStorage.getObject('fitCurDay');
 		if(!$('.toscroll').find('.kestus').length)
@@ -690,8 +725,8 @@ var trainings = {
 		var updateExercises = [];
 		$.each(trainings.currentTraining.exercises[trainings.currentDay], function(i, exercise) {
 		
-			console.log(exercise);
-			console.log(trainings.currentExercise);
+			//console.log(exercise);
+			//console.log(trainings.currentExercise);
 		
 			if(trainings.currentExercise.id == exercise.id) {
 				if (data.type == 'time' && data.status == 'start') {
@@ -703,9 +738,7 @@ var trainings = {
 					//exercise.time = parseInt(data.length)/6000;
 				} else {
 				
-					if (curDay) { 
-						console.log(i);
-						console.log(curDay);
+					if (curDay && curDay.exercises[i] && curDay.exercises[i].done_series) { 
 						exercise.done_series = curDay.exercises[i].done_series + 1;
 					} else {
 						exercise.done_series = 1;
@@ -717,10 +750,16 @@ var trainings = {
 						if(j == data.serie) {
 							serie.repeats = data.repeats;
 							serie.weight = data.weight;
+							serie.status = 'done';
+							exercise.series[j] = serie;
+						} else {
+							serie.status = false;
 						}
+						
 					});
+					
 				}
-				
+				console.log(curDay);
 				if (curDay) {
 					curDay.exercises[i] = exercise;
 					newDay = false;
@@ -735,21 +774,21 @@ var trainings = {
 					newDay = true;
 				}
 				curDay.last_activity = new Date();
-				
+				console.log(curDay);
 			}
 			
 			
-			updateExercises.push(exercise);
+			//updateExercises.push(exercise);
 			
 		});
-		db.transaction(function(tx) {
+		/*db.transaction(function(tx) {
 			var statement = "UPDATE TRAININGS SET exercises = '" + JSON.stringify(updateExercises) + "' WHERE id = " + trainings.currentTraining.id + "";
-			console.log(statement);
+			//console.log(statement);
 		   	tx.executeSql(statement);
 		}, function(error) {
 			console.error('Error in selecting test result');
-			console.log(error);
-		});
+			//console.log(error);
+		});*/
 		trainings.doingExercise = true;
 		localStorage.setObject('fitCurDay', curDay);
 		
@@ -759,6 +798,8 @@ var trainings = {
 		*/
 		
 		$('.kestus').show();
+		
+		console.log(curDay);
 		
 		db.transaction(function(tx) {
 		
@@ -770,44 +811,53 @@ var trainings = {
 		    if(curr_month < 10)
 				curr_month = '0' + curr_month;
 		    var curr_year = d.getFullYear();
+		    
+		    $.each(trainings.currentTraining.day_names[trainings.currentDay], function(j, muscle) {
+				if(j == 0)
+					muscle_groups_str = muscle_groups[muscle];
+				else
+					muscle_groups_str = muscle_groups_str + ', ' + muscle_groups[muscle]; 
+			});
+			
+			var day_name = trainings.currentDay + '. PÄEV ' + muscle_groups_str;
 		
 			// get from diary where day is today, plan day is right one and so on
 			query = 'SELECT * FROM DIARY WHERE day = "' + curr_year + '-' + curr_month + '-' + curr_date +'" AND package = ' + trainings.currentTraining.id + ' AND training_day = ' + trainings.currentDay;
-			console.log(query);
+			//console.log(query);
 			tx.executeSql(query, [], function(tx, results) {
 				
 				var len = results.rows.length, i;
 				if (!len) {
 					// then its first time and generate day data..curDay
 					db.transaction(function(tx) {
-						var statement = "INSERT INTO DIARY (day, month, year, package, training_day, length, plan_name, day_name, day_data) VALUES ('" + curr_year + "-" + curr_month + "-" + curr_date + "', '" + curr_month + "', '" + curr_year + "'," + trainings.currentTraining.id + ", " + trainings.currentDay + ", 0, '" + trainings.currentTraining.name + "', '" + trainings.currentTraining.name + "', '" + JSON.stringify(curDay) + "')";
-						console.log(statement);
+						var statement = "INSERT INTO DIARY (day, month, year, package, training_day, length, plan_name, day_name, day_data) VALUES ('" + curr_year + "-" + curr_month + "-" + curr_date + "', '" + curr_month + "', '" + curr_year + "'," + trainings.currentTraining.id + ", " + trainings.currentDay + ", 0, '" + trainings.currentTraining.name + "', '" + day_name + "', '" + JSON.stringify(curDay) + "')";
+						//console.log(statement);
 					   	tx.executeSql(statement);
 				   	}, function(error) {
 						console.error('Error in inserting item to diary');
-						console.log(error);
+						//console.log(error);
 					});
 				} else {
 					
 					db.transaction(function(tx) {
 						var statement = "UPDATE DIARY SET day_data = '" + JSON.stringify(curDay) + "' WHERE day = '" + curr_year + "-" + curr_month + "-" + curr_date + "' AND package = " + trainings.currentTraining.id + " AND training_day = " + trainings.currentDay;
-						//console.log(statement);
+						////console.log(statement);
 					   	tx.executeSql(statement);
 				   	}, function(error) {
 						console.error('Error in selecting test result');
-						console.log(error);
+						//console.log(error);
 					});
 				}
 				
 		
 			}, function(tx, results) {
 				console.error('Error in selecting test result');
-				console.log(tx);
-				console.log(results);
+				//console.log(tx);
+				//console.log(results);
 			});
 		}, function(error) {
 			console.error('Error in selecting test result');
-			console.log(error);
+			//console.log(error);
 		});
 		
 	},
@@ -829,7 +879,7 @@ var nutritions = {
 	getNutritionsMain: function() {
 		$('.main-contents').html('');	
 		
-		console.log(this.orderNutritions);
+		//console.log(this.orderNutritions);
 		
 		if (this.sampleNutritions.length) {
 			$('.main-contents').append('<section class="item noicon treenerpakkumisedbtn teleport" data-page="naidiskavad" data-level="2" data-type="sample"><div class="item_wrap"><h3>Näidiskavad</h3></div></section>');
@@ -863,14 +913,14 @@ var nutritions = {
 	},
 	getNutritions: function(type) {
 	
-		console.log(type);
+		//console.log(type);
 		
 		if (type == 'order')
 			var _nutritions = this.orderNutritions;
 		else
 			var _nutritions = this.sampleNutritions;
 			
-		console.log(_nutritions);
+		//console.log(_nutritions);
 		
 		$.each(_nutritions, function(i, nutrition) {
 				
@@ -893,8 +943,8 @@ var nutritions = {
 		$.each(nutritions.nutritions, function(i, nutrition) {
 			if(nutrition.id == id) {
 				nutritions.currentNutrition = nutrition;
-				console.log('Found nutrition:');
-				console.log(nutrition);
+				//console.log('Found nutrition:');
+				//console.log(nutrition);
 				
 			}
 		});
@@ -917,9 +967,9 @@ var nutritions = {
 	
 	getNutritionDetail: function(meal_type) {
 		
-		console.log(meal_type);
+		//console.log(meal_type);
 		
-		console.log(nutritions.currentNutrition.meals[meal_type].length);
+		//console.log(nutritions.currentNutrition.meals[meal_type].length);
 		
 		if (nutritions.currentNutrition.meals[meal_type].length > 1) {
 			
@@ -930,11 +980,11 @@ var nutritions = {
 				e.preventDefault();
 				LEVEL = null;
 				nutritions.nextMeal = nutritions.nextMeal+1;
-				console.log(nutritions.nextMeal);
+				//console.log(nutritions.nextMeal);
 				if(nutritions.nextMeal > (nutritions.currentNutrition.meals[meal_type].length-1))
 					nutritions.nextMeal = 0;
 					
-				console.log(nutritions.nextMeal);
+				//console.log(nutritions.nextMeal);
 				teleportMe('menuu1_hommikusook1', meal_type);
 			});
 			$('.touchslider-prev').click(function(e) {
@@ -946,8 +996,8 @@ var nutritions = {
 				teleportMe('menuu1_hommikusook1', meal_type);
 			});
 			
-			console.log(nutritions.nextMeal);
-			console.log(nutritions.currentNutrition.meals[meal_type]);
+			//console.log(nutritions.nextMeal);
+			//console.log(nutritions.currentNutrition.meals[meal_type]);
 			
 			
 			if (nutritions.nextMeal) 
@@ -984,7 +1034,7 @@ function formatTime(time) {
     return (min > 0 ? pad(min, 2) : "00") + ":" + pad(sec, 2) + ":" + hundredths;
 }
 function unFormatTime(str) {
-	console.log(str);
+	//console.log(str);
 	if(str) {
 		arr = str.split(":");
 		minutes = parseInt(arr[0]);

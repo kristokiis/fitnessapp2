@@ -123,9 +123,9 @@ jQuery(window).resize(function ($) {
 	jQuery('.centered').css('top', offset + 'px');
 	//jQuery('.page-wrap').css('height', Number(jQuery(aligner).height() + plus) +  'px');
 
-	console.log(jQuery(window).width() + 'px');
+	//console.log(jQuery(window).width() + 'px');
 	
-	//console.log( window.outerHeight, jQuery(window).height() );
+	////console.log( window.outerHeight, jQuery(window).height() );
 });
 
 
@@ -135,7 +135,7 @@ function resizeby(_this, _plus) {
 
 	//wind = Number(wind) - Number(iofsett);
 	var toscrollheight = Number(wind - (offset + me + bbar));
-	//console.log(newheight , toscrollheight);
+	////console.log(newheight , toscrollheight);
 	
 	//alert('ok');
 	
@@ -210,7 +210,7 @@ function hideMenu() {
 	}
 	
 
-	//console.log( LATEST );
+	////console.log( LATEST );
 }
 
 $(window).load(function () {
@@ -229,7 +229,7 @@ $(window).load(function () {
 });
 
 function afterTeleport(where, extra) {
-			
+	
 	switch (where) {
 		case 'frontpage':
 			app.initLogin(where);
@@ -387,7 +387,7 @@ function goBack(_this, caller) {
 function teleportMe( where, extra ){
 	//if(updating){
 	
-	console.log(where + ' - ' + extra);
+	//console.log(where + ' - ' + extra);
 	
 		LATEST = '#' + $('.open').attr('id');
 
@@ -395,14 +395,14 @@ function teleportMe( where, extra ){
 			showLoading();
 			
 			$('#topbar .backbtn').attr('data-deep', LEVEL);
-			console.log('cmon..');
+			//console.log('cmon..');
 			$.get('templates/' + where + '.html',{ "_": $.now() }, function(data){
 				$(data).insertAfter( LATEST )
 				
 				jQuery('.centered').css('top', offset + 'px');
 				resizeby('#' + where, 105);
 				
-				//console.log(LATEST);
+				////console.log(LATEST);
 				
 				$(LATEST).addClass('hide');
 				
@@ -411,7 +411,7 @@ function teleportMe( where, extra ){
 				
 					$('#' + where).addClass('open');
 					
-					//console.log(LEVEL);
+					////console.log(LEVEL);
 					
 					if ( LEVEL >= '1' ){
 						setTimeout(function() {
@@ -433,8 +433,12 @@ function teleportMe( where, extra ){
 					updating = false;
 						
 					if(trainings.doingExercise) {
-						if(!$('.toscroll').find('.kestus').length)
+						console.log($('.toscroll').find('.kestus').length);
+						console.log($('.toscroll').find('.kestus').html());
+						if(!$('.toscroll').find('.kestus').length) {
 							$('.toscroll').prepend('<section class="kestus"><span>Kogu treeningu kestus: <strong class="dayTimer">00:00</strong></span></section>');
+							
+						}
 						setTimeout(function() {
 							$('.kestus').slideDown();
 						}, 1000);
@@ -447,9 +451,9 @@ function teleportMe( where, extra ){
 			
 		// if category sorting..
 		} else if ((extra && extra.refresh) || where == 'menuu1_hommikusook1' || where == 'treening_naidiskavad_1paev_nXn') {
-			console.log('REFRESH');
+			//console.log('REFRESH');
 			showLoading();
-			console.log(extra);
+			//console.log(extra);
 			afterTeleport(where, extra);
 			
 			setTimeout(function () {
@@ -478,15 +482,15 @@ function showLoading(){
 
 function bindEvents() {
 	
-	//console.log('binding..');
+	////console.log('binding..');
 	
 	//$('textarea').autoResize();
 	
-	//console.log('binding this shit..');
+	////console.log('binding this shit..');
 	
 	
 
-	//console.log('binding this shit still..');
+	////console.log('binding this shit still..');
 
 	$('.teleport').unbind(eventEnd).bind(eventEnd, function (e) {
 		e.preventDefault();
@@ -506,7 +510,7 @@ function bindEvents() {
 			nolevel = true;
 		}
 		
-		//console.log(LEVEL);
+		////console.log(LEVEL);
 		
 		var extra = {};
 		
@@ -531,12 +535,12 @@ function bindEvents() {
 
 	});
 	
-	//console.log('binding this shit over..');
+	////console.log('binding this shit over..');
 
 	$('.filter').unbind(eventEnd).bind(eventEnd, function (e) {
 		e.preventDefault();
 		
-		//console.log('filter');
+		////console.log('filter');
 
 		if (!$(this).hasClass('active')) {
 			$(this).addClass('active');
@@ -560,14 +564,14 @@ function bindEvents() {
 
 
 $('#svgFront g').unbind(eventEnd).bind(eventEnd, function (e) {
-	//console.log(this);
+	////console.log(this);
 	var id = $(this).attr("data-group");
 	var classes = $(this).attr("class");
 	var name =  $(this).attr("data-name");
 	
 	var hasclass = classes.replace( "group" + id + " ", '');
 	
-	console.log( id, classes, hasclass );
+	//console.log( id, classes, hasclass );
 	
 	
 	if( hasclass != "pathOver" ){
@@ -597,14 +601,14 @@ $('#svgFront g').unbind(eventEnd).bind(eventEnd, function (e) {
 })
 
 $('#svgBack g').unbind(eventEnd).bind(eventEnd, function (e) {
-	//console.log(this);
+	////console.log(this);
 	var id = $(this).attr("data-group");
 	var classes = $(this).attr("class");
 	var name =  $(this).attr("data-name");
 	
 	var hasclass = classes.replace( "group" + id + " ", '');
 	
-	//console.log( id, classes, hasclass );
+	////console.log( id, classes, hasclass );
 	
 	
 	if( hasclass != "pathOver" ){
@@ -643,7 +647,7 @@ $('.resetfilter').unbind(eventEnd).bind(eventEnd, function (e) {
 		
 		app.muscleGroup = false;
 		
-		console.log('ok');
+		//console.log('ok');
 		
 		$('#svgBack g').each(function(){
 			var clas = $(this).attr("class");
@@ -758,7 +762,7 @@ $('.manFlip').unbind(eventEnd).bind(eventEnd, function (e) {
 	$('.overlay .backbtn').unbind(eventEnd).bind(eventEnd, function (e) {
 		e.preventDefault();
 		
-		//console.log('a');
+		////console.log('a');
 
 		$(this).parent().addClass('scaleOut');
 		//$(this).parent().removeClass('scaleIn');
@@ -877,7 +881,7 @@ function hideKeyBoard() {
 
 			if (d) {
 
-				//console.log(d);
+				////console.log(d);
 				newLATEST = $('#topbar .backbtn').attr('data-deep' + d);
 				
 				
@@ -894,14 +898,14 @@ function hideKeyBoard() {
 				
 				newLATESTnohash = newLATEST.replace('#','');
 				
-				//console.log('newLATEST > ' + newLATEST);
+				////console.log('newLATEST > ' + newLATEST);
 				
 				teleportMe( newLATESTnohash, {} );
 
 				//$('.bottombar, .topbar').addClass('menuin');
 				//resizeby(newLATEST, 105);
 
-				//console.log(d, newLATEST, LEVEL);
+				////console.log(d, newLATEST, LEVEL);
 
 				//LEVEL = d ;
 
@@ -964,7 +968,7 @@ function hideKeyBoard() {
 
 		$('body').on('swipe', function(e, Dx, Dy) {
 		
-			console.log($(e.currentTarget));
+			//console.log($(e.currentTarget));
 			
 			if(($('#teated') && $('#teated').html()) || ($('#treening_naidiskavad') && $('#treening_naidiskavad').html()))
 				return true;

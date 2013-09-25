@@ -52,10 +52,10 @@ var app = {
 		
 		con = checkConnection();
 		
-		console.log('checking connection');
+		//console.log('checking connection');
 		
 		setTimeout(function() {
-			console.log('starting fb init');
+			//console.log('starting fb init');
 			try {
 				FB.init({ appId: "161092774064906", nativeInterface: CDV.FB, useCachedDialogs: false });
 			} catch (e) {
@@ -84,11 +84,11 @@ var app = {
 			$(this).addClass('active');
 		});
 		
-		console.log('going to initlogin');
+		//console.log('going to initlogin');
 		
 		app.initLogin(false);
 		
-		console.log('going to translate');
+		//console.log('going to translate');
 		
 		
 		setTimeout(function() {
@@ -146,13 +146,13 @@ var app = {
 				tx.executeSql('DROP TABLE IF EXISTS TEST');
 				tx.executeSql('CREATE TABLE IF NOT EXISTS TEST (id unique, exercise, sex, min_age, max_age, min_score, max_score, grade)');
 				//300 rows max 1mb
-				tx.executeSql('DROP TABLE IF EXISTS DIARY');
-				tx.executeSql('CREATE TABLE IF NOT EXISTS DIARY (id INTEGER PRIMARY KEY AUTOINCREMENT, day, month, year, package, training_day, length, plan_name, day_name, day_data)');
+				//tx.executeSql('DROP TABLE IF EXISTS DIARY');
+				//tx.executeSql('CREATE TABLE IF NOT EXISTS DIARY (id INTEGER PRIMARY KEY AUTOINCREMENT, day, month, year, package, training_day, length, plan_name, day_name, day_data)');
 			}, function(error) {
 				console.error('Error on line 134:');
-				console.log(error);
+				//console.log(error);
 			}, function() {
-				console.log('Tables created');
+				//console.log('Tables created');
 			});
 			
 			$.get(app.apiUrl + '?action=getTestResults', data, function(result) {
@@ -161,14 +161,14 @@ var app = {
 					
 					
 						var statement = 'INSERT INTO TEST (id, exercise, sex, min_age, max_age, min_score, max_score, grade) VALUES ("' + (i+1) + '", "' + item.exercise + '", "' + item.sex + '", "' + item.min_age + '", "' + item.max_age + '", "' + item.min_score + '", "' + item.max_score + '", "' + item.grade + '")';
-						//console.log(statement);
+						////console.log(statement);
 						//return false;
 				   		tx.executeSql(statement);
 			   		
 					
 				   	});
 				}, errorCB, function() {
-					console.log('Inserted all rows');
+					//console.log('Inserted all rows');
 				});
 			}, 'jsonp');
 			
@@ -203,7 +203,7 @@ var app = {
 				$.each(result, function(i, item) {
 					
 					var statement = 'INSERT INTO EXERCISES (id, type, name, name_en, name_ru, data, video, description, description_en, description_ru, category, muscle) VALUES (' + parseInt(item.id) + ', "' + item.heading + '", "' + item.name + '", "' + item.name_en + '", "' + item.name_ru + '", "0", "0", "' + item.description + '", "' + item.description_en + '", "' + item.description_ru + '", "' + item.category + '", "' + item.muscle_group + '")';
-					//console.log(statement);
+					////console.log(statement);
 						//return false;
 				   	tx.executeSql(statement);
 				
@@ -217,7 +217,7 @@ var app = {
 				localStorage.setObject('fitExercises', notIDs);
 				
 			}, errorCB, function() {
-				console.log('Inserted all rows');
+				//console.log('Inserted all rows');
 			});
 		}, 'jsonp');
 		
@@ -240,7 +240,7 @@ var app = {
 				$.each(result, function(i, item) {
 					
 					var statement = 'INSERT INTO NOTIFICATIONS (id, is_read, heading, message, `from`, send) VALUES (' + parseInt(item.id) + ', 0, "' + item.heading + '", "' + item.message + '", "' + item.from + '", "' + item.send + '")';
-					//console.log(statement);
+					////console.log(statement);
 						//return false;
 				   	tx.executeSql(statement);
 				
@@ -257,7 +257,7 @@ var app = {
 				if($('#homepage').length)
 					$('#homepage').find('#notificationsCount').html('(' + localStorage.getItem('fitNotificationsCount') + ')');
 			}, errorCB, function() {
-				console.log('Inserted all rows');
+				//console.log('Inserted all rows');
 			});
 		}, 'jsonp');
 		
@@ -282,7 +282,7 @@ var app = {
 	   			
 		   		db.transaction(function(tx) {
 		   			var sql = "INSERT INTO TRAININGS (id, type, name, description, exercises, day_names) VALUES ("+item.id+", '" + (item.order_id && item.order_id != '0' && item.order_id != 0 ? 'order' : 'sample') + "', '"+item.name+"', '"+item.description+"', '" + JSON.stringify(item.exercises) + "', '" + JSON.stringify(item.day_names) + "')";
-		   			console.log(sql);
+		   			//console.log(sql);
 			   		tx.executeSql(sql);
 			   		
 		   		}, errorCB, function() {
@@ -290,7 +290,7 @@ var app = {
 		   			notIDs.push(item.id);
 					trainingsCount = trainingsCount + 1;
 		   		
-					console.log('Success3');
+					//console.log('Success3');
 				});
 	   		});
 	   		
@@ -315,7 +315,7 @@ var app = {
 			var notIDs = [];
 		data.ids = notIDs;
 		$.get(app.apiUrl + '?action=getNutritions', data, function(result) {
-			//console.log(result);
+			////console.log(result);
 	   		$.each(result, function(i, item) {
 	   		
 	   			if (item.order_id && item.order_id != '0' && item.order_id != 0) {
@@ -329,7 +329,7 @@ var app = {
 		   			notIDs.push(item.id);
 					nutritionsCount = nutritionsCount + 1;
 		   		
-					console.log('Success4');
+					//console.log('Success4');
 				});
 	   		});
 	   		
@@ -384,7 +384,7 @@ var app = {
 		
 		db.transaction(function(tx) {
 			query = 'SELECT * FROM NOTIFICATIONS ORDER BY send DESC';
-			console.log(query);
+			//console.log(query);
 			tx.executeSql(query, [], function(tx, results) {
 				
 				var len = results.rows.length, i;
@@ -429,7 +429,7 @@ var app = {
 						
 						db.transaction(function(tx) {
 							var statement = 'DELETE FROM NOTIFICATIONS WHERE id = ' + id;
-							//console.log(statement);
+							////console.log(statement);
 						   	tx.executeSql(statement);
 						   	$(this).remove();
 					   	});
@@ -440,12 +440,12 @@ var app = {
 				
 			}, function(tx, results) {
 				console.error('Error in selecting test result');
-				console.log(tx);
-				console.log(results);
+				//console.log(tx);
+				//console.log(results);
 			});
 		}, function(error) {
 			console.error('Error in selecting test result');
-			console.log(error);
+			//console.log(error);
 		});
 		
 		
@@ -455,7 +455,7 @@ var app = {
 		db.transaction(function(tx) {
 		
 			query = 'SELECT * FROM NOTIFICATIONS WHERE id = ' + parseInt(id);
-			console.log(query);
+			//console.log(query);
 			tx.executeSql(query, [], function(tx, results) {
 			
 				notification = results.rows.item(0);
@@ -465,7 +465,7 @@ var app = {
 				template.find('h4').html(notification.send);
 				template.find('h3').html(notification.message);
 				
-				console.log('what');
+				//console.log('what');
 				
 				if (!notification.is_read || notification.is_read == '0') {
 					var count = parseInt(localStorage.getItem('fitNotificationsCount'));
@@ -474,7 +474,7 @@ var app = {
 						count = 0;	
 					localStorage.setItem('fitNotificationsCount', count);
 					var statement = 'UPDATE NOTIFICATIONS SET is_read = "1" WHERE id = ' + id;
-					//console.log(statement);
+					////console.log(statement);
 				   	tx.executeSql(statement);
 				}
 				
@@ -482,12 +482,12 @@ var app = {
 				
 			}, function(tx, results) {
 				console.error('Error in selecting test result');
-				console.log(tx);
-				console.log(results);
+				//console.log(tx);
+				//console.log(results);
 			});
 		}, function(error) {
 			console.error('Error in selecting test result');
-			console.log(error);
+			//console.log(error);
 		});	
 		
 	},
@@ -513,20 +513,20 @@ var app = {
 	},
 	
 	parseTrainingPacks: function(tx, results) {
-		console.log("Returned rows = " + results.rows.length);
+		//console.log("Returned rows = " + results.rows.length);
 	    // this will be true since it was a select statement and so rowsAffected was 0
 	    if (!results.rowsAffected) {
-	        console.log('No rows affected!');
+	        //console.log('No rows affected!');
 	        return false;
 	    }
 	    // for an insert statement, this property will return the ID of the last inserted row
-	    console.log("Last inserted row ID = " + results.insertId);
+	    //console.log("Last inserted row ID = " + results.insertId);
 	},
 	
 	translateApp: function() {
 		$.getScript("js/translations/" + lang + ".js", function() {
 			app.replaceWords();
-			console.log('going to replace words');
+			//console.log('going to replace words');
 		});	
 	},
 	replaceWords: function() {
@@ -569,15 +569,15 @@ var app = {
 			hideKeyBoard();
 		
 			e.preventDefault();
-			//console.log('submit');
+			////console.log('submit');
 			
-			//console.log($('#login').find('#clientNr'));
+			////console.log($('#login').find('#clientNr'));
 			
 			error = false;
 			if ($('#login').find('#clientNr').val() == '') {
 				$('#login').find('#clientNr').addClass('error');
 				error = true;
-				//console.log('nr');
+				////console.log('nr');
 			} else {
 				$('#login').find('#clientNr').removeClass('error');
 			}
@@ -585,7 +585,7 @@ var app = {
 			if ($('#login').find('#clientPass').val() == '') {
 				$('#login').find('#clientPass').addClass('error');
 				error = true;
-				//console.log('pass');
+				////console.log('pass');
 			} else {
 				$('#login').find('#clientPass').removeClass('error');
 			}
@@ -608,7 +608,7 @@ var app = {
 		app.curFunction = 'AUTHFB';
 		FB.login(
 			function(response) {
-				//console.log(response);
+				////console.log(response);
 				data = response;
 				if (response.session) {
 					app.getFacebookMe();
@@ -629,7 +629,7 @@ var app = {
 				//alert(JSON.stringify(response.error));
 				app.authFacebook();
 			} else {
-				//console.log(response);
+				////console.log(response);
 				data.fb_id = response.id;
 				data.firstname = response.first_name;
 				data.lastname = response.last_name;
@@ -648,7 +648,7 @@ var app = {
 		data.club_id = club_id;
 		
 		var con = checkConnection();
-		console.log(con);
+		//console.log(con);
 		if (con == 'No') {
 			user = localStorage.getObject('fitUser');
 			if (user.club_nr != data.client_nr) {
@@ -656,7 +656,7 @@ var app = {
 		   		$('#clientPass').addClass('error');
 		   		navigator.notification.vibrate(200);
 			} else {
-				console.log('LOG IN');
+				//console.log('LOG IN');
 				LEVEL = 1;
 				teleportMe('homepage', {});
 				app.initLogged();
@@ -727,21 +727,21 @@ var app = {
 		
 		db.transaction(function(tx) {
 			query = 'SELECT SUM(length) as total_length, COUNT(*) as total, plan_name FROM DIARY ORDER BY day DESC';
-			console.log(query);
+			//console.log(query);
 			tx.executeSql(query, [], function(tx, results) {
 				diary = results.rows.item(0);
-				console.log(diary);
+				//console.log(diary);
 				$('.treeningud_number').html(diary.total);
 				$('.treeningud_time').html(secToHour(diary.total_length));
 				$('.last_update').html(diary.plan_name);
 			}, function(tx, results) {
 				console.error('Error in selecting test result');
-				console.log(tx);
-				console.log(results);
+				//console.log(tx);
+				//console.log(results);
 			});
 		}, function(error) {
 			console.error('Error in selecting test result');
-			console.log(error);
+			//console.log(error);
 		});
 		
 		localStorage.setObject('fitUser', user);
@@ -760,7 +760,7 @@ var app = {
 	},
 	
 	parseUserDetails: function() {
-		console.log(user);
+		//console.log(user);
 		$('#firstname').val(user.firstname);
 		$('#lastname').val(user.lastname);
 		$('#mail').val(user.mail);
@@ -803,7 +803,7 @@ var app = {
 	
 	parseCategories: function(result) {
 	
-		console.log(app.muscleGroup);
+		//console.log(app.muscleGroup);
 		
 		content = $('.module-content');
 		content.html('');
@@ -812,11 +812,11 @@ var app = {
 		
    		$.each(result, function(i, item) {
    		
-   			console.log(item);
+   			//console.log(item);
    			categories[item.cat_id] = item.name;
    			template.find('h3').html(item.name);
    			
-   			console.log(app.muscleGroup + '_total');
+   			//console.log(app.muscleGroup + '_total');
    			
    			if (app.muscleGroup) {
    				if(item[app.muscleGroup + '_total'])
@@ -835,7 +835,7 @@ var app = {
    		
    		$('.harjutus_item').click(function(e) {
 		   app.exerciseCat = $(this).data('cat');
-		   console.log(app.exerciseCat);
+		   //console.log(app.exerciseCat);
 		   
 		   LEVEL = 2;
 		   teleportMe('harjutused_subpage1');
@@ -875,7 +875,7 @@ var app = {
 		
 		db.transaction(function(tx) {
 			query = 'SELECT * FROM EXERCISES ' + where + ' ORDER BY id DESC';
-			console.log(query);
+			//console.log(query);
 			tx.executeSql(query, [], function(tx, results) {
 				
 				var len = results.rows.length, i;
@@ -902,25 +902,25 @@ var app = {
 				
 			}, function(tx, results) {
 				console.error('Error in selecting test result');
-				console.log(tx);
-				console.log(results);
+				//console.log(tx);
+				//console.log(results);
 			});
 		}, function(error) {
 			console.error('Error in selecting test result');
-			console.log(error);
+			//console.log(error);
 		});
 
 	},
 
 	parseExercise: function(id) {
-		console.log('HERE:');
+		//console.log('HERE:');
 		var exercise = {};
 		db.transaction(function(tx) {
 		
 			query = 'SELECT * FROM EXERCISES WHERE id = ' + parseInt(id);
 			console.log(query);
 			tx.executeSql(query, [], function(tx, results) {
-				console.log(results);
+				//console.log(results);
 				exercise = results.rows.item(0);
 				if (lang == 'et') {
 			   		$('#video').find('h3:first').html(exercise.name);
@@ -935,17 +935,14 @@ var app = {
 					$('#video').find('.video-container').html('<video id="video" height="41%" width="100%" controls="" preload="" autoplay="" poster="' + app.serverUrl + 'videos/' + exercise.id + '.png" onclick="this.play();" onload="this.play();"><source src="' + app.serverUrl + 'videos/' + exercise.id + '.mp4" poster="' + app.serverUrl + 'videos/' + exercise.id + '.png"></video>');
 				}
 				
-				//return false;
-			   	tx.executeSql(statement);
-				
 			}, function(tx, results) {
 				console.error('Error in selecting test result');
-				console.log(tx);
-				console.log(results);
+				//console.log(tx);
+				//console.log(results);
 			});
 		}, function(error) {
 			console.error('Error in selecting test result');
-			console.log(error);
+			//console.log(error);
 		});		
 		
 	},
@@ -1029,13 +1026,13 @@ var app = {
 		    uri,
 		    filePath,
 		    function(entry) {
-		        console.log("download complete: " + entry.fullPath);
+		        //console.log("download complete: " + entry.fullPath);
 		        //$('img.')
 		    },
 		    function(error) {
-		        console.log("download error source " + error.source);
-		        console.log("download error target " + error.target);
-		        console.log("upload error code" + error.code);
+		        //console.log("download error source " + error.source);
+		        //console.log("download error target " + error.target);
+		        //console.log("upload error code" + error.code);
 		    },
 		    false,
 		    {
@@ -1083,7 +1080,7 @@ var app = {
 		   		$('.selectbtn').unbind(eventEnd).bind(eventEnd, function (e) {
 		   		
 		   			var id = $(this).data('id');
-		   			//console.log('id');
+		   			////console.log('id');
 		   			app.packageTemplate = id;
 					LEVEL = 2;
 					teleportMe('vali_kava');
@@ -1097,9 +1094,9 @@ var app = {
 			container2.html('');
 			
 			var template = items[app.packageTemplate];
-			console.log(items);
-			console.log(app.packageTemplate);
-			console.log(template);
+			//console.log(items);
+			//console.log(app.packageTemplate);
+			//console.log(template);
 			
 			items = [];
 			
@@ -1224,7 +1221,7 @@ var app = {
 			
 						price = price.replace(' €', '');
 						totalprice = Number(totalprice) + Number(price);
-						//console.log( Number(totalprice), Number(price));
+						////console.log( Number(totalprice), Number(price));
 
 					}
 					
@@ -1248,9 +1245,9 @@ var app = {
 	
 	createOrder: function(type, buyed) {
 		
-		console.log(type);
-		console.log(buyed);
-		console.log(user);
+		//console.log(type);
+		//console.log(buyed);
+		//console.log(user);
 		
 		data = {};
 		
@@ -1266,13 +1263,13 @@ var app = {
 			
 				iabRef = window.open('http://projects.efley.ee/fitnessapp/admin/payment.php?order=' + order_id + '&bank=' + type, '_blank', 'location=yes');
 				iabRef.addEventListener('loadstart', function() {
-					console.log('started');
+					//console.log('started');
 				});
 				iabRef.addEventListener('loadstop', function() {
-					console.log('stoped');
+					//console.log('stoped');
 				});
 				iabRef.addEventListener('exit', function() {
-					console.log('closed');
+					//console.log('closed');
 				});
 			
 			}
@@ -1314,7 +1311,7 @@ var app = {
 		   		container.append(template.html());
 		   		
 	   		});
-	   		console.log(result);
+	   		//console.log(result);
 	   		
 	   		$('.detailsbtn').unbind(eventEnd).bind(eventEnd, function (e) {
 	   		
@@ -1378,7 +1375,7 @@ var app = {
 				user.sex = $(this).data('sex');
 				LEVEL = 2;
 				
-				console.log('You are: ' + user.sex + ' and ' + user.age);
+				//console.log('You are: ' + user.sex + ' and ' + user.age);
 				
 				teleportMe('fitnesstest');
 				
@@ -1443,7 +1440,7 @@ var app = {
 					}
 				}
 				
-				console.log(n, r);
+				//console.log(n, r);
 				if(r && r < 1000){
 					
 					testResults[n] = r;
@@ -1454,14 +1451,14 @@ var app = {
 					
 					db.transaction(function(tx) {
 						query = 'SELECT grade, min_score, max_score FROM TEST WHERE exercise = "' + exercise + '" AND sex = "' + user.sex + '" AND min_age <= "' + user.age + '" AND max_age >= "' + user.age + '"';
-						console.log(query);
+						//console.log(query);
 						tx.executeSql(query, [], function(tx, results) {
 							
 							var len = results.rows.length, i;
 							for (i = 0; i < len; i++) {
 							
 								item = results.rows.item(i);
-								console.log(item);
+								//console.log(item);
 							
 								if (item.min_score == '0' && item.max_score == '0') {
 									$('.grade-' + item.grade).html('0');
@@ -1474,7 +1471,7 @@ var app = {
 								}
 								
 								if (item.min_score <= r && item.max_score >= r) {
-									console.log(item);
+									//console.log(item);
 									if (item.min_score == '0' && item.max_score == '0') {
 										$('.result-text').html('0');
 									} else if(item.min_score == '0') {
@@ -1562,7 +1559,7 @@ var app = {
 							
 							if (n == '1') {
 								var top = $('.test2').position().top;
-								console.log(top);
+								//console.log(top);
 								$('body').scrollTop(top);
 							}
 							
@@ -1570,12 +1567,12 @@ var app = {
 							
 						}, function(tx, results) {
 							console.error('Error in selecting test result');
-							console.log(tx);
-							console.log(results);
+							//console.log(tx);
+							//console.log(results);
 						});
 					}, function(error) {
 						console.error('Error in selecting test result');
-						console.log(error);
+						//console.log(error);
 					});
 					/*$.get(app.apiUrl + '?action=getTestResults', data, function(result) {
 						
@@ -1681,7 +1678,7 @@ function deliverError(msg, url, line) {
 	   
 	   	$.get(app.apiUrl + '?action=reportAnError', error_data, function(result) {
 	   		//if(result.success)
-	   			//console.log('Error reported');
+	   			////console.log('Error reported');
 	   	}, 'jsonp');
 	}
 }
@@ -1709,7 +1706,7 @@ function checkConnection() {
     states[Connection.CELL_4G]  = '4G';
     states[Connection.NONE]     = 'No';
     
-    console.log(states[networkState]);
+    //console.log(states[networkState]);
     
     return states[networkState];
 }
