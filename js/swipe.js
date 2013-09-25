@@ -26,7 +26,7 @@
 
 			if( touches.length == 1 ){
 				startX = touches[0].pageX;
-				startY = touches[0].pageY;
+				//startY = touches[0].pageY;
 				this.addEventListener('touchmove', onTouchMove, false);
 			}
 				
@@ -38,10 +38,10 @@
 			function onTouchMove(e){
 				//e.preventDefault();
 
-				var Dx = startX - e.touches[0].pageX,
-					Dy = startY - e.touches[0].pageY;
+				var Dx = startX - e.touches[0].pageX;
+					//Dy = startY - e.touches[0].pageY;
 
-				if( Math.abs(Dx) >= 80 ){
+				if( Math.abs(Dx) >= 110 ){
 					e.preventDefault();
 					cancelTouch();
 					deltaX = (Dx > 0) ? -1 : 1;

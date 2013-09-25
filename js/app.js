@@ -127,6 +127,8 @@ var app = {
 			localStorage.removeItem('fitExercises');
 			
 			localStorage.removeItem('fitCurDay');
+			
+			//localStorage.removeItem('fitTest');
 		
 			//create tables, approx 2,5MB size database, 5MB maximum
 			db.transaction(function(tx) {
@@ -1337,16 +1339,22 @@ var app = {
 	},
 	initTest: function() {
 		
+		if(user.birthday) {
+			dates = user.birthday.split('-');
+		} else {
+			dates = [1980, '06', '15'];
+		}
+		
 		for(i=1;i<32;i++) {
 			if(i < 10) day = '0' + i; else day = i;
-			$('#daySelect').append('<option value="' + day + '">' + i + '</option>')
+			$('#daySelect').append('<option value="' + day + '"' + (dates[2] == i ? ' selected="selected"' : '') + '>' + i + '</option>')
 		}
 		for(i=1;i<13;i++) {
 			if(i < 10) month = '0' + i; else month = i;
-			$('#monthSelect').append('<option value="' + month + '">' + i + '</option>')
+			$('#monthSelect').append('<option value="' + month + '"' + (dates[1] == i ? ' selected="selected"' : '') + '>' + i + '</option>')
 		}
 		for(i=1930;i<2000;i++) {
-			$('#yearSelect').append('<option value="' + i + '">' + i + '</option>')
+			$('#yearSelect').append('<option value="' + i + '"' + (dates[0] == i ? ' selected="selected"' : '') + '>' + i + '</option>')
 		}
 	
 		$('.datepicker').click(function(e) {
@@ -1375,8 +1383,6 @@ var app = {
 				user.sex = $(this).data('sex');
 				LEVEL = 2;
 				
-				//console.log('You are: ' + user.sex + ' and ' + user.age);
-				
 				teleportMe('fitnesstest');
 				
 			} else {
@@ -1391,15 +1397,18 @@ var app = {
 	initTestQuestions: function() {
 	
 		var selectedExercise = 'running';
-		//var testResults = {};
+		var testResults = {};
 		testResults = localStorage.getObject('fitTest');
-		if(testResults && testResults.length) {
+		if(testResults) {
 			$.each(testResults, function(item, score) {
 				$('#tulemusinput' + item).val(score);
+				
 			});
 		}
 		if(!testResults)
 			var testResults = {};
+			
+		totalResults = [];
 		
 		$('.nobg_item.tiny').click(function(e) {
 			$('.nobg_item.tiny').addClass('grey');
@@ -1422,7 +1431,6 @@ var app = {
 			//e.preventDefault();
 				
 				var exercise = $(this).data('exercise');
-				
 				var n = $(this).attr('data-result');
 				
 				testResults[n] = r;
@@ -1440,8 +1448,7 @@ var app = {
 					}
 				}
 				
-				//console.log(n, r);
-				if(r && r < 1000){
+				if(r && r < 10000 && r > -100){
 					
 					testResults[n] = r;
 					
@@ -1450,36 +1457,50 @@ var app = {
 					showLoading();
 					
 					db.transaction(function(tx) {
-						query = 'SELECT grade, min_score, max_score FROM TEST WHERE exercise = "' + exercise + '" AND sex = "' + user.sex + '" AND min_age <= "' + user.age + '" AND max_age >= "' + user.age + '"';
-						//console.log(query);
-						tx.executeSql(query, [], function(tx, results) {
+						if (exercise == 'flexing') 
+							query = 'SELECT grade, min_score, max_score FROM TEST WHERE exercise = "' + exercise + '" AND sex = "' + user.sex + '"';
+						else
+							query = 'SELECT grade, min_score, max_score FROM TEST WHERE exercise = "' + exercise + '" AND sex = "' + user.sex + '" AND min_age <= "' + user.age + '" AND max_age >= "' + user.age + '"';
 							
+						tx.executeSql(query, [], function(tx, results) {
 							var len = results.rows.length, i;
 							for (i = 0; i < len; i++) {
 							
 								item = results.rows.item(i);
-								//console.log(item);
-							
+								
+								if(exercise == 'flexing') {
+									//$('.carusel-texts').addClass('small-font');
+									extra = 'cm';
+									separator = '..';
+								} else if (exercise == 'aero') {
+									$('.carusel-texts').addClass('small-font');
+									extra = '';
+									separator = '-';
+								} else {
+									$('.carusel-texts').removeClass('small-font');
+									extra = '';
+									separator = '-';
+								}
+								
 								if (item.min_score == '0' && item.max_score == '0') {
 									$('.grade-' + item.grade).html('0');
-								} else if(item.min_score == '0') {
+								} else if(item.min_score == '0' || item.min_score == '-1000') {
 									$('.grade-' + item.grade).html('<' + item.max_score);
-								} else if(item.max_score == '1000' || item.max_score == '0') {
+								} else if(item.max_score == '10000' || item.max_score == '0') {
 									$('.grade-' + item.grade).html('>' + item.min_score);
 								} else {
-									$('.grade-' + item.grade).html(item.min_score + '-' + item.max_score);
+									$('.grade-' + item.grade).html(item.min_score + separator + item.max_score);
 								}
 								
 								if (item.min_score <= r && item.max_score >= r) {
-									//console.log(item);
 									if (item.min_score == '0' && item.max_score == '0') {
-										$('.result-text').html('0');
-									} else if(item.min_score == '0') {
-										$('.result-text').html('<' + item.max_score);
-									} else if(item.max_score == '1000' || item.max_score == '0') {
-										$('.result-text').html('>' + item.min_score);
+										$('.result-text').html('0'+extra);
+									} else if(item.min_score == '0' || item.min_score == '-1000') {
+										$('.result-text').html('<' + item.max_score+extra);
+									} else if(item.max_score == '10000' || item.max_score == '0') {
+										$('.result-text').html('>' + item.min_score+extra);
 									} else {
-										$('.result-text').html(item.min_score + '-' + item.max_score);
+										$('.result-text').html(item.min_score + separator + item.max_score+extra);
 									}
 									
 									grade = item.grade;
@@ -1507,9 +1528,7 @@ var app = {
 							
 							var score = grades[grade];
 							
-							var newresult = Number(TOTALRESULT) + Number(score);
-							
-							TOTALRESULT = newresult.toFixed(0);
+							totalResults[n] = score;
 							
 							if (grade == 7) {
 								anim = '7';
@@ -1559,7 +1578,6 @@ var app = {
 							
 							if (n == '1') {
 								var top = $('.test2').position().top;
-								//console.log(top);
 								$('body').scrollTop(top);
 							}
 							
@@ -1567,17 +1585,10 @@ var app = {
 							
 						}, function(tx, results) {
 							console.error('Error in selecting test result');
-							//console.log(tx);
-							//console.log(results);
 						});
 					}, function(error) {
 						console.error('Error in selecting test result');
-						//console.log(error);
 					});
-					/*$.get(app.apiUrl + '?action=getTestResults', data, function(result) {
-						
-					
-					}, 'jsonp');*/
 					
 					$('.overlay .jargminetest').unbind(eventEnd).bind(eventEnd, function(e) {
 						e.preventDefault();
@@ -1608,8 +1619,14 @@ var app = {
 					
 					$('.overlay .kogutulemus').unbind(eventEnd).bind(eventEnd, function(e) {
 						e.preventDefault();
+						TOTALRESULT = 0;
+						$.each(totalResults, function(i, result) {
+							if(result) {
+								TOTALRESULT = TOTALRESULT + parseInt(result);
+							}
+						});
 						
-						$('#caruselTOTALoverlay .finalresults h3').text(TOTALRESULT + ' p');
+						$('#caruselTOTALoverlay .finalresults h1').text(TOTALRESULT + ' p');
 										
 						$('#caruselTOTALoverlay').addClass('scale');
 						setTimeout(function () {
@@ -1678,7 +1695,7 @@ function deliverError(msg, url, line) {
 	   
 	   	$.get(app.apiUrl + '?action=reportAnError', error_data, function(result) {
 	   		//if(result.success)
-	   			////console.log('Error reported');
+	   			//console.log('Error reported');
 	   	}, 'jsonp');
 	}
 }

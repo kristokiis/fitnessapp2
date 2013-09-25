@@ -965,9 +965,12 @@ function hideKeyBoard() {
 			
 		});
 		
+		
+		
 
 		$('body').on('swipe', function(e, Dx, Dy) {
 		
+			//alert(LEVEL);
 			//console.log($(e.currentTarget));
 			
 			if(($('#teated') && $('#teated').html()) || ($('#treening_naidiskavad') && $('#treening_naidiskavad').html()))
@@ -1008,6 +1011,8 @@ function hideKeyBoard() {
 				}
 			}
 		});
+		
+		
 		
 		bindEvents();
 

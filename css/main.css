@@ -764,7 +764,7 @@ background: radial-gradient(ellipse at center,  rgba(255,255,255,0.71) 0%,rgba(2
   border-radius: 5px;
 }
 
-input:focus {
+input:focus, textarea:focus {
   box-shadow: 0 0 8px rgba(254, 204, 30, 0.5);
 }
 
@@ -1796,14 +1796,14 @@ div.select select {
 	-moz-appearance: none;
     background: none repeat scroll 0 0 transparent;
     border: medium none;
-    color: #A1A1A1;
+    color: #fff;
     padding: 5px 0;
     width: 100%;
 	position: relative;
 }
 
 
-div.select:after {
+div.icon_select {
   background: url("../i/select.png") no-repeat scroll center center transparent;
   background-size: 90% auto;
   content: "";
@@ -1811,13 +1811,14 @@ div.select:after {
   pointer-events: none;
   position: absolute;
   right: 3%;
-  top: 24%;
+  top: -10%;
   width: 3%;
   
 }
 
 .selects .select{
 	width: 100%;
+	position: relative;
 }
 
 
@@ -2302,6 +2303,9 @@ div.select:after {
 	width: 100%;
 	position: absolute;
 }
+.carusel-texts.small-font {
+	font-size: 0.8em;
+}
 .carusel-texts span {
 	display: inline-block;
 	position: absolute;
@@ -2313,8 +2317,8 @@ div.select:after {
 	-webkit-transform: rotate(-51.4deg);
 }
 .grade-2 {
-	left: 35%;
-	top: 10%;
+	left: 33%;
+	top: 14%;
 	-webkit-transform: rotate(0deg);
 }
 .grade-3 {
@@ -2548,6 +2552,7 @@ div.select:after {
 	border-bottom: 1px solid #121212;
 	border-top: 1px solid #4A4A4A;
 	color: #A1A1A1;
+	overflow: hidden;
 }
 
 .gray_item .item_wrap{
@@ -2682,7 +2687,7 @@ div.select:after {
 }
 
 .nobg_special_button {
-	width: 100%;
+	width: 99%;
 	text-align: center;
 }
 
@@ -3314,7 +3319,7 @@ li {
   padding: 2% 1% 2% 3% !important;
 }
 
-div.select:after {
+div.icon_select {
   background: url("../i/select.png") no-repeat scroll center center transparent;
   background-size: 90% auto;
   content: "";
@@ -3322,7 +3327,7 @@ div.select:after {
   pointer-events: none;
   position: absolute;
   right: 3%;
-  top: 24%;
+  top: -10%;
   width: 40px;
   
 }
