@@ -89,14 +89,11 @@ var app = {
 	*/
 	
 	syncData: function() {
-		
-		showLoading();
-		var notIDs = [];
 
 		//localStorage.removeItem('fitNotFirstTime');
 		//first time always online
 		if (!localStorage.getItem('fitNotFirstTime')) {
-		
+			showLoading();
 			setTimeout(function() {
 				$('#loading').hide();
 			}, 3000);
