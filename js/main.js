@@ -13,6 +13,15 @@ animateCallback : function(){},
 extraSpace : 20,
 limit: 1000
 }, options);
+
+if( ua.indexOf("Android") >= 0 ) {
+	var androidversion = parseFloat(ua.slice(ua.indexOf("Android")+8)); 
+	//alert(androidversion);
+	if (androidversion <= 2.3) {
+		link.href = 'css/main_a23.css';
+		head.appendChild(link);
+	} 
+} 
  
 // Only textarea's auto-resize:
 this.filter('textarea').each(function(){

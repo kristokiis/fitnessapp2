@@ -1,0 +1,182 @@
+
+#frontpage, #login {
+    background-color: #000;
+}
+
+#themenu {
+	left: -105%;
+	-webkit-transform: none !important;
+	-webkit-transition: none !important;
+}
+
+.frame, .open{
+	-webkit-transition: none !important;
+}
+
+
+.frame, .hide{
+	opacity: 0 !important; 
+}
+
+.open{
+	opacity: 1 !important;
+}
+
+#themenu.show {
+	left: 0%;
+	-webkit-transform: none !important;
+	-webkit-transition: none !important;
+}
+
+
+#thefilter.showR {
+	left: 25%;
+	-webkit-transform: none !important;
+	-webkit-transition: none !important;
+}
+
+.showmenu{
+	left: 75% !important;
+	-webkit-transform: none !important;
+	-webkit-transition: none !important;
+}
+
+
+.showmenuR{
+	left: -75% !important;
+	-webkit-transform: none !important;
+	-webkit-transition: none !important;
+}
+
+
+#thefilter {
+	left: -180%;
+}
+
+
+.topbar {
+	top: -100%;
+	-webkit-transform: none !important;
+	-webkit-transition: none !important;
+}
+
+.bottombar{
+	bottom: -100%;
+	-webkit-transform: none !important;
+	-webkit-transition: none !important;
+}
+
+.topbar.menuin{
+	left: 0;
+	top: 0;
+	-webkit-transform: none !important;
+	-webkit-transition: none !important;
+}
+
+.bottombar.menuin{
+	left: 0;
+	bottom: 0;
+	-webkit-transform: none !important;
+	-webkit-transition: none !important;
+}
+
+.wrap {
+	position: relative;
+	z-index: 100;
+}
+
+
+.harjutus_item .img .bubble{
+	border-radius: 50px;
+}
+
+.uuskava:before {
+	border-radius: 50px;
+}
+
+.jatkakava:before {
+	border-radius: 50px;
+}
+
+.fitnesstest:before {
+	border-radius: 50px;
+}
+
+.diary:before {
+	border-radius: 50px;
+}
+.pakkumised:before {
+	border-radius: 50px;
+}
+.soodustused:before {
+	border-radius: 50px;
+}
+
+.me.title img{
+	border-radius: 50px;
+}
+
+.loadedcontent p {
+  font-size: 12px;
+  line-height: 14px;
+}
+
+.bg {
+  position: absolute;
+  z-index: 0;
+}
+
+
+
+
+
+
+.anim_10_a23{
+	-webkit-transform: rotate(772deg);
+	transform: rotate(772deg);
+ }
+ 
+ .anim_20_a23{
+	-webkit-transform: rotate(722deg);
+	transform: rotate(722deg);
+ }
+ 
+ .anim_30_a23{
+	-webkit-transform: rotate(670deg);
+	transform: rotate(670deg);
+ }
+
+ .anim_40_a23{
+	-webkit-transform: rotate(618deg);
+	transform: rotate(618deg);
+ }
+
+ .anim_50_a23{
+	 -webkit-transform: rotate(568deg);
+	 transform: rotate(568deg);
+ } 
+ 
+ .anim_60_a23{
+	 -webkit-transform: rotate(515deg);
+	 transform: rotate(515deg);
+ }
+ 
+ .anim_70_a23{
+	-webkit-transform: rotate(465deg);
+	transform: rotate(465deg);
+ }
+
+
+
+
+
+
+
+
+
+
+@media screen and (max-width: 320px) {
+	#topbar .backbtn {
+		top: 10%;
+	}
+}
