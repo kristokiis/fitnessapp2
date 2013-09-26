@@ -175,7 +175,8 @@ var packs = {
 	},
 	
 	initTrainings: function() {
-		
+		trainings.orderPackages = [];
+		trainings.samplePackages = [];
 		db.transaction(function(tx) {
 			query = 'SELECT * FROM TRAININGS ORDER BY id DESC';
 			//console.log(query);
@@ -331,7 +332,7 @@ var trainings = {
 		} else {
 			var _trainings = trainings.samplePackages;
 		}	
-		//console.log(_trainings);
+		console.log(_trainings);
 		
 		$.each(_trainings, function(i, training) {
 				
@@ -482,45 +483,21 @@ var trainings = {
 		$('.end-day').click(function(e) {
 			//update diary and set day length and delete all current day data, also from localStorage
 			
-			curTime = new Date();
-			if(curDay.started)
-				lastTime = new Date(curDay.started).getTime();
-			else
-				lastTime = new Date().getTime();
-			difference = (curTime.getTime() - lastTime)/1000;
-			$('.kestus').hide();
+			trainings.endTraining();
 			
-			var curr_date = curTime.getDate();
-			if(curr_date < 10)
-				curr_date = '0' + curr_date;
-		    var curr_month = curTime.getMonth() + 1; //Months are zero based
-		    if(curr_month < 10)
-				curr_month = '0' + curr_month;
-		    var curr_year = curTime.getFullYear();
-			
-			db.transaction(function(tx) {
-				var statement = "UPDATE DIARY SET length = '" + difference + "' WHERE day = '" + curr_year + "-" + curr_month + "-" + curr_date + "' AND package = " + trainings.currentTraining.id + " AND training_day = " + trainings.currentDay;
-				////console.log(statement);
-			   	tx.executeSql(statement);
-			   	localStorage.removeItem('fitCurDay');
-			   	trainings.doingExercise = false;
-		   	}, function(error) {
-				console.error('Error in selecting test result');
-				//console.log(error);
-			});
-			
-			$('.backbtn').click();
-			
+			//$('.backbtn').click();
+			LEVEL = 1;
+			teleportMe('homepage', {});
 		});
 		
 	},
 	
 	getTrainingsExercise: function(element) {
-		//console.log('called detail page');
+	
 		element = parseInt(element);
 		if(!element)
 			element = trainings.currentExercise.id;
-		//temporary
+		//temp
 		trainings.currentExercise = trainings.currentTraining.exercises[trainings.currentDay][element];
 		j = 0;
 		iteration = false;
@@ -549,10 +526,15 @@ var trainings = {
 			$('.backbtn').click();
 		});
 		$('.next-exercise').click(function(e) {
+			$('.toscroll').scrollTop(0);
 			e.preventDefault();
 			LEVEL = null;
 			teleportMe('treening_naidiskavad_1paev_nXn', next);
-			$('body').scrollTop(0);
+		});
+		$('.end-training').click(function(e) {
+			trainings.endTraining();
+			LEVEL = 1;
+			teleportMe('homepage', {});
 		});
 		//permanent
 		//localStorage.setObject('currentTrainingExercise', trainings.currentExercise);
@@ -583,7 +565,7 @@ var trainings = {
 				
 				$('.seria-template').find('.times').find('span').html(serie.repeats);
 				$('.seria-template').find('.weight').find('span').html(serie.weights);
-				$('.seria-template').find('.seeria').data('index', i);
+				$('.seria-template').find('.seeria').attr('data-index', i);
 				$('.serias-content').append($('.seria-template').html());
 			});
 			
@@ -711,7 +693,6 @@ var trainings = {
 				data.status = 'start';
 				data.length = unFormatTime($('#timerStuff').html());
 				trainings.doTraining(data);
-					
 				timer.toggle();
 				
 			}else{
@@ -795,9 +776,10 @@ var trainings = {
 							serie.weight = data.weight;
 							serie.status = 'done';
 							exercise.series[j] = serie;
-						} else {
+						}/* else {
 							serie.status = false;
-						}
+							exercise.series[j] = serie;
+						}*/
 						
 					});
 					
@@ -904,6 +886,36 @@ var trainings = {
 		});
 		
 	},
+	
+	endTraining: function() {
+		curTime = new Date();
+		if(curDay.started)
+			lastTime = new Date(curDay.started).getTime();
+		else
+			lastTime = new Date().getTime();
+		difference = (curTime.getTime() - lastTime)/1000;
+		$('.kestus').hide();
+		
+		var curr_date = curTime.getDate();
+		if(curr_date < 10)
+			curr_date = '0' + curr_date;
+	    var curr_month = curTime.getMonth() + 1; //Months are zero based
+	    if(curr_month < 10)
+			curr_month = '0' + curr_month;
+	    var curr_year = curTime.getFullYear();
+		
+		db.transaction(function(tx) {
+			var statement = "UPDATE DIARY SET length = '" + difference + "' WHERE day = '" + curr_year + "-" + curr_month + "-" + curr_date + "' AND package = " + trainings.currentTraining.id + " AND training_day = " + trainings.currentDay;
+			////console.log(statement);
+		   	tx.executeSql(statement);
+		   	localStorage.removeItem('fitCurDay');
+		   	trainings.doingExercise = false;
+	   	}, function(error) {
+			console.error('Error in selecting test result');
+			//console.log(error);
+		});
+	},
+	
 	checkActivity: function() {
 		
 		//last_activity > 30min, show dialog where you can end day or renew activity, stop timers

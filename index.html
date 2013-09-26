@@ -256,7 +256,7 @@
         <script type="text/javascript" charset="utf-8">
 		    // Wait for Cordova to load
 		    document.addEventListener("deviceready", onDeviceReady, false);
-		    
+		    deviceMode = false;
 		    $(document).ready(function() {
 		    	/*
 			    showLoading();
@@ -264,6 +264,7 @@
 		    	setTimeout(function() {
 		    		$('#loading').hide();
 			    	console.log('lets init this stuff..');
+			    	
 			    	app.init();
 		    	}, 2500);
 		    	document.addEventListener("backbutton", onBackButton, false);
@@ -271,6 +272,7 @@
 		    });
 		    
 		    function onDeviceReady() {
+		    	deviceMode = true;
 		    	
 		    	showLoading();
 		    	console.log('device ready, but waiting for extra stuff..');

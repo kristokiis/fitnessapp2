@@ -39,51 +39,14 @@ var app = {
 	packageTrainer: 0,
 	packageTemplate: 0,
 	
-	init: function() {
-		
-		$('#frontpage').find('.w50').show();
-		
-		con = checkConnection();
-		
-		//console.log('checking connection');
-		
-		setTimeout(function() {
-			//console.log('starting fb init');
-			try {
-				FB.init({ appId: "161092774064906", nativeInterface: CDV.FB, useCachedDialogs: false });
-			} catch (e) {
-				deliverError(e, 'app.js', '216');
-			}
-			
-		}, 1500);
-		//lang = 'en';
-		//localStorage.removeItem('fit_lang');
-		if (localStorage.getItem('fit_lang')) {
-			lang = localStorage.getItem('fit_lang');
-			app.translateApp();
-			$('.langselector').find('a').removeClass('active');
-			$('.langselector').find('a[data-lang="'+lang+'"]').addClass('active');
-		} else {
-			lang = 'et';
-			app.translateApp();
-					
-		}
-		$('.langselector').find('a').click(function(e) {
-			e.preventDefault();
-			lang = $(this).data('lang');
-			localStorage.setItem('fit_lang', 'et');
-			app.translateApp();
-			$('.langselector').find('a').removeClass('active');
-			$(this).addClass('active');
-		});
-		
-		//console.log('going to initlogin');
-		
-		app.initLogin(false);
-
-		
+	loadingSteps: function(step) {
+		alert('s');
 	},
 	
+	init: function() {
+		
+		alert('ok..');
+	},
 	/*
 	* if first time, get from
 	*/
@@ -91,11 +54,10 @@ var app = {
 	syncData: function() {
 		
 		showLoading();
-		var notIDs = [];
 
-		//localStorage.removeItem('fitNotFirstTime');
-		//first time always online
-		if (!localStorage.getItem('fitNotFirstTime')) {
+		localStorage.removeItem('notFirstTime');
+	
+		if (!localStorage.getItem('notFirstTime')) {
 		
 			setTimeout(function() {
 				$('#loading').hide();
@@ -136,8 +98,8 @@ var app = {
 				tx.executeSql('DROP TABLE IF EXISTS TEST');
 				tx.executeSql('CREATE TABLE IF NOT EXISTS TEST (id unique, exercise, sex, min_age, max_age, min_score, max_score, grade)');
 				//300 rows max 1mb
-				tx.executeSql('DROP TABLE IF EXISTS DIARY');
-				tx.executeSql('CREATE TABLE IF NOT EXISTS DIARY (id INTEGER PRIMARY KEY AUTOINCREMENT, day, month, year, package, training_day, length, plan_name, day_name, day_data, type)');
+				//tx.executeSql('DROP TABLE IF EXISTS DIARY');
+				//tx.executeSql('CREATE TABLE IF NOT EXISTS DIARY (id INTEGER PRIMARY KEY AUTOINCREMENT, day, month, year, package, training_day, length, plan_name, day_name, day_data, type)');
 			}, function(error) {
 				console.error('Error on line 134:');
 				//console.log(error);
@@ -168,215 +130,215 @@ var app = {
 			$.get(app.apiUrl + '?action=getCategories', data, function(result) {
 				localStorage.setObject('fitCats', result);
 				app.downloadPics('categories', result);
-				
-				
-				
 				/*
 				* pic download
 				*/
 				
 			}, 'jsonp');
 			
-			localStorage.setItem('fitNotFirstTime', true);
+			localStorage.setItem('notFirstTime', true);
 		}
-		//requires us to be online
-		var con = checkConnection();
-		if (con != 'No') {
-			/*
-			* EXERCISES
-			*/
-			var ex_notIDs = localStorage.getObject('fitExercises');
-			if(!ex_notIDs)
-				ex_notIDs = [];
-			data = {};	
-			data.ids = ex_notIDs;
-			data.user = user.id;
-			data.club_id = club_id;
-			$.get(app.apiUrl + '?action=getExercises', data, function(result) {
-				db.transaction(function(tx) {
-					$.each(result, function(i, item) {
-						
-						var statement = 'INSERT INTO EXERCISES (id, type, name, name_en, name_ru, data, video, description, description_en, description_ru, category, muscle) VALUES (' + parseInt(item.id) + ', "' + item.heading + '", "' + item.name + '", "' + item.name_en + '", "' + item.name_ru + '", "0", "0", "' + item.description + '", "' + item.description_en + '", "' + item.description_ru + '", "' + item.category + '", "' + item.muscle_group + '")';
-						////console.log(statement);
-							//return false;
-					   	tx.executeSql(statement);
-					
-						ex_notIDs.push(item.id);
-					});
-					
-					ex_notIDs = ex_notIDs.filter(function (e, i, ex_notIDs) {
-					    return ex_notIDs.lastIndexOf(e) === i;
-					});
-					
-					localStorage.setObject('fitExercises', ex_notIDs);
-					
-				}, errorCB, function() {
-					//console.log('Inserted all rows');
-				});
-			}, 'jsonp');
+		
+		/*
+		* EXERCISES
+		*/
+		var notIDs = [];
+		notIDs = localStorage.getObject('fitExercises');
+		if (!notIDs)
+			notIDs = [];
 			
-			/*
-			* NOTIFICATIONS
-			*/
-			
-			var notificationsCount = parseInt(localStorage.getItem('fitNotificationsCount'));
-			if(!notificationsCount)
-				var notificationsCount = 0;
-			var no_notIDs = localStorage.getObject('fitNotifications');
-			if(!no_notIDs)
-				no_notIDs = [];
-			data = {};	
-			data.ids = no_notIDs;
-			data.user = user.id;
-			data.club = club_id;
-			$.get(app.apiUrl + '?action=getNotifications', data, function(result) {
-				db.transaction(function(tx) {
-					$.each(result, function(i, item) {
-						
-						var statement = 'INSERT INTO NOTIFICATIONS (id, is_read, heading, message, `from`, send) VALUES (' + parseInt(item.id) + ', 0, "' + item.heading + '", "' + item.message + '", "' + item.from + '", "' + item.send + '")';
-						////console.log(statement);
-							//return false;
-					   	tx.executeSql(statement);
-					
-						no_notIDs.push(item.id);
-						notificationsCount = notificationsCount + 1;
-					});
-					
-					no_notIDs = no_notIDs.filter(function (e, i, no_notIDs) {
-					    return no_notIDs.lastIndexOf(e) === i;
-					});
-					
-					localStorage.setObject('fitNotifications', no_notIDs);
-					localStorage.setItem('fitNotificationsCount', notificationsCount);
-					if($('#homepage').length)
-						$('#homepage').find('#notificationsCount').html('(' + localStorage.getItem('fitNotificationsCount') + ')');
-				}, errorCB, function() {
-					//console.log('Inserted all rows');
-				});
-			}, 'jsonp');
-			
-			/*
-			* TRAININGS
-			*/
-			var trainingsCount = parseInt(localStorage.getItem('fitTrainingsCount'));
-			if(!trainingsCount)
-				var trainingsCount = 0;
-			var tr_notIDs = localStorage.getObject('fitTrainings');
-			if(!tr_notIDs)
-				tr_notIDs = [];
-			data = {};
-			data.user_id = user.id;
-			data.club_id = club_id;
-			data.ids = tr_notIDs;
-			$.get(app.apiUrl + '?action=getTrainings', data, function(result) {
-				db.transaction(function(tx) {
-			   		$.each(result, function(i, item) {
-			   			var sql = "INSERT INTO TRAININGS (id, type, name, description, exercises, day_names) VALUES ("+item.id+", '" + (item.order_id && item.order_id != '0' && item.order_id != 0 ? 'order' : 'sample') + "', '"+item.name+"', '"+item.description+"', '" + JSON.stringify(item.exercises) + "', '" + JSON.stringify(item.day_names) + "')";
-			   			//console.log(sql);
-				   		tx.executeSql(sql);
-				   		
-				   		tr_notIDs.push(item.id);
-				   		trainingsCount = trainingsCount + 1;
-			   		});
-			   	
-		   		
-			   		setTimeout(function() {
-				   		packs.initTrainings();
-			   		}, 500);
-			   		
-			   		tr_notIDs = tr_notIDs.filter(function (e, i, tr_notIDs) {
-					    return tr_notIDs.lastIndexOf(e) === i;
-					});
-					
-					localStorage.setObject('fitTrainings', tr_notIDs);
-					localStorage.setItem('fitTrainingsCount', trainingsCount);
-					
-				}, errorCB, function() {
-				
-				});
-			
-			}, 'jsonp');
-			//NUTRITIONS
-			var nutritionsCount = parseInt(localStorage.getItem('fitNutritionsCount'));
-			if(!nutritionsCount)
-				var nutritionsCount = 0;
-			var nu_notIDs = localStorage.getObject('fitNutritions');
-			if(!nu_notIDs)
-				nu_notIDs = [];
-			data = {};
-			data.user_id = user.id;
-			data.club_id = club_id;
-			data.ids = nu_notIDs;
-			$.get(app.apiUrl + '?action=getNutritions', data, function(result) {
-				db.transaction(function(tx) {
-			   		$.each(result, function(i, item) {
-			   		
-			   			if (item.order_id && item.order_id != '0' && item.order_id != 0) {
-			   				type = 'order';
-						} else {
-							type = 'sample';
-						}
-				   		
-				   		tx.executeSql("INSERT INTO NUTRITIONS (id, type, name, description, meals) VALUES (" + item.id + ", '" + (item.order_id && item.order_id != '0' && item.order_id != 0 ? 'order' : 'sample') + "', '" + item.name + "', '" + item.description + "', '" + JSON.stringify(item.meals) + "')");
-				   		
-				   		nu_notIDs.push(item.id);
-						nutritionsCount = nutritionsCount + 1;
-				   		
-			   		});
-			   		setTimeout(function() {
-				   		packs.initNutritions();
-			   		}, 500);
-			   		
-			   		nu_notIDs = nu_notIDs.filter(function (e, i, nu_notIDs) {
-					    return nu_notIDs.lastIndexOf(e) === i;
-					});
-					
-					localStorage.setObject('fitNutritions', nu_notIDs);
-					localStorage.setItem('fitNutritionsCount', nutritionsCount);
-			   	}, errorCB, function() {
-				   			
-				});
-			
-			}, 'jsonp');
-			/*
-			*UPDATE USER
-			*/
-			data = {};
-			data.user = user;
-			data.test = localStorage.setObject('fitTest');
-			
+		data.ids = notIDs;
+		data.user = user.id;
+		data.club = club_id;
+		$.get(app.apiUrl + '?action=getExercises', data, function(result) {
 			db.transaction(function(tx) {
-				query = 'SELECT * FROM DIARY ORDER BY day DESC';
-				//console.log(query);
-				tx.executeSql(query, [], function(tx, results) {
-					var len = results.rows.length, i;
-					var days = [];
-					if (len) {
-						for (i = 0; i < len; i++) {
-							days.push(results.rows.item(i));
-						}
-					}
-					data.diary = days;
+				$.each(result, function(i, item) {
 					
-					$.get(app.apiUrl + '?action=updateUser', user, function(result) {
+					var statement = 'INSERT INTO EXERCISES (id, type, name, name_en, name_ru, data, video, description, description_en, description_ru, category, muscle) VALUES (' + parseInt(item.id) + ', "' + item.heading + '", "' + item.name + '", "' + item.name_en + '", "' + item.name_ru + '", "0", "0", "' + item.description + '", "' + item.description_en + '", "' + item.description_ru + '", "' + item.category + '", "' + item.muscle_group + '")';
+					////console.log(statement);
+						//return false;
+				   	tx.executeSql(statement);
 				
-						user.lastSynced = new Date();
-						localStorage.setObject('fitUser', user);
-					},'jsonp');
-					
-				}, function(tx, results) {
-					console.error('Error in selecting test result');
-					//console.log(tx);
-					//console.log(results);
+					notIDs.push(item.id);
 				});
-			}, function(error) {
-				console.error('Error in selecting test result');
-				//console.log(error);
+				
+				notIDs = notIDs.filter(function (e, i, notIDs) {
+				    return notIDs.lastIndexOf(e) === i;
+				});
+				
+				localStorage.setObject('fitExercises', notIDs);
+				
+			}, errorCB, function() {
+				//console.log('Inserted all rows');
 			});
-		}
-		setTimeout(function() {
-			app.syncData();
-		}, 60000);
+		}, 'jsonp');
+		
+		/*
+		* NOTIFICATIONS
+		*/
+		var notIDs = [];
+		var notificationsCount = parseInt(localStorage.getItem('fitNotificationsCount'));
+		if(!notificationsCount)
+			var notificationsCount = 0;
+		notIDs = localStorage.getObject('fitNotifications');
+		if (!notIDs)
+			notIDs = [];
+			
+		data.ids = notIDs;
+		data.user = user.id;
+		data.club = club_id;
+		$.get(app.apiUrl + '?action=getNotifications', data, function(result) {
+			db.transaction(function(tx) {
+				$.each(result, function(i, item) {
+					
+					var statement = 'INSERT INTO NOTIFICATIONS (id, is_read, heading, message, `from`, send) VALUES (' + parseInt(item.id) + ', 0, "' + item.heading + '", "' + item.message + '", "' + item.from + '", "' + item.send + '")';
+					////console.log(statement);
+						//return false;
+				   	tx.executeSql(statement);
+				
+					notIDs.push(item.id);
+					notificationsCount = notificationsCount + 1;
+				});
+				
+				notIDs = notIDs.filter(function (e, i, notIDs) {
+				    return notIDs.lastIndexOf(e) === i;
+				});
+				
+				localStorage.setObject('fitNotifications', notIDs);
+				localStorage.setItem('fitNotificationsCount', notificationsCount);
+				if($('#homepage').length)
+					$('#homepage').find('#notificationsCount').html('(' + localStorage.getItem('fitNotificationsCount') + ')');
+			}, errorCB, function() {
+				//console.log('Inserted all rows');
+			});
+		}, 'jsonp');
+		
+		/*
+		* TRAININGS
+		*/
+		var notIDs = [];
+		var trainingsCount = parseInt(localStorage.getItem('fitTrainingsCount'));
+		if(!trainingsCount)
+			var trainingsCount = 0;
+		notIDs = localStorage.getObject('fitTrainings');
+		if (!notIDs)
+			notIDs = [];
+		
+		data = {};
+		data.user_id = user.id;
+		data.club_id = club_id;
+		data.ids = notIDs;
+		$.get(app.apiUrl + '?action=getTrainings', data, function(result) {
+			
+	   		$.each(result, function(i, item) {
+	   			
+		   		db.transaction(function(tx) {
+		   			var sql = "INSERT INTO TRAININGS (id, type, name, description, exercises, day_names) VALUES ("+item.id+", '" + (item.order_id && item.order_id != '0' && item.order_id != 0 ? 'order' : 'sample') + "', '"+item.name+"', '"+item.description+"', '" + JSON.stringify(item.exercises) + "', '" + JSON.stringify(item.day_names) + "')";
+		   			//console.log(sql);
+			   		tx.executeSql(sql);
+			   		
+		   		}, errorCB, function() {
+		   		
+		   			notIDs.push(item.id);
+					trainingsCount = trainingsCount + 1;
+		   		
+					//console.log('Success3');
+				});
+	   		});
+	   		
+	   		setTimeout(function() {
+		   		packs.initTrainings();
+	   		}, 500);
+	   		
+	   		notIDs = notIDs.filter(function (e, i, notIDs) {
+			    return notIDs.lastIndexOf(e) === i;
+			});
+			
+			localStorage.setObject('fitTrainings', notIDs);
+			localStorage.setItem('fitTrainingsCount', trainingsCount);
+		
+		}, 'jsonp');
+		
+		var nutritionsCount = parseInt(localStorage.getItem('fitNutritionsCount'));
+		if(!nutritionsCount)
+			var nutritionsCount = 0;
+		var notIDs = localStorage.getObject('fitNutritions');
+		if (!notIDs)
+			var notIDs = [];
+		data.ids = notIDs;
+		$.get(app.apiUrl + '?action=getNutritions', data, function(result) {
+			////console.log(result);
+	   		$.each(result, function(i, item) {
+	   		
+	   			if (item.order_id && item.order_id != '0' && item.order_id != 0) {
+	   				type = 'order';
+				} else {
+					type = 'sample';
+				}
+		   		db.transaction(function(tx) {
+			   		tx.executeSql("INSERT INTO NUTRITIONS (id, type, name, description, meals) VALUES (" + item.id + ", '" + (item.order_id && item.order_id != '0' && item.order_id != 0 ? 'order' : 'sample') + "', '" + item.name + "', '" + item.description + "', '" + JSON.stringify(item.meals) + "')");
+		   		}, errorCB, function() {
+		   			notIDs.push(item.id);
+					nutritionsCount = nutritionsCount + 1;
+		   		
+					//console.log('Success4');
+				});
+	   		});
+	   		
+	   		setTimeout(function() {
+		   		packs.initNutritions();
+	   		}, 500);
+	   		
+	   		notIDs = notIDs.filter(function (e, i, notIDs) {
+			    return notIDs.lastIndexOf(e) === i;
+			});
+			
+			localStorage.setObject('fitNutritions', notIDs);
+			localStorage.setItem('fitNutritionsCount', nutritionsCount);
+		
+		}, 'jsonp');
+		data = {};
+		data.user = user;
+		data.test = localStorage.setObject('fitTest');
+		
+		db.transaction(function(tx) {
+			query = 'SELECT * FROM DIARY ORDER BY day DESC';
+			//console.log(query);
+			tx.executeSql(query, [], function(tx, results) {
+				var len = results.rows.length, i;
+				var days = [];
+				if (len) {
+					for (i = 0; i < len; i++) {
+						days.push(results.rows.item(i));
+					}
+				}
+				data.diary = days;
+				
+				$.get(app.apiUrl + '?action=updateUser', user, function(result) {
+			
+					user.lastSynced = new Date();
+					user = localStorage.setObject('fitUser');
+				},'jsonp');
+				
+			}, function(tx, results) {
+				console.error('Error in selecting test result');
+				//console.log(tx);
+				//console.log(results);
+			});
+		}, function(error) {
+			console.error('Error in selecting test result');
+			//console.log(error);
+		});
+							
+		
+		
+		
+		//stuff to be synced outside the app, often
+		/*
+		* user profile
+		* user test
+		* user diary
+		*/
 		
 	},
 	
@@ -618,6 +580,7 @@ var app = {
 		data.club_id = club_id;
 		
 		var con = checkConnection();
+		//console.log(con);
 		if (con == 'No') {
 			user = localStorage.getObject('fitUser');
 			if (user.club_nr != data.client_nr) {
@@ -641,8 +604,6 @@ var app = {
 		   				user = data;
 		   			else
 			   			user = result;
-			   		
-			   		localStorage.setObject('fitUser', user);
 			   		
 					LEVEL = 1;
 					teleportMe('homepage', {});
@@ -703,10 +664,7 @@ var app = {
 				diary = results.rows.item(0);
 				//console.log(diary);
 				$('.treeningud_number').html(diary.total);
-				if(diary.total_length)
-					$('.treeningud_time').html(secToHour(diary.total_length));
-				else
-					$('.treeningud_time').html('00:00:00');
+				$('.treeningud_time').html(secToHour(diary.total_length));
 				$('.last_update').html(diary.plan_name);
 			}, function(tx, results) {
 				console.error('Error in selecting test result');
@@ -1040,32 +998,30 @@ var app = {
 		//foreach categories download pic, if download add checkmark to cats
 		//foreach all the exercises download pic and add checkmark downloaded
 		//finish this shit...
-		if(deviceMode) {
-			var fileTransfer = new FileTransfer();
-			extension = 'jpg';
-			
-			var uri = encodeURI(app.serverUrl + type + '/' + module + '/' + id + '.' + extension);
-			
-			fileTransfer.download(
-			    uri,
-			    filePath,
-			    function(entry) {
-			        //console.log("download complete: " + entry.fullPath);
-			        //$('img.')
-			    },
-			    function(error) {
-			        //console.log("download error source " + error.source);
-			        //console.log("download error target " + error.target);
-			        //console.log("upload error code" + error.code);
-			    },
-			    false,
-			    {
-			        headers: {
-			            "Authorization": "Basic dGVzdHVzZXJuYW1lOnRlc3RwYXNzd29yZA=="
-			        }
-			    }
-			);
-		}
+		var fileTransfer = new FileTransfer();
+		extension = 'jpg';
+		
+		var uri = encodeURI(app.serverUrl + type + '/' + module + '/' + id + '.' + extension);
+		
+		fileTransfer.download(
+		    uri,
+		    filePath,
+		    function(entry) {
+		        //console.log("download complete: " + entry.fullPath);
+		        //$('img.')
+		    },
+		    function(error) {
+		        //console.log("download error source " + error.source);
+		        //console.log("download error target " + error.target);
+		        //console.log("upload error code" + error.code);
+		    },
+		    false,
+		    {
+		        headers: {
+		            "Authorization": "Basic dGVzdHVzZXJuYW1lOnRlc3RwYXNzd29yZA=="
+		        }
+		    }
+		);
 	},
 	
 	initPackageBuying: function(step) {
@@ -1500,8 +1456,7 @@ var app = {
 								//console.log(error);
 							});
 						}
-						LEVEL = 1;
-						teleportMe('homepage');
+						
 				
 					}, function(tx, results) {
 						console.error('Error in selecting test result');
@@ -1520,8 +1475,6 @@ var app = {
 				$('#yesnooverlay').find('.yesno').unbind('click');
 				$('#yesnooverlay').find('.yesno').click(function() {
 					$('#yesnooverlay').removeClass('scaleIn').removeClass('scale');
-					LEVEL = 1;
-					teleportMe('homepage', {});
 				});
 			}
 		})
@@ -1775,62 +1728,5 @@ var app = {
 		
 	}
 	
-}
 
-Storage.prototype.setObject = function(key, value) {
-    this.setItem(key, JSON.stringify(value));
-}
-
-Storage.prototype.getObject = function(key) {
-    var value = this.getItem(key);
-    if(value && value != 'undefined')
-    	return value && JSON.parse(value);
-    else
-    	return false;
-}
-
-function isOdd(num) { return num % 2;}
-
-function deliverError(msg, url, line) {
-	console.log(msg);	
-}
-
-window.onerror = function (msg, url, line) {
-	deliverError(msg, url, line);
-}
-
-function errorCB(e, a, b) {
-	deliverError('Error in DB: ' + e, 'app.js', 800);
-	//alert('Error in DB: ' + e);
-	console.error(e);
-	console.error(a);
-	console.error(b);
-}
-
-function checkConnection() {
-	if(navigator.network) {
-		var networkState = navigator.network.connection.type;
-	
-	    var states = {};
-	    states[Connection.UNKNOWN]  = 'Unknown';
-	    states[Connection.ETHERNET] = 'Ethernet';
-	    states[Connection.WIFI]     = 'WiFi';
-	    states[Connection.CELL_2G]  = '2G';
-	    states[Connection.CELL_3G]  = '3G';
-	    states[Connection.CELL_4G]  = '4G';
-	    states[Connection.NONE]     = 'No';
-    } else {
-	    if(navigator.onLine) {
-		    return 'WiFi';
-	    } else {
-		    return 'No';
-	    }
-    }
-    //console.log(states[networkState]);
-    
-    return states[networkState];
-}
-function calcAge(dateString) {
-  var birthday = +new Date(dateString);
-  return ~~((Date.now() - birthday) / (31557600000));
 }

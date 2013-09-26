@@ -292,6 +292,7 @@ function afterTeleport(where, extra) {
 			break;
 		case 'treening_naidiskavad_1paev':
 			trainings.getTrainingsDetail(extra);
+			break;
 		case 'treening_naidiskavad_1paev_nXn':
 			trainings.getTrainingsExercise(extra);
 			break;
@@ -856,7 +857,7 @@ function hideKeyBoard() {
 	
 	var field = document.createElement('input');
 	field.setAttribute('type', 'text');
-	field.setAttribute('style', 'position:absolute;top:0;');
+	field.setAttribute('style', 'position:absolute;top:-50px;');
 	document.body.appendChild(field);
 	
 	setTimeout(function() {
@@ -898,19 +899,11 @@ function hideKeyBoard() {
 				$('#topbar .backbtn').attr('data-deep', d);
 
 				goBack(LATEST, this);
+				if(newLATEST) {
+					newLATESTnohash = newLATEST.replace('#','');
 				
-				newLATESTnohash = newLATEST.replace('#','');
-				
-				////console.log('newLATEST > ' + newLATEST);
-				
-				teleportMe( newLATESTnohash, {} );
-
-				//$('.bottombar, .topbar').addClass('menuin');
-				//resizeby(newLATEST, 105);
-
-				////console.log(d, newLATEST, LEVEL);
-
-				//LEVEL = d ;
+					teleportMe( newLATESTnohash, {} );
+				}
 
 			} else {
 

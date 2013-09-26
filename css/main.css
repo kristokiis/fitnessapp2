@@ -25,6 +25,7 @@ html{
 body {
     font-size: 1em;
     line-height: 1.4;
+    min-height: 480px;
 }
 
 a{
@@ -146,6 +147,7 @@ body{
     -webkit-background-size: 100% auto;
     -moz-background-size: 100% 100%;
 	background-size: cover;
+	min-height: 480px;
 }
 
 .front{
@@ -1022,6 +1024,7 @@ input.error {
 	background-size: 3% auto;
 }
 .item_wrap.no_bg {
+	padding: 5% !important;
 	background: none !important;
 }
 
@@ -1222,6 +1225,10 @@ input.error {
 	right: -35%;
 	background-color: gray;
 }
+.remove-item .remove-overlay {
+	/*display: block;
+	right: -35%;*/
+}
 .remove-overlay span {
 	height: 100% !important;
 	background-image: url(../i/remove_item.png);
@@ -1306,9 +1313,10 @@ input.error {
 }
 
 .videopreview .play {
-  left: 0;
+  left: 15%;
+  width: 70%;
   position: absolute;
-  top: 0;
+  top: 10%;
 }
 
 .videotitle h2 {
