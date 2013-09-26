@@ -666,11 +666,49 @@ var app = {
 			$('#homepage').find('#notificationsCount').html('(' + localStorage.getItem('fitNotificationsCount') + ')');
 		}
 		
-		if (trainings.doingExercise) {
-			curDay = localStorage.getObject('fitCurDay');
-			$('#homepage').find('.continue-existing').data('extra_id', curDay.day);
-			$('#homepage').find('.continue-existing').show();
-			$('#homepage').find('.start-new').hide();
+		if (curDay = localStorage.getObject('fitCurDay')) {
+			if(!trainings.currentDay) {
+				db.transaction(function(tx) {
+					query = 'SELECT * FROM TRAININGS WHERE id = ' + curDay.plan_id;
+					//console.log(query);
+					tx.executeSql(query, [], function(tx, results) {
+						
+						var len = results.rows.length, i;
+						for (i = 0; i < len; i++) {
+						
+							item = results.rows.item(0);
+							var exercises = JSON.parse(item.exercises);
+							var day_names = JSON.parse(item.day_names);
+							var plan = {};
+						
+							plan.id = item.id;
+							plan.name = item.name;
+							plan.description = item.description;
+							
+							plan.exercises = exercises;
+							plan.day_names = day_names;
+							
+							trainings.currentTraining = plan;
+							trainings.currentDay = curDay.day;
+							
+							$('#homepage').find('.continue-existing').show();
+							$('#homepage').find('.start-new').hide();
+							
+						}
+					}, function(tx, results) {
+						console.error('Error in selecting test result');
+					});
+					
+					
+				}, function(error) {
+					console.error('Error in selecting test result');
+					//console.log(error);
+				});
+			} else {
+				$('#homepage').find('.continue-existing').show();
+				$('#homepage').find('.start-new').hide();
+			}
+			
 		} else {
 			$('#homepage').find('.continue-existing').hide();
 			$('#homepage').find('.start-new').show();

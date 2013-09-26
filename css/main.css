@@ -924,7 +924,7 @@ input.error {
 
 .item{
 	background: url(../i/row_btn_bg.jpg) repeat-x 0 0 transparent;
-	-webkit-transition: margin-left 300ms;
+	-webkit-transition: all 300ms;
 	border-top: 1px solid #FFF;
 	border-bottom: 1px solid #B3B3B3;
 	height: auto;
@@ -934,7 +934,7 @@ input.error {
 }
 
 .item.remove-item {
-	margin-left: -35%;
+	-webkit-transform: translate3d(-35%, 0, 0);
 }
 .bigitem .item_wrap h2, .item .item_wrap h3{
 	text-shadow: 0 1px 0 #fff;

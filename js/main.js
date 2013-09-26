@@ -435,15 +435,16 @@ function teleportMe( where, extra ){
 					updating = false;
 						
 					if(trainings.doingExercise) {
-						console.log($('.toscroll').find('.kestus').length);
-						console.log($('.toscroll').find('.kestus').html());
-						if(!$('.toscroll').find('.kestus').length) {
-							$('.toscroll').prepend('<section class="kestus"><span>Kogu treeningu kestus: <strong class="dayTimer">00:00</strong></span></section>');
-							
-						}
 						setTimeout(function() {
-							$('.kestus').slideDown();
-						}, 1000);
+							if(!$('.toscroll').find('.kestus').length) {
+								$('.toscroll').prepend('<section class="kestus"><span>Kogu treeningu kestus: <strong class="dayTimer">00:00</strong></span></section>');
+								
+							}
+							setTimeout(function() {
+								$('.kestus').slideDown();
+							}, 500);
+						}, 500);
+						
 					}
 					afterTeleport(where, extra);
 					

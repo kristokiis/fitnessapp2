@@ -1,4 +1,5 @@
 var currentTime = false;
+var mainTimer = {};
 //finish this file on friday
 var packs = {
 	getMain: function() {
@@ -107,7 +108,7 @@ var packs = {
 			
 				day = results.rows.item(0);
 				
-				console.log(day);
+				//console.log(day);
 				
 				//console.log(day);
 				
@@ -162,12 +163,12 @@ var packs = {
 				}
 			}, function(tx, results) {
 				console.error('Error in selecting test result');
-				console.log(tx);
-				console.log(results);
+				//console.log(tx);
+				//console.log(results);
 			});
 		}, function(error) {
 			console.error('Error in selecting test result');
-			console.log(error);
+			//console.log(error);
 		});
 		
 		
@@ -175,8 +176,6 @@ var packs = {
 	},
 	
 	initTrainings: function() {
-		trainings.orderPackages = [];
-		trainings.samplePackages = [];
 		db.transaction(function(tx) {
 			query = 'SELECT * FROM TRAININGS ORDER BY id DESC';
 			//console.log(query);
@@ -184,24 +183,11 @@ var packs = {
 				
 				var len = results.rows.length, i;
 				for (i = 0; i < len; i++) {
-				
-					item = results.rows.item(i);
-					var exercises = JSON.parse(item.exercises);
-					var day_names = JSON.parse(item.day_names);
-					var plan = {};
-					
-					plan.id = item.id;
-					plan.name = item.name;
-					plan.description = item.description;
-					
-					plan.exercises = exercises;
-					plan.day_names = day_names;
-					//console.log(plan);
 					
 					if (item.type == 'order') {
-						trainings.orderPackages.push(plan);
+						trainings.orderPackages = true;
 					} else {
-						trainings.samplePackages.push(plan);
+						trainings.samplePackages = true;
 					}
 					
 				}
@@ -230,7 +216,8 @@ var packs = {
 		
 	},
 	initNutritions: function() {
-		
+		nutritions.orderNutritions = [];
+		nutritions.sampleNutritions = [];
 		db.transaction(function(tx) {
 			query = 'SELECT * FROM NUTRITIONS ORDER BY id DESC';
 			//console.log(query);
@@ -272,12 +259,12 @@ var packs = {
 
 var trainings = {
 	doingExercise: false,
-	trainings: {},
 	nextExercise: 0, 
-	samplePackages: [],
-	orderPackages: [], 
+	samplePackages: false,
+	orderPackages: false, 
 	currentTraining: {},
 	currentDay: 0,
+	isItDone: false,
 	
 	getTrainingsMain: function() {
 		$('.main-contents').html('');
@@ -286,11 +273,11 @@ var trainings = {
 			$('.main-contents').append('<section class="item jatkakava teleport" data-page="treening_jatka" data-level="2"><div class="item_wrap"><h3>Jätka treeningkava</h3></div></section>');
 		}	
 		
-		if (trainings.samplePackages.length) {
+		if (trainings.samplePackages) {
 			$('.main-contents').append('<section class="item noicon teleport" data-page="treening_naidiskavad" data-level="2"  data-type="sample"><div class="item_wrap"><h3>Näidiskavad</h3></div></section>');
 		}
-		
-		if (trainings.orderPackages.length) {
+
+		if (trainings.orderPackages) {
 			$('.main-contents').append('<section class="item noicon soodustusedbtn teleport" data-page="treening_naidiskavad" data-level="2" data-type="order"><div class="item_wrap"><h3>Personaalsed kavad</h3></div></section>');
 		} else {
 			$('.main-contents').append('<section class="item noicon soodustusedbtn teleport" data-page="personaalsed_treeningkavad" data-level="2"><div class="item_wrap"><h3>Personaalsed kavad</h3></div></section>');
@@ -319,105 +306,119 @@ var trainings = {
 	},
 	
 	getTrainings: function(type) {
-	
-		//console.log(type);
 		
-		/*
-		* toDo: SELECT trainings from DB
-		*/
-		
-		if (type == 'order') {
-			var _trainings = trainings.orderPackages;
-			
-		} else {
-			var _trainings = trainings.samplePackages;
-		}	
-		console.log(_trainings);
-		
-		$.each(_trainings, function(i, training) {
+		db.transaction(function(tx) {
+			query = 'SELECT * FROM TRAININGS WHERE type = "' + type + '"';
+			//console.log(query);
+			tx.executeSql(query, [], function(tx, results) {
 				
-			$('#treening_naidiskavad').find('.toscroll').append('<section class="item noicon treenerpakkumisedbtn teleport" data-page="treening_naidiskava" data-level="3" data-id="' + training.id + '"><div class="item_wrap"><h3>' + training.name + '</h3></div><div class="remove-overlay"><span class="remove-icon"></span></div></section>');
+				var len = results.rows.length, i;
+				for (i = 0; i < len; i++) {
+					training = item = results.rows.item(i);
+					$('#treening_naidiskavad').find('.training-content').append('<section class="item noicon treenerpakkumisedbtn teleport" data-page="treening_naidiskava" data-level="3" data-id="' + training.id + '"><div class="item_wrap"><h3>' + training.name + '</h3></div><div class="remove-overlay"><span class="remove-icon"></span></div></section>');
+				}
+		
+				$('#treening_naidiskavad').find('.teleport').click(function(e) {
+					e.preventDefault();
+					//currenttraining = $(this).data('id');
+					LEVEL = 3;
+					teleportMe('treening_naidiskava', $(this).data('id'));
+					
+				});
 				
-		});
-		
-		trainings.trainings = _trainings;
-		
-		$('#treening_naidiskavad').find('.item_wrap').on('swipe', function(e, Dx, Dy){
-			if (Dx == -1) {
-				$(this).parent().addClass('remove-item');
-			} else if(Dx == 1) {
-				$(this).parent().removeClass('remove-item');
-			}
-	   });
-		
-		$('#treening_naidiskavad').find('.teleport').click(function(e) {
-			e.preventDefault();
-			//currenttraining = $(this).data('id');
-			LEVEL = 3;
-			teleportMe('treening_naidiskava', $(this).data('id'));
-			
-		});
-		
-		$('#treening_naidiskavad').find('.remove-overlay').click(function(e) {
-			e.preventDefault();
-			e.stopPropagation();
-			$(this).parent().slideUp('fast', function() {
-				var id = parseInt($(this).data('id'));
+				$('#treening_naidiskavad').find('.remove-overlay').click(function(e) {
+					e.preventDefault();
+					e.stopPropagation();
+					$(this).parent().slideUp('fast', function() {
+						var id = parseInt($(this).data('id'));
+						
+						db.transaction(function(tx) {
+							var statement = 'DELETE FROM TRAININGS WHERE id = ' + id;
+							//console.log(statement);
+						   	tx.executeSql(statement);
+						   	$(this).remove();
+					   	});
+					});
+					
+				});
 				
-				db.transaction(function(tx) {
-					var statement = 'DELETE FROM TRAININGS WHERE id = ' + id;
-					//console.log(statement);
-				   	tx.executeSql(statement);
-				   	$(this).remove();
-			   	});
+			}, function(tx, results) {
+				console.error('Error in selecting test result');
+				console.log(tx);
+				console.log(result);
 			});
 			
-		});
+		}, function(error) {
+			console.error('Error in selecting test result');
+			//console.log(error);
+		});		
+		
+		
 		
 	},
 	getTraining: function(id) {
 	
-		/*
-		* toDo: SELECT training from DB
-		*/
-	
-		$.each(trainings.trainings, function(i, training) {
-			if(training.id == id) {
-				trainings.currentTraining = training;
-				//console.log('Found training:');
-				//console.log(training);
+		db.transaction(function(tx) {
+			query = 'SELECT * FROM TRAININGS WHERE id = ' + id;
+			//console.log(query);
+			tx.executeSql(query, [], function(tx, results) {
 				
-			}
-		});
+				var len = results.rows.length, i;
+				for (i = 0; i < len; i++) {
+				
+					item = results.rows.item(0);
+					var exercises = JSON.parse(item.exercises);
+					var day_names = JSON.parse(item.day_names);
+					var plan = {};
+				
+					plan.id = item.id;
+					plan.name = item.name;
+					plan.description = item.description;
+					
+					plan.exercises = exercises;
+					plan.day_names = day_names;
+					
+					trainings.currentTraining = plan;
+					trainings.currentDay = curDay.day;
+					
+					$('#treening_naidiskava').find('h3:first').html('TREENINGPLAAN:<br>' + trainings.currentTraining.name);
 		
-		$('#treening_naidiskava').find('h3:first').html('TREENINGPLAAN:<br>' + trainings.currentTraining.name);
-		
-		$.each(trainings.currentTraining.exercises, function(day, exercises) {
-		
-			$.each(trainings.currentTraining.day_names[day], function(j, muscle) {
-				if(j == 0)
-					muscle_groups_str = muscle_groups[muscle];
-				else
-					muscle_groups_str = muscle_groups_str + ', ' + muscle_groups[muscle]; 
+					$.each(trainings.currentTraining.exercises, function(day, exercises) {
+					
+						$.each(trainings.currentTraining.day_names[day], function(j, muscle) {
+							if(j == 0)
+								muscle_groups_str = muscle_groups[muscle];
+							else
+								muscle_groups_str = muscle_groups_str + ', ' + muscle_groups[muscle]; 
+						});
+					
+						$('#treening_naidiskava').find('.training-content').append('<section class="item noicon teleport" data-page="treening_naidiskavad_1paev" data-level="3" data-day="' + day + '"><div class="item_wrap"><h6>' + day + '. päev</h6><h3>' + muscle_groups_str + '</h3></div></section>');
+						
+					});
+					
+					$('#treening_naidiskava').find('.description-content').html(trainings.currentTraining.description);
+					
+					$('#treening_naidiskava').find('.teleport').click(function(e) {
+						e.preventDefault();
+						LEVEL = 4;
+						teleportMe('treening_naidiskavad_1paev', $(this).data('day'));
+						
+					});
+					
+					$('.to-download').click(function(e) {
+						e.preventDefault();
+						LEVEL = 4;
+						teleportMe('alusta_laadimist', id);
+					});
+					
+				}
+			}, function(tx, results) {
+				console.error('Error in selecting test result');
 			});
-		
-			$('#treening_naidiskava').find('.training-content').append('<section class="item noicon teleport" data-page="treening_naidiskavad_1paev" data-level="3" data-day="' + day + '"><div class="item_wrap"><h6>' + day + '. päev</h6><h3>' + muscle_groups_str + '</h3></div></section>');
 			
-		});
-		
-		$('#treening_naidiskava').find('.description-content').html(trainings.currentTraining.description);
-		
-		$('#treening_naidiskava').find('.teleport').click(function(e) {
-			e.preventDefault();
-			LEVEL = 4;
-			teleportMe('treening_naidiskavad_1paev', $(this).data('day'));
-			
-		});
-		
-		$('.to-download').click(function(e) {
-			e.preventDefault();
-			LEVEL = 4;
-			teleportMe('alusta_laadimist', id);
+		}, function(error) {
+			console.error('Error in selecting test result');
+			//console.log(error);
 		});
 			
 	},
@@ -442,7 +443,7 @@ var trainings = {
 			var exercises = trainings.currentTraining.exercises[trainings.currentDay];
 			
 			var curDay = localStorage.getObject('fitCurDay');
-			
+			var exCounter = 0;
 			$.each(trainings.currentTraining.exercises[trainings.currentDay], function(i, exercise) {
 			
 				if(!curDay || !curDay.exercises[i]) {
@@ -454,6 +455,7 @@ var trainings = {
 					//if (exercise.type == 'weight' && exercise.series_count) {
 						
 						if (curDay.exercises[i].status == 'done') {
+							exCounter = exCounter+1;
 							var status = '<img src="i/icon_ok.png" alt=""/>';
 						} else {
 							var status = '<img src="i/icon_halfok.png" alt=""/>';
@@ -467,6 +469,11 @@ var trainings = {
 				$('#treening_naidiskavad_1paev').find('.exercises-content').append('<section class="whiteitem gym noicon teleport" data-page="treening_naidiskavad_1paev_Xmin" data-level="4" data-exercise="' + i + '"><div class="item_wrap"><h3><span>' + exercise.name + '</span></h3><div class="info"><span>'+status+'</span></div><div class="clear"></div></div></section>');
 				
 			});
+			if (exCounter == Object.keys(trainings.currentTraining.exercises[trainings.currentDay]).length) {
+				trainings.isItDone = true;
+			} else {
+				trainings.isItDone = false;
+			}
 			$('#treening_naidiskavad_1paev').find('.teleport').click(function(e) {
 				e.preventDefault();
 				LEVEL = 5;
@@ -506,6 +513,8 @@ var trainings = {
 		$('.videopreview').attr('data-id', trainings.currentExercise.exercise_id);
 		$('.videopreview').find('img:last').attr('src', app.serverUrl + 'pics/exercises/' + trainings.currentExercise.exercise_id + '.jpg');
 		
+		var curDay = localStorage.getObject('fitCurDay');
+		
 		$.each(trainings.currentTraining.exercises[trainings.currentDay], function(i, item) {
 			j++;
 			if (i == element) 
@@ -514,13 +523,23 @@ var trainings = {
 			if (iteration && j == (iteration + 1))
 				next = i;
 		});
-		if (iteration == j) {
-			$('.to-back').show();
+		//console.log(trainings.isItDone);
+		if (trainings.isItDone) {
+			$('.end-training').show();
+			$('.to-back').hide();
 			$('.next-exercise').hide();
 		} else {
-			$('.to-back').hide();
-			$('.next-exercise').show();
+			if (iteration == j) {
+				$('.to-back').show();
+				$('.end-training').hide();
+				$('.next-exercise').hide();
+			} else {
+				$('.to-back').hide();
+				$('.end-training').hide();
+				$('.next-exercise').show();
+			}
 		}
+		
 		$('.to-back').click(function(e) {
 			
 			$('.backbtn').click();
@@ -547,7 +566,7 @@ var trainings = {
 		
 		$('.serias-content').html('');
 		
-		var curDay = localStorage.getObject('fitCurDay');
+		
 		
 		if (trainings.currentExercise.type == 'weight') {
 			$('#treening_naidiskavad_1paev_nXn').find('h1').html(trainings.currentExercise.series_count + 'x' + trainings.currentExercise.series[0].repeats);
@@ -609,7 +628,7 @@ var trainings = {
 				trainings.doTraining(data);
 				$(this).removeClass('unchecked').addClass('checked').find('img').attr('src', 'i/checked.png');
 			} else {
-				//$(this).removeClass('checked').addClass('unchecked').find('img').attr('src', 'i/unchecked.png');
+				$(this).removeClass('checked').addClass('unchecked').find('img').attr('src', 'i/unchecked.png');
 			}
 		});
 		
@@ -644,7 +663,7 @@ var trainings = {
 				par.children('span').text( Number(current) + Number(1) );
 			}
 		
-			////console.log( par.children('span').text() );
+			//console.log( par.children('span').text() );
 		});
 		
 		$('.weight .minus').unbind(eventEnd).bind(eventEnd, function (e) {
@@ -745,12 +764,13 @@ var trainings = {
 		if(!$('.toscroll').find('.kestus').length)
 			$('.toscroll').prepend('<section class="kestus"><span>Kogu treeningu kestus: <strong class="dayTimer">00:00</strong></span></section>');
 		
-		
+		exCounter = 0;
 		var updateExercises = [];
 		$.each(trainings.currentTraining.exercises[trainings.currentDay], function(i, exercise) {
-		
-			//console.log(exercise);
-			//console.log(trainings.currentExercise);
+			if(curDay && curDay.exercises[i]) {
+				if(curDay.exercises[i].status == 'done')
+					exCounter = exCounter+1;
+			}
 		
 			if(trainings.currentExercise.id == exercise.id) {
 				if (data.type == 'time' && data.status == 'start') {
@@ -784,7 +804,6 @@ var trainings = {
 					});
 					
 				}
-				console.log(curDay);
 				if (curDay) {
 					curDay.exercises[i] = exercise;
 					newDay = false;
@@ -794,18 +813,27 @@ var trainings = {
 					curDay.started = new Date();
 					curDay.plan_id = trainings.currentTraining.id;
 					curDay.day = trainings.currentDay;
-					curDay.exercises = [];
+					curDay.exercises = {};
 					curDay.exercises[i] = exercise;
 					newDay = true;
 				}
 				curDay.last_activity = new Date();
-				console.log(curDay);
+				if(exercise.status == 'done' && (exCounter+1) == Object.keys(trainings.currentTraining.exercises[trainings.currentDay]).length) {
+					$('.end-training').show();
+					$('.to-back').hide();
+					$('.next-exercise').hide();
+				}
+				
 			}
+			
 			
 			
 			//updateExercises.push(exercise);
 			
 		});
+		
+		
+		
 		/*db.transaction(function(tx) {
 			var statement = "UPDATE TRAININGS SET exercises = '" + JSON.stringify(updateExercises) + "' WHERE id = " + trainings.currentTraining.id + "";
 			//console.log(statement);
@@ -824,7 +852,7 @@ var trainings = {
 		
 		$('.kestus').show();
 		
-		console.log(curDay);
+		//console.log(curDay);
 		
 		db.transaction(function(tx) {
 		
@@ -866,7 +894,7 @@ var trainings = {
 					
 					db.transaction(function(tx) {
 						var statement = "UPDATE DIARY SET day_data = '" + JSON.stringify(curDay) + "' WHERE day = '" + curr_year + "-" + curr_month + "-" + curr_date + "' AND package = " + trainings.currentTraining.id + " AND training_day = " + trainings.currentDay;
-						////console.log(statement);
+						//console.log(statement);
 					   	tx.executeSql(statement);
 				   	}, function(error) {
 						console.error('Error in selecting test result');
@@ -888,6 +916,9 @@ var trainings = {
 	},
 	
 	endTraining: function() {
+		
+		curDay = localStorage.getObject('fitCurDay', curDay);
+	
 		curTime = new Date();
 		if(curDay.started)
 			lastTime = new Date(curDay.started).getTime();
@@ -903,10 +934,22 @@ var trainings = {
 	    if(curr_month < 10)
 			curr_month = '0' + curr_month;
 	    var curr_year = curTime.getFullYear();
+	    var exercises = {};
+	    //check if any timers are running and update their time to smaller amount
+	    $.each(curDay.exercises, function(i, exercise) {
+	    
+		   if (exercise.status == 'doing' && exercise.started) {
+			   var startedTime = new Date(curDay.started).getTime();
+			   difference2 = (curTime.getTime() - startedTime)/1000;
+			   exercise.time = secToHour(difference2);
+		   } 
+		   curDay.exercises[i] = exercise;
+	    });
+		console.log(curDay);
 		
 		db.transaction(function(tx) {
-			var statement = "UPDATE DIARY SET length = '" + difference + "' WHERE day = '" + curr_year + "-" + curr_month + "-" + curr_date + "' AND package = " + trainings.currentTraining.id + " AND training_day = " + trainings.currentDay;
-			////console.log(statement);
+			var statement = "UPDATE DIARY SET day_data = '" + JSON.stringify(curDay) + "', length = '" + difference + "' WHERE day = '" + curr_year + "-" + curr_month + "-" + curr_date + "' AND package = " + trainings.currentTraining.id + " AND training_day = " + trainings.currentDay;
+			//console.log(statement);
 		   	tx.executeSql(statement);
 		   	localStorage.removeItem('fitCurDay');
 		   	trainings.doingExercise = false;
@@ -1115,6 +1158,8 @@ function secToHour(time) {
     return (hours > 0 ? pad(hours, 2) : "00") + ":" + (min > 0 ? pad(min, 2) : "00") + ":" + pad(sec, 2);
 }
 function startBigTimer(time) {
+	if(mainTimer)
+		clearTimeout(mainTimer);
 	
 	time = time + 100;
 	
@@ -1126,7 +1171,7 @@ function startBigTimer(time) {
     
     $('.dayTimer').html((hours > 0 ? pad(hours, 2) : "00") + ":" + (min > 0 ? pad(min, 2) : "00") + ":" + pad(sec, 2));
 	
-	setTimeout(function() {
+	mainTimer = setTimeout(function() {
 		startBigTimer(time)
 	}, 1000);
 	
