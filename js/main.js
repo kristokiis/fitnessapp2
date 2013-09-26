@@ -1017,7 +1017,7 @@ function hideKeyBoard() {
 			//wipeDown: function() { alert("down"); },
 			min_move_x : 24,
 			min_move_y : 24,
-			preventDefaultEvents : true
+			preventDefaultEvents : false
 		});
 		
 		
