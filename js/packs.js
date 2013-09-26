@@ -37,14 +37,18 @@ var packs = {
 				month = false;
 				var len = results.rows.length, i;
 				
+				testResults = localStorage.getObject('fitTest');
+				
 				if (len) {
 				
 					for (i = 0; i < len; i++) {
 						day = results.rows.item(i);
 							
-						
-						template.find('.trainings-content').append('<div class="treening" data-id="' + day.id + '"><div class="arrow"><div>'+translations.et['date']+': <span class="date">' + day.day + '</span></div><div>'+translations.et['pack']+': <span class="kava">' + day.plan_name + '</span></div><div>'+translations.et['trainingday']+': <span class="paev">' + day.day_name + '</span></div><div>'+translations.et['training_length']+': <span class="length">' + secToHour(day.length) + '</span></div></div></div>');
-						
+						if(day.type == 'exercise') {
+							template.find('.trainings-content').append('<div class="treening" data-id="' + day.id + '"><div class="arrow"><div>'+translations.et['date']+': <span class="date">' + day.day + '</span></div><div>'+translations.et['pack']+': <span class="kava">' + day.plan_name + '</span></div><div>'+translations.et['trainingday']+': <span class="paev">' + day.day_name + '</span></div><div>'+translations.et['training_length']+': <span class="length">' + secToHour(day.length) + '</span></div></div></div>');
+						} else {
+							template.find('.trainings-content').append('<div class="treening" data-id="' + day.id + '"><div class="arrow"><div>'+translations.et['date']+': <span class="date">' + day.day + '</span></div><div>'+translations.et['pack']+': <span class="kava">Fitness test</span></div><div>'+translations.et['score']+': <span class="paev">' + day.day_name + '</span></div></div></div>');
+						}
 						if (!month) {
 							month = parseInt(day.month);
 							timesCounter = 1;
@@ -106,32 +110,56 @@ var packs = {
 				console.log(day);
 				
 				//console.log(day);
-				$('#diary_detail').find('.date').html(day.day);
-				$('#diary_detail').find('.kava').html(day.plan_name);
-				$('#diary_detail').find('.paev').html(day.day_name);
-				$('#diary_detail').find('.length').html(secToHour(day.length));
+				
 				var day_data = JSON.parse(day.day_data);
 				console.log(day_data);
-				$.each(day_data.exercises, function(i, exercise) {
-					if (exercise) {
-						$('.exercise-template').find('h3').html(exercise.name);
-						if(exercise.type == 'time') {
-							$('.exercise-template').find('.info-content').html('<p>Kestus: ' + exercise.time + '</p>');
+				if(day.type == 'test') {
+				
+					$('#diary_detail').find('.date').html(day.day);
+					$('#diary_detail').find('.kava').html('Fitness test');
+					$('#diary_detail').find('.paev').parent().html(translations[lang]['score'] + ': <span class="paev">' + day.day_name + '</span>');
+					$('#diary_detail').find('.length').parent().hide();
+					$('.exercise-template').find('.info-content').html('');
+					$.each(day_data, function(test, scores) {
+						if(test == 4) {
+							ext = 'cm';
+						} else if(test == 5) {
+							ext = 'm';
 						} else {
-							$('.exercise-template').find('.info-content').html('');
-							$.each(exercise.series, function(j, serie) {
-								if(serie.status == 'done')
-									$('.exercise-template').find('.info-content').append('<p>Seeria ' + (j+1) + ': ' + serie.repeats + 'x' + serie.weights + '</p>');
-							});
+							ext = 'tk';
+						}
+						test = translations[lang]['test_' + test];
+						$('.exercise-template').find('.info-content').append('<p>' + test + ': ' + scores.score + 'p (' + scores.points + ext + ')</p>');
+					});
+					$('.exercises-content').append($('.exercise-template').html());
+				} else {
+				
+					$('#diary_detail').find('.date').html(day.day);
+					$('#diary_detail').find('.kava').html(day.plan_name);
+					$('#diary_detail').find('.paev').parent().html(translations[lang]['trainingday'] + ': <span class="paev">' + day.day_name + '</span>');
+					$('#diary_detail').find('.paev').html(day.day_name);
+					$('#diary_detail').find('.length').html(secToHour(day.length)).parent().show();
+				
+					$.each(day_data.exercises, function(i, exercise) {
+						if (exercise) {
+							$('.exercise-template').find('h3').html(exercise.name);
+							if(exercise.type == 'time') {
+								$('.exercise-template').find('.info-content').html('<p>Kestus: ' + exercise.time + '</p>');
+							} else {
+								$('.exercise-template').find('.info-content').html('');
+								$.each(exercise.series, function(j, serie) {
+									if(serie.status == 'done')
+										$('.exercise-template').find('.info-content').append('<p>Seeria ' + (j+1) + ': ' + serie.repeats + 'x' + serie.weights + '</p>');
+								});
+								
+								
+							}
 							
-							
+							$('.exercises-content').append($('.exercise-template').html());
 						}
 						
-						$('.exercises-content').append($('.exercise-template').html());
-					}
-					
-				});
-				
+					});
+				}
 			}, function(tx, results) {
 				console.error('Error in selecting test result');
 				console.log(tx);
@@ -845,7 +873,7 @@ var trainings = {
 				if (!len) {
 					// then its first time and generate day data..curDay
 					db.transaction(function(tx) {
-						var statement = "INSERT INTO DIARY (day, month, year, package, training_day, length, plan_name, day_name, day_data) VALUES ('" + curr_year + "-" + curr_month + "-" + curr_date + "', '" + curr_month + "', '" + curr_year + "'," + trainings.currentTraining.id + ", " + trainings.currentDay + ", 0, '" + trainings.currentTraining.name + "', '" + day_name + "', '" + JSON.stringify(curDay) + "')";
+						var statement = "INSERT INTO DIARY (day, month, year, package, training_day, length, plan_name, day_name, day_data, type) VALUES ('" + curr_year + "-" + curr_month + "-" + curr_date + "', '" + curr_month + "', '" + curr_year + "'," + trainings.currentTraining.id + ", " + trainings.currentDay + ", 0, '" + trainings.currentTraining.name + "', '" + day_name + "', '" + JSON.stringify(curDay) + "', 'exercise')";
 						//console.log(statement);
 					   	tx.executeSql(statement);
 				   	}, function(error) {

@@ -27,12 +27,14 @@ translations.et['start_training'] = 'Alustra treeningut';
 translations.et['continue_training'] = 'Jätka treeningut';
 translations.et['special_offers'] = 'Eripakkumised';
 translations.et['all_special_offers'] = 'Kõik sooduspakkumised';
+translations.et['notifications'] = 'Teated';
 
-
+//DIARY
 translations.et['date'] = 'Kuupäev';
 translations.et['pack'] = 'Kava';
 translations.et['trainingday'] = 'Treeningpäev';
 translations.et['training_length'] = 'Treeningu kestus';
+translations.et['score'] = 'Tulemus';
 
 translations.et['month_1'] = 'Jaanuar';
 translations.et['month_2'] = 'Veebruar';
@@ -55,3 +57,13 @@ translations.et['club_nr'] = 'Sparta liikmenumber';
 translations.et['current_language'] = 'Eesti keel';
 translations.et['log_out'] = 'Logi välja';
 translations.et['save'] = 'SALVESTA';
+
+//EXERCISES
+
+//FITNESSTEST
+translations.et['test_1'] = 'Kätekõverdused';
+translations.et['test_2'] = 'Kõhulihased';
+translations.et['test_3'] = 'Kükid';
+translations.et['test_4'] = 'Ettepainduvus';
+translations.et['test_5'] = 'Aeroobne';
+//

@@ -128,7 +128,7 @@ var app = {
 			
 			localStorage.removeItem('fitCurDay');
 			
-			//localStorage.removeItem('fitTest');
+			localStorage.removeItem('fitTest');
 		
 			//create tables, approx 2,5MB size database, 5MB maximum
 			db.transaction(function(tx) {
@@ -149,7 +149,7 @@ var app = {
 				tx.executeSql('CREATE TABLE IF NOT EXISTS TEST (id unique, exercise, sex, min_age, max_age, min_score, max_score, grade)');
 				//300 rows max 1mb
 				//tx.executeSql('DROP TABLE IF EXISTS DIARY');
-				//tx.executeSql('CREATE TABLE IF NOT EXISTS DIARY (id INTEGER PRIMARY KEY AUTOINCREMENT, day, month, year, package, training_day, length, plan_name, day_name, day_data)');
+				//tx.executeSql('CREATE TABLE IF NOT EXISTS DIARY (id INTEGER PRIMARY KEY AUTOINCREMENT, day, month, year, package, training_day, length, plan_name, day_name, day_data, type)');
 			}, function(error) {
 				console.error('Error on line 134:');
 				//console.log(error);
@@ -419,15 +419,6 @@ var app = {
 					}
 					$('#teated').find('.training-content').append(template.html());
 				}
-				
-				//e.stopPropagation();
-				$('#teated').find('.item_wrap').on('swipe', function(e, Dx, Dy){
-					if (Dx == -1) {
-						$(this).parent().addClass('remove-item');
-					} else if(Dx == 1) {
-						$(this).parent().removeClass('remove-item');
-					}
-			   });
 				
 				$('#teated').find('.teleport').click(function(e) {
 					e.preventDefault();
@@ -1458,13 +1449,11 @@ var app = {
 	
 		var selectedExercise = 'running';
 		var testResults = {};
+		
+		var TOTALRESULT = 0;
+		
 		testResults = localStorage.getObject('fitTest');
-		if(testResults) {
-			$.each(testResults, function(item, score) {
-				$('#tulemusinput' + item).val(score);
-				
-			});
-		}
+
 		if(!testResults)
 			var testResults = {};
 			
@@ -1479,6 +1468,64 @@ var app = {
 		$('.save-results').click(function(e) {
 			if(!$(this).hasClass('grey')) {
 				localStorage.setObject('fitTest', testResults);
+				
+				db.transaction(function(tx) {
+		
+					var d = new Date();
+					var curr_date = d.getDate();
+					if(curr_date < 10)
+						curr_date = '0' + curr_date;
+				    var curr_month = d.getMonth() + 1; //Months are zero based
+				    if(curr_month < 10)
+						curr_month = '0' + curr_month;
+				    var curr_year = d.getFullYear();
+					// get from diary where day is today, plan day is right one and so on
+					query = 'SELECT * FROM DIARY WHERE day = "' + curr_year + '-' + curr_month + '-' + curr_date +'" AND type = "test"';
+					//console.log(query);
+					tx.executeSql(query, [], function(tx, results) {
+						
+						var len = results.rows.length, i;
+						if (!len) {
+							// then its first time and generate day data..curDay
+							db.transaction(function(tx) {
+								var statement = "INSERT INTO DIARY (day, month, year, package, training_day, length, plan_name, day_name, day_data, type) VALUES ('" + curr_year + "-" + curr_month + "-" + curr_date + "', '" + curr_month + "', '" + curr_year + "',0, 0, 0, 'Fitness test', '" + TOTALRESULT + "/100', '" + JSON.stringify(testResults) + "', 'test')";
+								//console.log(statement);
+							   	tx.executeSql(statement);
+						   	}, function(error) {
+								console.error('Error in inserting item to diary');
+								//console.log(error);
+							});
+						} else {
+							
+							db.transaction(function(tx) {
+								var statement = "UPDATE DIARY SET day_data = '" + JSON.stringify(testResults) + "' WHERE day = '" + curr_year + "-" + curr_month + "-" + curr_date + "' AND type = 'test'";
+								////console.log(statement);
+							   	tx.executeSql(statement);
+						   	}, function(error) {
+								console.error('Error in selecting test result');
+								//console.log(error);
+							});
+						}
+						
+				
+					}, function(tx, results) {
+						console.error('Error in selecting test result');
+						//console.log(tx);
+						//console.log(results);
+					});
+				}, function(error) {
+					console.error('Error in selecting test result');
+					//console.log(error);
+				});
+				
+				$('#yesnooverlay').addClass('scale');
+				setTimeout(function () {
+					$('#yesnooverlay').addClass('scaleIn');
+				}, 100);
+				$('#yesnooverlay').find('.yesno').unbind('click');
+				$('#yesnooverlay').find('.yesno').click(function() {
+					$('#yesnooverlay').removeClass('scaleIn').removeClass('scale');
+				});
 			}
 		})
 		
@@ -1509,8 +1556,6 @@ var app = {
 				}
 				
 				if(r && r < 10000 && r > -100){
-					
-					testResults[n] = r;
 					
 					var grade = 1;
 					
@@ -1586,7 +1631,16 @@ var app = {
 								7: 20
 							}
 							
+							
 							var score = grades[grade];
+							
+							if(!testResults[n])
+								testResults[n] = [];
+							
+							testResults[n] = {
+								points: r,
+								score: score
+							};
 							
 							totalResults[n] = score;
 							

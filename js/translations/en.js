@@ -14,30 +14,32 @@ translations.en['exercises_list'] = 'Harjutuste pank';
 translations.en['training_packages'] = 'Minu treeningkavad';
 translations.en['nutrition_packages'] = 'Minu toitumiskavad';
 translations.en['package_ordering'] = 'Kavade ostmine';
-translations.en['food_nutritions'] = 'Toidulisandid';
-translations.en['training_diary'] = 'Treeningpäevik';
-translations.en['profile_settings'] = 'Profiil ja seaded';
+translations.en['food_nutritions'] = 'Food nutritions';
+translations.en['training_diary'] = 'Training diary';
+translations.en['profile_settings'] = 'Profile and settings';
 translations.en['fitness_test'] = 'Fitness test';
 //MENU BOTTOM
-translations.en['home'] = 'KODU';
-translations.en['training'] = 'TREENING';
-translations.en['exercises'] = 'HARJUTUSED';
+translations.en['home'] = 'HOME';
+translations.en['training'] = 'TRAINING';
+translations.en['exercises'] = 'EXERCISES';
 //HOME
-translations.en['start_training'] = 'Alustra treeningut';
-translations.en['continue_training'] = 'Jätka treeningut';
-translations.en['special_offers'] = 'Eripakkumised';
-translations.en['all_special_offers'] = 'Kõik sooduspakkumised';
+translations.en['start_training'] = 'Start training';
+translations.en['continue_training'] = 'Continue training';
+translations.en['special_offers'] = 'Special offers';
+translations.en['all_special_offers'] = 'All offers';
+translations.en['notifications'] = 'Notifications';
 
 
 
-translations.en['date'] = 'Kuupäev';
-translations.en['pack'] = 'Kava';
-translations.en['trainingday'] = 'Treeningpäev';
-translations.en['training_length'] = 'Treeningu kestus';
+translations.en['date'] = 'Date';
+translations.en['pack'] = 'Plan';
+translations.en['trainingday'] = 'Training day';
+translations.en['training_length'] = 'Training length';
+translations.en['score'] = 'Score';
 
-translations.en['month_1'] = 'Jaanuar';
+translations.en['month_1'] = 'January';
 translations.en['month_2'] = 'Veebruar';
-translations.en['month_3'] = 'Märts';
+translations.en['month_3'] = 'MÃ¤rts';
 translations.en['month_4'] = 'Aprill';
 translations.en['month_5'] = 'Mai';
 translations.en['month_6'] = 'Juuni';
