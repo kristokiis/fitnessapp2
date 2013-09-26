@@ -183,7 +183,7 @@ var packs = {
 				
 				var len = results.rows.length, i;
 				for (i = 0; i < len; i++) {
-					
+					item = results.rows.item(i);
 					if (item.type == 'order') {
 						trainings.orderPackages = true;
 					} else {
@@ -363,55 +363,52 @@ var trainings = {
 			//console.log(query);
 			tx.executeSql(query, [], function(tx, results) {
 				
-				var len = results.rows.length, i;
-				for (i = 0; i < len; i++) {
+				item = results.rows.item(0);
+				var exercises = JSON.parse(item.exercises);
+				var day_names = JSON.parse(item.day_names);
+				var plan = {};
+			
+				plan.id = item.id;
+				plan.name = item.name;
+				plan.description = item.description;
 				
-					item = results.rows.item(0);
-					var exercises = JSON.parse(item.exercises);
-					var day_names = JSON.parse(item.day_names);
-					var plan = {};
+				plan.exercises = exercises;
+				plan.day_names = day_names;
 				
-					plan.id = item.id;
-					plan.name = item.name;
-					plan.description = item.description;
-					
-					plan.exercises = exercises;
-					plan.day_names = day_names;
-					
-					trainings.currentTraining = plan;
-					trainings.currentDay = curDay.day;
-					
-					$('#treening_naidiskava').find('h3:first').html('TREENINGPLAAN:<br>' + trainings.currentTraining.name);
-		
-					$.each(trainings.currentTraining.exercises, function(day, exercises) {
-					
-						$.each(trainings.currentTraining.day_names[day], function(j, muscle) {
-							if(j == 0)
-								muscle_groups_str = muscle_groups[muscle];
-							else
-								muscle_groups_str = muscle_groups_str + ', ' + muscle_groups[muscle]; 
-						});
-					
-						$('#treening_naidiskava').find('.training-content').append('<section class="item noicon teleport" data-page="treening_naidiskavad_1paev" data-level="3" data-day="' + day + '"><div class="item_wrap"><h6>' + day + '. päev</h6><h3>' + muscle_groups_str + '</h3></div></section>');
-						
+				trainings.currentTraining = plan;
+				trainings.currentDay = curDay.day;
+				
+				$('#treening_naidiskava').find('h3:first').html('TREENINGPLAAN:<br>' + trainings.currentTraining.name);
+	
+				$.each(trainings.currentTraining.exercises, function(day, exercises) {
+				
+					$.each(trainings.currentTraining.day_names[day], function(j, muscle) {
+						if(j == 0)
+							muscle_groups_str = muscle_groups[muscle];
+						else
+							muscle_groups_str = muscle_groups_str + ', ' + muscle_groups[muscle]; 
 					});
+				
+					$('#treening_naidiskava').find('.training-content').append('<section class="item noicon teleport" data-page="treening_naidiskavad_1paev" data-level="3" data-day="' + day + '"><div class="item_wrap"><h6>' + day + '. päev</h6><h3>' + muscle_groups_str + '</h3></div></section>');
 					
-					$('#treening_naidiskava').find('.description-content').html(trainings.currentTraining.description);
+				});
+				
+				$('#treening_naidiskava').find('.description-content').html(trainings.currentTraining.description);
+				
+				$('#treening_naidiskava').find('.teleport').click(function(e) {
+					e.preventDefault();
+					LEVEL = 4;
+					teleportMe('treening_naidiskavad_1paev', $(this).data('day'));
 					
-					$('#treening_naidiskava').find('.teleport').click(function(e) {
-						e.preventDefault();
-						LEVEL = 4;
-						teleportMe('treening_naidiskavad_1paev', $(this).data('day'));
-						
-					});
+				});
+				
+				$('.to-download').click(function(e) {
+					e.preventDefault();
+					LEVEL = 4;
+					teleportMe('alusta_laadimist', id);
+				});
 					
-					$('.to-download').click(function(e) {
-						e.preventDefault();
-						LEVEL = 4;
-						teleportMe('alusta_laadimist', id);
-					});
-					
-				}
+				
 			}, function(tx, results) {
 				console.error('Error in selecting test result');
 			});
@@ -566,8 +563,6 @@ var trainings = {
 		
 		$('.serias-content').html('');
 		
-		
-		
 		if (trainings.currentExercise.type == 'weight') {
 			$('#treening_naidiskavad_1paev_nXn').find('h1').html(trainings.currentExercise.series_count + 'x' + trainings.currentExercise.series[0].repeats);
 			
@@ -594,13 +589,16 @@ var trainings = {
 			if(curDay && curDay.exercises[element] && curDay.exercises[element].status == 'done') {
 				$('#timerStuff').html('00:00:00');
 				currentTime = unFormatTime('00:00:00');
+				$('.timer-exercise .nobg_item').hide();
 			} else if (curDay && curDay.exercises[element] && curDay.exercises[element].status == 'doing') {
 				//started = new Date(curDay.exercises[element].started).getTime();
 				//$('#timerStuff').html(started);
 				//currentTime = unFormatTime(started);
+				$('.timer-exercise .nobg_item').show();
 			} else {
 				$('#timerStuff').html(trainings.currentExercise.time + ':00:00');
 				currentTime = unFormatTime(trainings.currentExercise.time + ':00:00');
+				$('.timer-exercise .nobg_item').show();
 			}
 		
 			$('#treening_naidiskavad_1paev_nXn').find('h1').html(trainings.currentExercise.time + 'min');
@@ -742,6 +740,7 @@ var trainings = {
 				data.status = 'end';
 				data.length = unFormatTime($('#timerStuff').html());
 				trainings.doTraining(data);
+				$('.timer-exercise .nobg_item').hide();
 	            
 		        // Stop and reset timer
 		        //timer.stop().once();

@@ -715,7 +715,7 @@ var app = {
 		}
 		
 		if (user.fb_id) {
-			$('.me').find('img').attr('src','https://graph.facebook.com/' + user.fb_id + '/picture');
+			$('.me').find('img').attr('src','https://graph.facebook.com/' + user.fb_id + '/picture?width=91&height=89');
 			$('.me').find('h2').html(user.firstname + ' ' + user.lastname);
 		} else {
 			/*
@@ -823,7 +823,7 @@ var app = {
 		$('#mail').val(user.mail);
 		$('#phone').val(user.phone);
 		$('#sex').val(user.sex);
-		$('#age').val(user.age);
+		$('#birthday').val(user.birthday);
 		$('#weight').val(user.weight);
 		$('#length').val(user.length);
 		$('#training_activity').val(user.training_activity).autoResize();
@@ -834,13 +834,14 @@ var app = {
 		
 		$('textarea').autoResize();
 		
-		$('#nobg_special_button').click(function() {
+		$('#saveUserData').click(function() {
 			user.firstname = $('#firstname').val();
 			user.lastname = $('#lastname').val();
 			user.mail = $('#mail').val();
 			user.phone = $('#phone').val();
 			user.sex = $('#sex').val();
-			user.age = $('#age').val();
+			user.age = calcAge($('#birthday').val());
+			user.birthday = $('#birthday').val();
 			user.weight = $('#weight').val();
 			user.length = $('#length').val();
 			user.training_activity = $('#training_activity').val();
@@ -850,6 +851,16 @@ var app = {
 			user.health_condition = $('#health_condition').val();
 			user.modified = new Date().getTime();
 			localStorage.setObject('fitUser', user);
+			
+			$('#yesnooverlay').addClass('scale');
+			setTimeout(function () {
+				$('#yesnooverlay').addClass('scaleIn');
+			}, 100);
+			$('#yesnooverlay').find('.yesno').unbind('click');
+			$('#yesnooverlay').find('.yesno').click(function() {
+				$('#yesnooverlay').removeClass('scaleIn').removeClass('scale');
+			});
+			
 		});
 	},
 	
