@@ -1225,28 +1225,27 @@ var app = {
 		            fileEntry.remove();
 		            
 		            //var uri = encodeURI(app.serverUrl + 'pics/' + module + '/' + pic + '.jpg');
-			            fileTransfer.download(
-			                uri,
-			                sPath + 'videos/' + exercise + '.mp4',
-			                function(theFile) {
-			                    console.log("download complete: " + theFile.toURL());
-			                    downloadedVideos.push(exercise.id);
-						        db.transaction(function(tx) {
-						        	var statement = 'UPDATE EXERCISES SET video = "1" WHERE id = ' + exercise;
-								   	tx.executeSql(statement);
-						        }, function(error) {
-									console.error('Error in selecting test result');
-									//console.log(error);
-								});
-			                    //showLink(theFile.toURL());
-			                },
-			                function(error) {
-			                    console.log("download error source " + error.source);
-			                    console.log("download error target " + error.target);
-			                    console.log("upload error code: " + error.code);
-			                }
-			            );
-		            });
+		            fileTransfer.download(
+		                uri,
+		                sPath + 'videos/' + exercise + '.mp4',
+		                function(theFile) {
+		                    console.log("download complete: " + theFile.toURL());
+		                    downloadedVideos.push(exercise.id);
+					        db.transaction(function(tx) {
+					        	var statement = 'UPDATE EXERCISES SET video = "1" WHERE id = ' + exercise;
+							   	tx.executeSql(statement);
+					        }, function(error) {
+								console.error('Error in selecting test result');
+								//console.log(error);
+							});
+		                    //showLink(theFile.toURL());
+		                },
+		                function(error) {
+		                    console.log("download error source " + error.source);
+		                    console.log("download error target " + error.target);
+		                    console.log("upload error code: " + error.code);
+		                }
+		            );
 		        }, function(e) {
 				    console.log(e);
 			    });

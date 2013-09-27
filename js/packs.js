@@ -546,6 +546,7 @@ var trainings = {
 			$('.backbtn').click();
 		});
 		$('.next-exercise').click(function(e) {
+			addHover(this);
 			$('.toscroll').scrollTop(0);
 			e.preventDefault();
 			LEVEL = null;
@@ -705,6 +706,7 @@ var trainings = {
 		});
 		
 		$('.timer-exercise .nobg_item').unbind(eventEnd).bind(eventEnd, function (e) {
+			addHover(this);
 			if( !$(this).hasClass('started') ){
 				$(this).addClass('started');
 				$(this).find('h3').text('PAUS');
@@ -1033,6 +1035,7 @@ var nutritions = {
 		
 		$('#naidiskavad').find('.teleport').click(function(e) {
 			e.preventDefault();
+			addHover(this);
 			//currentNutrition = $(this).data('id');
 			LEVEL = 3;
 			teleportMe('toitumisplaan1', $(this).data('id'));
