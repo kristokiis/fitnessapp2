@@ -53,5 +53,6 @@
 	    <param name="APP_NAME" value="FitnessMobile" />
 	</gap:plugin>
 	
+	<gap:plugin name="com.simplec.plugins.localnotification" />	
 
 </widget>

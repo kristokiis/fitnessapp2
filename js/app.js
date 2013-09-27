@@ -83,8 +83,24 @@ var app = {
 		//console.log('going to initlogin');
 		
 		app.initLogin(false);
+		
+		window.plugins.localNotification.add({
+		    fireDate        : Math.round(new Date().getTime()/1000 + 25),
+		    alertBody       : "This is a local notification.",
+		    action          : "View",
+		    repeatInterval  : "daily",
+		    soundName       : "beep.caf",
+		    badge           : 0,
+		    notificationId  : 123,
+		    foreground      : function(notificationId){ 
+		        alert("Hello World! This alert was triggered by notification " + notificationId); 
+		    },
+		    background  : function(notificationId){
+		        alert("Hello World! This alert was triggered by notification " + notificationId);
+		    }           
+		});
 
-		localStorage.removeItem('fitNotFirstTime');
+		//localStorage.removeItem('fitNotFirstTime');
 	},
 	
 	/*
@@ -121,10 +137,10 @@ var app = {
 			db.transaction(function(tx) {
 				//20 rows max, 250kb
 				tx.executeSql('DROP TABLE IF EXISTS TRAININGS');
-				tx.executeSql('CREATE TABLE IF NOT EXISTS TRAININGS (id unique, type, name, description, exercises, day_names)');
+				tx.executeSql('CREATE TABLE IF NOT EXISTS TRAININGS (id unique, type, name, description, exercises, day_names, has_offers)');
 				//20 rows max, 250kb
 				tx.executeSql('DROP TABLE IF EXISTS NUTRITIONS');
-				tx.executeSql('CREATE TABLE IF NOT EXISTS NUTRITIONS (id unique, type, name, description, meals)');
+				tx.executeSql('CREATE TABLE IF NOT EXISTS NUTRITIONS (id unique, type, name, description, meals, has_offers)');
 				//250 rows max, 300kb
 				tx.executeSql('DROP TABLE IF EXISTS EXERCISES');
 				tx.executeSql('CREATE TABLE IF NOT EXISTS EXERCISES (id unique, type, name, name_en, name_ru, data, video, description, description_en, description_ru, category, muscle, muscle2, muscle3)');
@@ -136,7 +152,7 @@ var app = {
 				tx.executeSql('CREATE TABLE IF NOT EXISTS TEST (id unique, exercise, sex, min_age, max_age, min_score, max_score, grade)');
 				//300 rows max 1mb
 				tx.executeSql('DROP TABLE IF EXISTS DIARY');
-				tx.executeSql('CREATE TABLE IF NOT EXISTS DIARY (id INTEGER PRIMARY KEY AUTOINCREMENT, day, month, year, package, training_day, length, plan_name, day_name, day_data, type)');
+				tx.executeSql('CREATE TABLE IF NOT EXISTS DIARY (id INTEGER PRIMARY KEY AUTOINCREMENT, day, month, year, package, training_day, length, plan_name, day_name, day_data, type, synced INTEGER)');
 			}, function(error) {
 				console.error('Error on line 134:');
 				//console.log(error);
@@ -169,7 +185,7 @@ var app = {
 				db.transaction(function(tx) {
 					$.each(result, function(i, item) {
 					
-						var statement = "INSERT INTO DIARY (day, month, year, package, training_day, length, plan_name, day_name, day_data, type) VALUES ('" + curr_year + "-" + curr_month + "-" + curr_date + "', '" + curr_month + "', '" + curr_year + "'," + trainings.currentTraining.id + ", " + trainings.currentDay + ", 0, '" + trainings.currentTraining.name + "', '" + day_name + "', '" + JSON.stringify(curDay) + "', 'exercise')";
+						var statement = "INSERT INTO DIARY (day, month, year, package, training_day, length, plan_name, day_name, day_data, type, synced) VALUES ('" + curr_year + "-" + curr_month + "-" + curr_date + "', '" + curr_month + "', '" + curr_year + "'," + trainings.currentTraining.id + ", " + trainings.currentDay + ", 0, '" + trainings.currentTraining.name + "', '" + day_name + "', '" + JSON.stringify(curDay) + "', 'exercise', 1)";
 						//console.log(statement);
 						tx.executeSql(statement);
 					
@@ -195,8 +211,10 @@ var app = {
 					cats.push(cat.category);
 				});
 				if (!localStorage.getItem('fitNotFirstTime')) {
-					app.downloadPics('categories', cats);
 					localStorage.setItem('fitNotFirstTime', true);
+					console.log('SET');
+					app.downloadPics('categories', cats);
+					
 				}
 				
 			}, 'jsonp');
@@ -299,7 +317,7 @@ var app = {
 			$.get(app.apiUrl + '?action=getTrainings', data, function(result) {
 				db.transaction(function(tx) {
 			   		$.each(result, function(i, item) {
-			   			var sql = "INSERT INTO TRAININGS (id, type, name, description, exercises, day_names) VALUES ("+item.id+", '" + (item.order_id && item.order_id != '0' && item.order_id != 0 ? 'order' : 'sample') + "', '"+item.name+"', '"+item.description+"', '" + JSON.stringify(item.exercises) + "', '" + JSON.stringify(item.day_names) + "')";
+			   			var sql = "INSERT INTO TRAININGS (id, type, name, description, exercises, day_names, has_offers) VALUES ("+item.id+", '" + (item.order_id && item.order_id != '0' && item.order_id != 0 ? 'order' : 'sample') + "', '"+item.name+"', '"+item.description+"', '" + JSON.stringify(item.exercises) + "', '" + JSON.stringify(item.day_names) + "', '" + item.has_offers + "')";
 			   			//console.log(sql);
 				   		tx.executeSql(sql);
 				   		
@@ -345,7 +363,7 @@ var app = {
 							type = 'sample';
 						}
 				   		
-				   		tx.executeSql("INSERT INTO NUTRITIONS (id, type, name, description, meals) VALUES (" + item.id + ", '" + (item.order_id && item.order_id != '0' && item.order_id != 0 ? 'order' : 'sample') + "', '" + item.name + "', '" + item.description + "', '" + JSON.stringify(item.meals) + "')");
+				   		tx.executeSql("INSERT INTO NUTRITIONS (id, type, name, description, meals, has_offers) VALUES (" + item.id + ", '" + (item.order_id && item.order_id != '0' && item.order_id != 0 ? 'order' : 'sample') + "', '" + item.name + "', '" + item.description + "', '" + JSON.stringify(item.meals) + "', '" + item.has_offers + "')");
 				   		
 				   		nu_notIDs.push(item.id);
 						nutritionsCount = nutritionsCount + 1;
@@ -373,24 +391,31 @@ var app = {
 			data.user = user;
 			data.test = localStorage.setObject('fitTest');
 			
+			$.get(app.apiUrl + '?action=updateUser', user, function(result) {
+				user.lastSynced = new Date();
+				localStorage.setObject('fitUser', user);
+			},'jsonp');
+			
 			db.transaction(function(tx) {
-				query = 'SELECT * FROM DIARY ORDER BY day DESC';
+				query = 'SELECT * FROM DIARY WHERE synced = 0 ORDER BY day DESC';
 				//console.log(query);
 				tx.executeSql(query, [], function(tx, results) {
 					var len = results.rows.length, i;
-					var days = [];
 					if (len) {
 						for (i = 0; i < len; i++) {
-							days.push(results.rows.item(i));
+							var day = results.rows.item(i);
+							
+							var statement = 'UPDATE DIARY SET synced = 1 WHERE id = ' + day.id;
+						   	tx.executeSql(statement);
+							
+							$.get(app.apiUrl + '?action=updateDiary', user, function(result) {
+				
+								user.lastSynced = new Date();
+								localStorage.setObject('fitUser', user);
+							},'jsonp');
+							
 						}
 					}
-					data.diary = days;
-					
-					$.get(app.apiUrl + '?action=updateUser', user, function(result) {
-				
-						user.lastSynced = new Date();
-						localStorage.setObject('fitUser', user);
-					},'jsonp');
 					
 				}, function(tx, results) {
 					console.error('Error in selecting test result');
@@ -416,66 +441,65 @@ var app = {
 			query = 'SELECT * FROM NOTIFICATIONS ORDER BY send DESC';
 			//console.log(query);
 			tx.executeSql(query, [], function(tx, results) {
-				
 				var len = results.rows.length, i;
-				for (i = 0; i < len; i++) {
-				
-					notification = results.rows.item(i);
-					var shortText = jQuery.trim(notification.message).substring(0, 40).split(" ").slice(0, -1).join(" ") + '...';
-					template.find('.item').attr('data-id', notification.id);
-					template.find('h6').html(notification.heading);
-					template.find('h4').html(notification.send);
-					template.find('h3').html(shortText);
-					if (notification.is_read && notification.is_read == '1') {
-						template.find('.unread-bullet').hide();
-						template.find('.place-holder').show();
-					} else {
-						template.find('.unread-bullet').show();
-						template.find('.place-holder').hide();
+				if (len) {
+					for (i = 0; i < len; i++) {
+						notification = results.rows.item(i);
+						var shortText = jQuery.trim(notification.message).substring(0, 40).split(" ").slice(0, -1).join(" ") + '...';
+						template.find('.item').attr('data-id', notification.id);
+						template.find('h6').html(notification.heading);
+						template.find('h4').html(notification.send);
+						template.find('h3').html(shortText);
+						if (notification.is_read && notification.is_read == '1') {
+							template.find('.unread-bullet').hide();
+							template.find('.place-holder').show();
+						} else {
+							template.find('.unread-bullet').show();
+							template.find('.place-holder').hide();
+						}
+						$('#teated').find('.training-content').append(template.html());
 					}
-					$('#teated').find('.training-content').append(template.html());
-				}
-				
-				$('#teated').find('.teleport').click(function(e) {
-					e.preventDefault();
-					LEVEL = 3;
-					teleportMe('teated_detail', parseInt($(this).data('id')));
-					
-				});
-				$('#teated').find('.remove-overlay').click(function(e) {
-					e.preventDefault();
-					e.stopPropagation();
-					
-					var id = parseInt($(this).data('id'));
-					
-					db.transaction(function(tx) {
-					
-						query = 'SELECT is_read FROM NOTIFICATIONS WHERE id = ' + id;
-						//console.log(query);
-						tx.executeSql(query, [], function(tx, results) {
-							notification = results.rows.item(0);
-							if(!notification.is_read) {
-								var total = parseInt(localStorage.getItem('fitNotificationsCount'));
-								total = total - 1;
-								localStorage.setItem('fitNotificationsCount', total);
-							}
-						}, function(tx, results) {
-							console.error('Error in selecting test result');
-							//console.log(tx);
-							//console.log(results);
-						});
+					$('#teated').find('.teleport').click(function(e) {
+						e.preventDefault();
+						LEVEL = 3;
+						teleportMe('teated_detail', parseInt($(this).data('id')));
+					});
+					$('#teated').find('.remove-overlay').click(function(e) {
+						e.preventDefault();
+						e.stopPropagation();
 						
-						var statement = 'DELETE FROM NOTIFICATIONS WHERE id = ' + id;
-						////console.log(statement);
-					   	tx.executeSql(statement);
-					   	
-					   
-					   	$(this).remove();
-				   	});
+						var id = parseInt($(this).data('id'));
+						
+						db.transaction(function(tx) {
+						
+							query = 'SELECT is_read FROM NOTIFICATIONS WHERE id = ' + id;
+							//console.log(query);
+							tx.executeSql(query, [], function(tx, results) {
+								notification = results.rows.item(0);
+								if(!notification.is_read) {
+									var total = parseInt(localStorage.getItem('fitNotificationsCount'));
+									total = total - 1;
+									localStorage.setItem('fitNotificationsCount', total);
+								}
+							}, function(tx, results) {
+								console.error('Error in selecting test result');
+								//console.log(tx);
+								//console.log(results);
+							});
+							
+							var statement = 'DELETE FROM NOTIFICATIONS WHERE id = ' + id;
+							////console.log(statement);
+						   	tx.executeSql(statement);
+						   	
+						   
+						   	$(this).remove();
+					   	});
+						
+					});
 					
-				});
-				
-				
+				} else {
+					$('#teated').find('.training-content').html('<section class="month"><h4>Teated puuduvad..</h4></section>');
+				}
 			}, function(tx, results) {
 				console.error('Error in selecting test result');
 				//console.log(tx);
@@ -1391,7 +1415,21 @@ var app = {
 			template2 = $('.content-template-vali-kava');
 			container2 = $('.content-content-vali-kava');
 			container2.html('');
-			
+			if(!user.club_nr) {
+				$('#askClubNr').find('.save-button').unbind('click');
+				$('#askClubNr').find('.save-button, .cancel-button').click(function(e) {
+					if($(this).hasClass('save-button'))
+						user.club_nr = $('#askClubNr').find('.club-nr').val();
+					$('#askClubNr').removeClass('scale');
+					setTimeout(function () {
+						$('#askClubNr').removeClass('scaleIn');
+					}, 100);
+				});
+				$('#askClubNr').addClass('scale');
+				setTimeout(function () {
+					$('#askClubNr').addClass('scaleIn');
+				}, 100);
+			}
 			var template = items[app.packageTemplate];
 			//console.log(items);
 			//console.log(app.packageTemplate);
@@ -1406,7 +1444,7 @@ var app = {
 			
 			$('#templateIntro').unbind(eventEnd).bind(eventEnd, function (e) {
 			   		
-		   		$('.voucher').hide();
+		   		$('#voucher').hide();
 		   		
 	   			var id = $(this).parent().data('id');
 	   		
@@ -1465,7 +1503,7 @@ var app = {
 		   		
 		   		$('.choosebtn').parent().unbind(eventEnd).bind(eventEnd, function (e) {
 			   		
-			   		$('.voucher').hide();	
+			   		$('#voucher').hide();	
 			   		
 		   			trainer_id = $(this).data('id');
 		   			
@@ -1614,13 +1652,10 @@ var app = {
 		data = {};
 		data.club_id = club_id;
 		data.user_id = user.id;
-		
-		if (isTrainer) {
-			data.trainer_id = trainer.id;
-		}
+		data.trainer = isTrainer;
 		
 		$.get(app.apiUrl + '?action=getFitshop', data, function(result) {
-	   		$.each(result, function(i, item) {
+	   		$.each(result.items, function(i, item) {
 	   			if(item.name) {
 		   			items[item.id] = item;
 			   		
@@ -1637,13 +1672,14 @@ var app = {
 	   		$('.detailsbtn').unbind(eventEnd).bind(eventEnd, function (e) {
 	   		
 	   			var id = $(this).data('id');
-	   		
+	   			console.log(items[id]);
 				//e.preventDefault();
 				addHover( this );
-				$('.voucher').show();
+				$('#voucher').show();
 				$('#overlay').find('img:first').attr('src', app.serverUrl + 'pics/fitshop/' + id + '.jpg');
 				$('#overlay').find('h1').html(items[id].name);
 				$('#overlay').find('h2').html(items[id].price + ' €');
+				$('#overlay').find('#voucher').find('span').html(items[id].sale + '%');
 				$('#overlay').find('h4').html('');
 				$('#overlay').find('p').html(items[id].description);
 				
@@ -1730,10 +1766,28 @@ var app = {
 		$('.nobg_item.tiny').click(function(e) {
 			$('.nobg_item.tiny').addClass('grey');
 			$(this).removeClass('grey');
-			lastExercise = $(this).data('type');
+			selectedExercise = $(this).data('type');
 		});
 		
 		$('.save-results').click(function(e) {
+			e.preventDefault();
+						
+			$('#caruseloverlay, #caruselTOTALoverlay').addClass('scaleOut');
+	
+			setTimeout(function () {
+				$('#caruseloverlay, #caruselTOTALoverlay').removeClass('scaleIn').removeClass('scaleOut');
+				
+				setTimeout(function () {
+					$('#caruseloverlay, #caruselTOTALoverlay').removeClass('scale');
+				}, 50);
+				$('#caruseloverlay .tulemus, #caruseloverlay .results, #caruseloverlay .jargminetest, #caruseloverlay .kogutulemus').removeClass('anim_in');
+				$('.result-text').hide();
+				$('#caruseloverlay .carusel .normal').removeClass('anim_' + anim + '0');
+				$('.carusel-texts').removeClass('anim_' + anim + '0');
+				
+			}, 350);
+			
+			addHover( this );
 			if(!$(this).hasClass('grey')) {
 				localStorage.setObject('fitTest', testResults);
 				
@@ -1979,8 +2033,10 @@ var app = {
 						e.preventDefault();
 						
 						var next = $(this).attr('data-test');
-						var h = $('#test' + next ).height();
-						var top = Number(h) * next;
+						var top = 0;
+						for(i=0;i<next;i++) {
+							top = top + Number($('#test' + (i+1) ).height()) + 7;	
+						}
 						
 						$('.toscroll').animate( {scrollTop: top + 'px'}, 300);
 						
@@ -2020,28 +2076,11 @@ var app = {
 						
 						addHover( this );
 					});
-					
+					/*
 					$('.overlay .sulge').unbind(eventEnd).bind(eventEnd, function(e) {
-						e.preventDefault();
 						
-						$('#caruseloverlay, #caruselTOTALoverlay').addClass('scaleOut');
-				
-						setTimeout(function () {
-							$('#caruseloverlay, #caruselTOTALoverlay').removeClass('scaleIn').removeClass('scaleOut');
-							
-							setTimeout(function () {
-								$('#caruseloverlay, #caruselTOTALoverlay').removeClass('scale');
-							}, 50);
-							$('#caruseloverlay .tulemus, #caruseloverlay .results, #caruseloverlay .jargminetest, #caruseloverlay .kogutulemus').removeClass('anim_in');
-							$('.result-text').hide();
-							$('#caruseloverlay .carusel .normal').removeClass('anim_' + anim + '0');
-							$('.carusel-texts').removeClass('anim_' + anim + '0');
-							
-						}, 350);
-						
-						addHover( this );
 					});
-				
+					*/
 				}
 	
 			});

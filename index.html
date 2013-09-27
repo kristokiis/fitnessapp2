@@ -25,6 +25,7 @@
         <script src="phonegap.js" type="text/javascript" charset="utf-8"></script>
         <script src="cdv-plugin-fb-connect.js"></script>
 		<script src="facebook-js-sdk.js"></script>
+		<script src="cordova.localNotification.js"></script>
         
     </head>
     <body>
@@ -72,7 +73,7 @@
 					
 						<p></p>
 						<div id="voucher">
-							<div>Lorem ipsum dolor sit amet. Lorem ipsum, dolor sit amet orem ipsum dolor sit amet. </div>
+							<div class="translate" data-keyword="voucher_description">See voucher annab sulle palju juurde</div>
 							<span>-10%</span>
 						</div>
 						<!-- <img class="voucher" style="display:none;" src="i/voucher.png" alt=""/> -->
@@ -81,7 +82,23 @@
 					</section>
 			
 			</section>
-			
+			<section id="askClubNr" class="overlay">
+				<section class="header">
+					<h2 class="selection-title">Sisestage klubi number jätkamiseks</h2>
+					<br /><br />
+				</section>
+				<section class="contentfield">
+					<section class="selection-content">
+						<input type="number" name="txt" class="club-nr txt" style="height:50px;" placeholder="Klubi number" val="" />
+					</section>
+					<section class="nobg_item save-button">
+						<h3 class="translate" data-keyword="continue_member">JÄTKA KLUBI LIIKMENA</h3>		
+					</section>
+					<section class="nobg_item cancel-button">
+						<h3 class="translate" data-keyword="continue_stranger">JÄTKA VÕÕRANA</h3>		
+					</section>
+				</section>
+			</section>
 			<section id="selectiveoverlay" class="overlay">
 				<section class="header">
 					<div class="closebtn"></div>
@@ -92,18 +109,18 @@
 					<section class="selection-content">
 						
 					</section>
-					<section class="nobg_item touchhover save-button">
+					<section class="nobg_item save-button">
 						<h3 class="translate" data-keyword="save">SALVESTA</h3>		
 					</section>
 				</section>
 				<section class="lang-template" style="display:none;">
-					<section class="nobg_item  touchhover" data-lang="et">
+					<section class="nobg_item" data-lang="et">
 						<h4>Eesti keel</h4>		
 					</section>
-					<section class="nobg_item  touchhover" data-lang="en">
+					<section class="nobg_item" data-lang="en">
 						<h4>Inglise keel</h4>		
 					</section>
-					<section class="nobg_item  touchhover" data-lang="ru">
+					<section class="nobg_item" data-lang="ru">
 						<h4>Vene keel</h4>		
 					</section>
 				</section>
@@ -165,7 +182,7 @@
 					<section class="nobg_item kogutulemus" data-test="1">
 						<h3>Vaata kogu tulemust</h3>		
 					</section>
-			
+					
 			</section>
 			
 			<section id="caruselTOTALoverlay" class="overlay ">
@@ -178,10 +195,14 @@
 						<h4>Maksimaalne tulemus:</h4>
 						<h3>100 p</h3>
 					</div>
-					
+					<section class="nobg_item grey save-results" >
+						<h4>SALVESTA TULEMUSED</h4>		
+					</section>
+					<!--
 					<section class="nobg_item sulge" data-test="1">
 						<h3>Sulge</h3>		
 					</section>
+					-->
 			</section>
 			
 			<section id="timeroverlay" class="overlay ">
@@ -208,7 +229,8 @@
 			<section id="topbar" class="topbar">
 				<a href="#" id="menu"><img src="i/menuicon.png" alt=""/><img class="over" src="i/menuiconover.png" alt=""/></a>
 				<div class="backbtn" data-deep=""></div>
-				<img class="logo" src="i/logo2.png" alt="" data-page="frontpage" data-level="0" />
+				<img class="logo teleport" src="i/logo2.png" alt="" data-page="homepage" data-level="1" />
+				<section class="kestus teleport" data-page="treening_naidiskavad_1paev" data-level="1"><span>Kogu treeningu kestus: <strong class="dayTimer">00:00</strong></span></section>
 			</section>
 			
 			
@@ -264,9 +286,9 @@
         <script type="text/javascript" charset="utf-8">
 		    // Wait for Cordova to load
 		    document.addEventListener("deviceready", onDeviceReady, false);
-		    deviceMode = false;
+		    /*deviceMode = false;
 		    $(document).ready(function() {
-		    	/*
+		    	
 			    showLoading();
 		    	console.log('device ready, but waiting for extra stuff..');
 		    	setTimeout(function() {
@@ -276,7 +298,7 @@
 			    	app.init();
 		    	}, 2500);
 		    	document.addEventListener("backbutton", onBackButton, false);
-		    	*/
+		    */
 		    });
 		    
 		    function onDeviceReady() {

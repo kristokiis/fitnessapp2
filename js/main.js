@@ -270,8 +270,7 @@ function afterTeleport(where, extra) {
 			app.initHome();
 			break;
 		case 'lisandid':
-			if(!packs.offers.length)
-				$('.treenerpakkumisedbtn').hide();
+			app.getFitshop(true);
 			break;
 		case 'soodustused':
 			app.getFitshop(false);
@@ -428,6 +427,12 @@ function teleportMe( where, extra ){
 			$('#topbar .backbtn').attr('data-deep', LEVEL);
 			//console.log('cmon..');
 			$.get('templates/' + where + '.html',{ "_": $.now() }, function(data){
+			
+				if(trainings.doingExercise) {
+					$('.kestus').show();
+				}
+				offset = jQuery('.topbar').height();
+				
 				$(data).insertAfter( LATEST )
 				
 				jQuery('.centered').css('top', offset + 'px');
@@ -463,18 +468,7 @@ function teleportMe( where, extra ){
 					
 					updating = false;
 						
-					if(trainings.doingExercise) {
-						setTimeout(function() {
-							if(!$('.toscroll').find('.kestus').length) {
-								$('.toscroll').prepend('<section class="kestus"><span>Kogu treeningu kestus: <strong class="dayTimer">00:00</strong></span></section>');
-								
-							}
-							setTimeout(function() {
-								$('.kestus').slideDown();
-							}, 500);
-						}, 500);
-						
-					}
+					
 					afterTeleport(where, extra);
 					
 				}, 20);
@@ -559,9 +553,8 @@ function bindEvents() {
 				teleportMe( 'fitnesstest', extra );
 			else
 				teleportMe( 'tavatest', extra );
-		} else if (where == 'lisandid') {
-			if(!app.specialOffers)
-				teleportMe( 'soodustused', extra );
+		} else if (where == 'lisandid' && !packs.hasSpecialOffers) {
+			teleportMe( 'soodustused', extra );
 		} else {
 			teleportMe( where, extra );
 		}

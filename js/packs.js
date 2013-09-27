@@ -2,6 +2,8 @@ var currentTime = false;
 var mainTimer = {};
 //finish this file on friday
 var packs = {
+	hasSpecialOffers: false,
+	
 	getMain: function() {
 		$('.training-count').html(trainings.orderPackages.length);
 		$('.nutrition-count').html(nutritions.orderNutritions.length);
@@ -185,7 +187,8 @@ var packs = {
 					} else {
 						trainings.samplePackages = true;
 					}
-					
+					if (item.has_offers && item.has_offers != '0')
+						packs.hasSpecialOffers = true;
 				}
 			}, function(tx, results) {
 				console.error('Error in selecting test result');
@@ -237,6 +240,9 @@ var packs = {
 					} else {
 						nutritions.sampleNutritions.push(plan);
 					}
+					
+					if (plan.has_offers && plan.has_offers != '0')
+						packs.hasSpecialOffers = true;
 					
 				}
 			}, function(tx, results) {
@@ -766,8 +772,17 @@ var trainings = {
 		newDay = true;
 		
 		var curDay = localStorage.getObject('fitCurDay');
-		if(!$('.toscroll').find('.kestus').length)
-			$('.toscroll').prepend('<section class="kestus"><span>Kogu treeningu kestus: <strong class="dayTimer">00:00</strong></span></section>');
+		$('.kestus').show();
+		offset = jQuery('.topbar').height();
+		jQuery('.centered').css('top', offset + 'px');
+		var toscrollheight = Number(wind - (offset + me + bbar));
+		jQuery('.toscroll').css('height', toscrollheight + 'px');
+		
+		$('.kestus').click(function() {
+			
+			
+			
+		});
 		
 		exCounter = 0;
 		var updateExercises = [];
