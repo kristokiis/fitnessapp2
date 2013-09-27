@@ -8,6 +8,8 @@ var downloadedVideos = [];
 
 var categories = [];
 
+var sPath = '';
+
 var muscle_groups = [];
 muscle_groups[1] = 'Trapets';
 muscle_groups[2] = 'Rind';
@@ -91,7 +93,7 @@ var app = {
 	
 	syncData: function() {
 
-		//localStorage.removeItem('fitNotFirstTime');
+		localStorage.removeItem('fitNotFirstTime');
 		//first time always online
 		if (!localStorage.getItem('fitNotFirstTime')) {
 			showLoading();
@@ -178,7 +180,7 @@ var app = {
 				});
 			}, 'jsonp');
 		
-			localStorage.setItem('fitNotFirstTime', true);
+			
 		}
 		//requires us to be online
 		var con = checkConnection();
@@ -189,9 +191,13 @@ var app = {
 			data.club_id = club_id;
 			$.get(app.apiUrl + '?action=getCategories', data, function(result) {
 				localStorage.setObject('fitCats', result);
-				
+				cats = [];
+				$.each(result, function(i, cat) {
+					cats.push(cat.category);
+				});
 				if (!localStorage.getItem('fitNotFirstTime')) {
-					app.downloadPics('categories', result);
+					app.downloadPics('categories', cats);
+					localStorage.setItem('fitNotFirstTime', true);
 				}
 				
 			}, 'jsonp');
@@ -1239,6 +1245,8 @@ var app = {
 	},
 	//approx 2-3h to finish this shit
 	downloadPics: function(module, pics) {
+		console.log(module);
+		console.log(pics);
 		
 		//download sources: categories, exercises
 		//no checkmarks all those lil filthy pics must be on the phone!!!
@@ -1250,14 +1258,14 @@ var app = {
 		        fileSystem.root.getFile(
 		        "dummy.html", {create: true, exclusive: false}, 
 		        function gotFileEntry(fileEntry) {
-		            var sPath = fileEntry.fullPath.replace("dummy.html","");
+		            sPath = fileEntry.fullPath.replace("dummy.html","");
 		            var fileTransfer = new FileTransfer();
 		            fileEntry.remove();
 		            $.each(pics, function(pic) {
-			            var uri = encodeURI(app.serverUrl + 'pics/' + module + '/' + pic.id + '.jpg');
+			            var uri = encodeURI(app.serverUrl + 'pics/' + module + '/' + pic + '.jpg');
 			            fileTransfer.download(
 			                uri,
-			                sPath + module + '/' + pic.id + '.jpg',
+			                sPath + module + '/' + pic + '.jpg',
 			                function(theFile) {
 			                    console.log("download complete: " + theFile.toURL());
 			                    //showLink(theFile.toURL());
