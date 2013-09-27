@@ -196,7 +196,7 @@ var app = {
 				});
 				if (!localStorage.getItem('fitNotFirstTime')) {
 					app.downloadPics('categories', cats);
-					//localStorage.setItem('fitNotFirstTime', true);
+					localStorage.setItem('fitNotFirstTime', true);
 				}
 				
 			}, 'jsonp');
@@ -211,6 +211,7 @@ var app = {
 			data.ids = ex_notIDs;
 			data.user = user.id;
 			data.club_id = club_id;
+			console.log(data);
 			$.get(app.apiUrl + '?action=getExercises', data, function(result) {
 				db.transaction(function(tx) {
 					var pics = [];
@@ -1129,9 +1130,12 @@ var app = {
 		   		
 		   		setTimeout(function() {
 			   		$('.items-container1, .items-container2').find('.nobg_item').click(function(e) {
-			   			console.log($(this).data('type') + ' ja ' + $(this).data('id'));
-			   			app.downloadExerciseVideos($(this).data('type'), $(this).data('id'));
-				   		$(this).html('<img src="i/icon_pause.png" alt="">').removeClass('arrow');
+			   			if ($(this).find('h4').length) {
+			   				app.downloadExerciseVideos($(this).data('type'), $(this).data('id'));
+			   				$(this).html('<img src="i/icon_pause.png" alt="">').removeClass('arrow');
+			   			} else {
+				   			
+			   			}
 			   		});
 		   		}, 800);
 				
