@@ -521,14 +521,14 @@ background: radial-gradient(ellipse at center,  rgba(255,255,255,0.71) 0%,rgba(2
 	background: url(../i/icon_test_over.png) no-repeat center center transparent;
 }
 
-.notification span{
+.notifications span{
 	background: url(../i/icon_notification.png) no-repeat center center transparent;
 	width: 38px;
 	height: 38px;
 	display: inline-block;
 	float: left;
 }
-.notification.selected span{
+.notifications.selected span{
 	background: url(../i/icon_notification.png) no-repeat center center transparent;
 }
 
@@ -1117,7 +1117,7 @@ input.error {
 	content: "";
 }
 
-.notifications:before {
+.notification:before {
 	position: absolute;
 	width: 23px;
 	height: 23px;

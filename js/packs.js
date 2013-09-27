@@ -108,10 +108,6 @@ var packs = {
 			
 				day = results.rows.item(0);
 				
-				//console.log(day);
-				
-				//console.log(day);
-				
 				var day_data = JSON.parse(day.day_data);
 				console.log(day_data);
 				if(day.type == 'test') {

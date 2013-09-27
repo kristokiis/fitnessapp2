@@ -662,8 +662,11 @@ var app = {
 		if (localStorage.getObject('fitTest')) {
 			$('#homepage').find('.fitnesstest').hide();
 		}
-		if (localStorage.getItem('fitNotificationsCount')) {
+		if (parseInt(localStorage.getItem('fitNotificationsCount')) > 0) {
 			$('#homepage').find('#notificationsCount').html('(' + localStorage.getItem('fitNotificationsCount') + ')');
+			$('#homepage').find('.notification').show();
+		} else {
+			$('#homepage').find('.notification').hide();
 		}
 		
 		if (curDay = localStorage.getObject('fitCurDay')) {
@@ -1018,31 +1021,44 @@ var app = {
 	
 	initVideosDownload: function() {
 		
-		result = localStorage.getObject('fitCats');
-		
 		template = $('.item-template');
 		content1 = $('.items-container1');
 		content2 = $('.items-container2');
 		
-		
-		//maybe to work on DB side ?
-   		$.each(trainings.samplePackages, function(i, item) {
-   			template.find('.downloadtitle').html(item.name);
-   			template.find('.downloadcircle').find('span').html('0/' + item.exercises_count);
-   			template.find('img').attr('src', app.serverUrl + 'pics/categories/2.jpg');
-   			template.find('h4').attr('data-cat', item.id).attr('data-type', 'package');
-	   		content1.append(template.html());
-   		});
-   		
-   		$.each(trainings.orderPackages, function(i, item) {
-   			template.find('.downloadtitle').html(item.name);
-   			template.find('.downloadcircle').find('span').html('0/' + item.exercises_count);
-   			template.find('img').attr('src', app.serverUrl + 'pics/categories/2.jpg');
-   			template.find('h4').attr('data-cat', item.id).attr('data-type', 'package');
-	   		content1.append(template.html());
-   		});
-   		
-   		$.each(result, function(i, item) {
+		db.transaction(function(tx) {
+			query = 'SELECT * FROM TRAININGS ORDER BY id DESC';
+			//console.log(query);
+			tx.executeSql(query, [], function(tx, results) {
+				
+				var len = results.rows.length, i;
+				for (i = 0; i < len; i++) {
+					item = results.rows.item(i);
+					var exercises = JSON.parse(item.exercises);
+					dlExercises = 0;
+					$.each(exercises, function(i, day) {
+						$.each(day, function(j, exercise) {
+							dlExercises = dlExercises+1;
+						});
+					});
+					
+					template.find('.downloadtitle').html(item.name);
+		   			template.find('.downloadcircle').find('span').html('0/' + dlExercises);
+		   			template.find('img').attr('src', app.serverUrl + 'pics/categories/2.jpg');
+		   			template.find('h4').attr('data-cat', item.id).attr('data-type', 'package');
+			   		content1.append(template.html());
+					
+				}
+			}, function(tx, results) {
+				console.error('Error in selecting test result');
+				//console.log(tx);
+				//console.log(results);
+			});
+		}, function(error) {
+			console.error('Error in selecting test result');
+			//console.log(error);
+		});
+   		cats = localStorage.getObject('fitCats');
+   		$.each(cats, function(i, item) {
    			template.find('.downloadtitle').html(item.name);
    			template.find('.downloadcircle').find('span').html('0/' + item.total);
    			template.find('img').attr('src', app.serverUrl + 'pics/categories/' + item.cat_id + '.jpg');
@@ -1052,11 +1068,7 @@ var app = {
    		
    		$('.items-container1, .items-container2').find('h4').click(function(e) {
    			
-   			//statuses
-   			
-   			/*
-   			* get all the videos to be downloaded and pass the array to videos
-   			*/
+   			app.downloadExerciseVideos($(this).data('type'), $(this).data('id'));
    			
 	   		$(this).html('Laen..');
    		});
@@ -1067,8 +1079,8 @@ var app = {
 				
 	},
 	//approx 2-3h to finish this shit
-	downloadExerciseVideos: function(videos) {
-		
+	downloadExerciseVideos: function(type, id) {
+		//localStore object with video id-s
 		$.each(videos, function(i, video) {
 			
 		});
