@@ -946,7 +946,7 @@ var app = {
    			} else {
    				template.find('.bubble').html(item.total);
    			}	
-   			template.find('img').attr('src', app.serverUrl + 'pics/categories/' + item.cat_id + '.jpg');
+   			template.find('img').attr('src', sPath + 'categories/' + item.cat_id + '.jpg');
    			template.find('.harjutus_item').attr('data-cat', item.cat_id);
 	   		content.append(template.html());
    		});
@@ -1008,7 +1008,7 @@ var app = {
 			   		else
 			   			template.find('h3').html(exercise['name_' + lang]);
 			   		
-			   		template.find('img:last').attr('src', app.serverUrl + 'pics/exercises/' + exercise.id + '.jpg');
+			   		template.find('img:last').attr('src', sPath + 'exercises/' + exercise.id + '.jpg');
 			   		template.find('.harjutus_item').attr('data-id', exercise.id);
 			   		
 			   		container.append(template.html());
@@ -1261,7 +1261,7 @@ var app = {
 		            sPath = fileEntry.fullPath.replace("dummy.html","");
 		            var fileTransfer = new FileTransfer();
 		            fileEntry.remove();
-		            $.each(pics, function(pic) {
+		            $.each(pics, function(i, pic) {
 			            var uri = encodeURI(app.serverUrl + 'pics/' + module + '/' + pic + '.jpg');
 			            fileTransfer.download(
 			                uri,
