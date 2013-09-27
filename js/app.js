@@ -84,7 +84,7 @@ var app = {
 		
 		app.initLogin(false);
 
-		
+		localStorage.removeItem('fitNotFirstTime');
 	},
 	
 	/*
@@ -92,8 +92,7 @@ var app = {
 	*/
 	
 	syncData: function() {
-
-		localStorage.removeItem('fitNotFirstTime');
+	
 		//first time always online
 		if (!localStorage.getItem('fitNotFirstTime')) {
 			showLoading();
@@ -1214,31 +1213,46 @@ var app = {
 	},
 	downloadExerciseVideo: function(exercise, type, id) {
 		var uri = encodeURI(app.serverUrl + 'videos/' + exercise + '.mp4');
+		console.log(exercise + ' ja ' + type + ' ja ' + id);
 		if(deviceMode) {
-			fileTransfer.download(
-			    uri,
-			    filePath,
-			    function(entry) {
-			        //console.log("download complete: " + entry.fullPath);
-			        //$('img.')
-			        downloadedVideos.push(exercise.id);
-			        db.transaction(function(tx) {
-			        	var statement = 'UPDATE EXERCISES SET video = "1" WHERE id = ' + exercise;
-					   	tx.executeSql(statement);
-			        }, function(error) {
-						console.error('Error in selecting test result');
-						//console.log(error);
-					});
-			    }, function(error) {
-			        //console.log("download error source " + error.source);
-			        //console.log("download error target " + error.target);
-			        //console.log("upload error code" + error.code);
-			    }, false, {
-			        headers: {
-			            "Authorization": "Basic dGVzdHVzZXJuYW1lOnRlc3RwYXNzd29yZA=="
-			        }
-			    }
-			);
+		
+			window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function onFileSystemSuccess(fileSystem) {
+		        fileSystem.root.getFile(
+		        "dummy.html", {create: true, exclusive: false}, 
+		        function gotFileEntry(fileEntry) {
+		            sPath = fileEntry.fullPath.replace("dummy.html","");
+		            var fileTransfer = new FileTransfer();
+		            fileEntry.remove();
+		            
+		            //var uri = encodeURI(app.serverUrl + 'pics/' + module + '/' + pic + '.jpg');
+			            fileTransfer.download(
+			                uri,
+			                sPath + 'videos/' + exercise + '.mp4',
+			                function(theFile) {
+			                    console.log("download complete: " + theFile.toURL());
+			                    downloadedVideos.push(exercise.id);
+						        db.transaction(function(tx) {
+						        	var statement = 'UPDATE EXERCISES SET video = "1" WHERE id = ' + exercise;
+								   	tx.executeSql(statement);
+						        }, function(error) {
+									console.error('Error in selecting test result');
+									//console.log(error);
+								});
+			                    //showLink(theFile.toURL());
+			                },
+			                function(error) {
+			                    console.log("download error source " + error.source);
+			                    console.log("download error target " + error.target);
+			                    console.log("upload error code: " + error.code);
+			                }
+			            );
+		            });
+		        }, function(e) {
+				    console.log(e);
+			    });
+		    }, function(e) {
+			    console.log(e);
+		    });
 		} else {
 			console.log('have to be on device :(');
 		}
