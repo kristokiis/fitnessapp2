@@ -40,7 +40,7 @@ var packs = {
 				
 				testResults = localStorage.getObject('fitTest');
 				
-				if (len) {
+				if (len && len > 0) {
 				
 					for (i = 0; i < len; i++) {
 						day = results.rows.item(i);
@@ -80,7 +80,7 @@ var packs = {
 					});
 				
 				} else {
-					$('.diary-content').html('<section class="month"><h4>Päevik tühi veel..</h4></section>');
+					$('.diary-content').html('<section class="month"><h4>Treeningud puuduvad..</h4></section>');
 				}
 				
 			}, function(tx, results) {
@@ -325,16 +325,14 @@ var trainings = {
 				$('#treening_naidiskavad').find('.remove-overlay').click(function(e) {
 					e.preventDefault();
 					e.stopPropagation();
-					$(this).parent().slideUp('fast', function() {
-						var id = parseInt($(this).data('id'));
-						
-						db.transaction(function(tx) {
-							var statement = 'DELETE FROM TRAININGS WHERE id = ' + id;
-							//console.log(statement);
-						   	tx.executeSql(statement);
-						   	$(this).remove();
-					   	});
-					});
+					var id = parseInt($(this).data('id'));
+					
+					db.transaction(function(tx) {
+						var statement = 'DELETE FROM TRAININGS WHERE id = ' + id;
+						//console.log(statement);
+					   	tx.executeSql(statement);
+					   	$(this).remove();
+				   	});
 					
 				});
 				
@@ -353,7 +351,9 @@ var trainings = {
 		
 	},
 	getTraining: function(id) {
-	
+		if(!parseInt(id) && trainings.currentTraining.id)
+			id = parseInt(trainings.currentTraining.id);
+		
 		db.transaction(function(tx) {
 			query = 'SELECT * FROM TRAININGS WHERE id = ' + id;
 			//console.log(query);
@@ -385,13 +385,13 @@ var trainings = {
 							muscle_groups_str = muscle_groups_str + ', ' + muscle_groups[muscle]; 
 					});
 				
-					$('#treening_naidiskava').find('.training-content').append('<section class="item noicon teleport" data-page="treening_naidiskavad_1paev" data-level="3" data-day="' + day + '"><div class="item_wrap"><h6>' + day + '. päev</h6><h3>' + muscle_groups_str + '</h3></div></section>');
+					$('#treening_naidiskava').find('.training-content').append('<section class="item noicon teleport day-item" data-page="treening_naidiskavad_1paev" data-level="3" data-day="' + day + '"><div class="item_wrap"><h6>' + day + '. päev</h6><h3>' + muscle_groups_str + '</h3></div></section>');
 					
 				});
 				
-				$('#treening_naidiskava').find('.description-content').html(trainings.currentTraining.description);
+				//$('#treening_naidiskava').find('.description-content').html(trainings.currentTraining.description);
 				
-				$('#treening_naidiskava').find('.teleport').click(function(e) {
+				$('#treening_naidiskava').find('.day-item').click(function(e) {
 					e.preventDefault();
 					LEVEL = 4;
 					teleportMe('treening_naidiskavad_1paev', $(this).data('day'));
@@ -407,6 +407,8 @@ var trainings = {
 				
 			}, function(tx, results) {
 				console.error('Error in selecting test result');
+				console.log(tx);
+				console.log(results);
 			});
 			
 		}, function(error) {
@@ -414,6 +416,12 @@ var trainings = {
 			//console.log(error);
 		});
 			
+	},
+	getTrainingDescription: function() {
+	
+		$('#treening_naidiskava_markused').find('h3:first').html(trainings.currentTraining.name);
+		$('#treening_naidiskava_markused').find('h3:last').html(trainings.currentTraining.description);
+		
 	},
 	
 	getTrainingsDetail: function(day) {

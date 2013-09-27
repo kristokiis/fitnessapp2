@@ -4,6 +4,7 @@ var data = {};  //data object for querying data from server, should be emptied a
 var user = {};  //object for holding user data / gets from local DB or remote DB
 var items = []; //array for holding module items for inside navigation, without regetting them from server. should be emtied all the time
 var db = {};
+var downloadedVideos = [];
 
 var categories = [];
 
@@ -125,7 +126,7 @@ var app = {
 				tx.executeSql('CREATE TABLE IF NOT EXISTS NUTRITIONS (id unique, type, name, description, meals)');
 				//250 rows max, 300kb
 				tx.executeSql('DROP TABLE IF EXISTS EXERCISES');
-				tx.executeSql('CREATE TABLE IF NOT EXISTS EXERCISES (id unique, type, name, name_en, name_ru, data, video, description, description_en, description_ru, category, muscle)');
+				tx.executeSql('CREATE TABLE IF NOT EXISTS EXERCISES (id unique, type, name, name_en, name_ru, data, video, description, description_en, description_ru, category, muscle, muscle2, muscle3)');
 				//50 rows max, 20kb
 				tx.executeSql('DROP TABLE IF EXISTS NOTIFICATIONS');
 				tx.executeSql('CREATE TABLE IF NOT EXISTS NOTIFICATIONS (id unique, is_read, heading, message, `from`, send)');
@@ -161,24 +162,40 @@ var app = {
 			
 			data = {};
 			data.club_id = club_id;
-			
-			$.get(app.apiUrl + '?action=getCategories', data, function(result) {
-				localStorage.setObject('fitCats', result);
-				app.downloadPics('categories', result);
+			data.user_id = user.id;
+			$.get(app.apiUrl + '?action=getUserDiary', data, function(result) {
 				
-				
-				
-				/*
-				* pic download
-				*/
-				
+				db.transaction(function(tx) {
+					$.each(result, function(i, item) {
+					
+						var statement = "INSERT INTO DIARY (day, month, year, package, training_day, length, plan_name, day_name, day_data, type) VALUES ('" + curr_year + "-" + curr_month + "-" + curr_date + "', '" + curr_month + "', '" + curr_year + "'," + trainings.currentTraining.id + ", " + trainings.currentDay + ", 0, '" + trainings.currentTraining.name + "', '" + day_name + "', '" + JSON.stringify(curDay) + "', 'exercise')";
+						//console.log(statement);
+						tx.executeSql(statement);
+					
+				   	});
+				}, errorCB, function() {
+					//console.log('Inserted all rows');
+				});
 			}, 'jsonp');
-			
+		
 			localStorage.setItem('fitNotFirstTime', true);
 		}
 		//requires us to be online
 		var con = checkConnection();
 		if (con != 'No') {
+		
+			//CATS
+			data = {};
+			data.club_id = club_id;
+			$.get(app.apiUrl + '?action=getCategories', data, function(result) {
+				localStorage.setObject('fitCats', result);
+				
+				if (!localStorage.getItem('fitNotFirstTime')) {
+					app.downloadPics('categories', result);
+				}
+				
+			}, 'jsonp');
+			
 			/*
 			* EXERCISES
 			*/
@@ -191,15 +208,20 @@ var app = {
 			data.club_id = club_id;
 			$.get(app.apiUrl + '?action=getExercises', data, function(result) {
 				db.transaction(function(tx) {
+					var pics = [];
 					$.each(result, function(i, item) {
 						
-						var statement = 'INSERT INTO EXERCISES (id, type, name, name_en, name_ru, data, video, description, description_en, description_ru, category, muscle) VALUES (' + parseInt(item.id) + ', "' + item.heading + '", "' + item.name + '", "' + item.name_en + '", "' + item.name_ru + '", "0", "0", "' + item.description + '", "' + item.description_en + '", "' + item.description_ru + '", "' + item.category + '", "' + item.muscle_group + '")';
+						var statement = 'INSERT INTO EXERCISES (id, type, name, name_en, name_ru, data, video, description, description_en, description_ru, category, muscle, muscle2, muscle3) VALUES (' + parseInt(item.id) + ', "' + item.heading + '", "' + item.name + '", "' + item.name_en + '", "' + item.name_ru + '", "0", "0", "' + item.description + '", "' + item.description_en + '", "' + item.description_ru + '", "' + item.category + '", "' + item.muscle_group + '", "' + item.muscle_group2 + '", "' + item.muscle_group3 + '")';
 						////console.log(statement);
 							//return false;
 					   	tx.executeSql(statement);
 					
 						ex_notIDs.push(item.id);
+						pics.push(item.id);
+						
 					});
+					
+					app.downloadPics('exercises', pics);
 					
 					ex_notIDs = ex_notIDs.filter(function (e, i, ex_notIDs) {
 					    return ex_notIDs.lastIndexOf(e) === i;
@@ -245,8 +267,11 @@ var app = {
 					
 					localStorage.setObject('fitNotifications', no_notIDs);
 					localStorage.setItem('fitNotificationsCount', notificationsCount);
-					if($('#homepage').length)
-						$('#homepage').find('#notificationsCount').html('(' + localStorage.getItem('fitNotificationsCount') + ')');
+					setTimeout(function() {
+						var count = localStorage.getItem('fitNotificationsCount');
+						if($('#homepage').length && count)
+							$('#homepage').find('#notificationsCount').html('(' + localStorage.getItem('fitNotificationsCount') + ')').parent().parent().parent().show();
+					}, 600);
 				}, errorCB, function() {
 					//console.log('Inserted all rows');
 				});
@@ -414,16 +439,33 @@ var app = {
 				$('#teated').find('.remove-overlay').click(function(e) {
 					e.preventDefault();
 					e.stopPropagation();
-					$(this).parent().slideUp('fast', function() {
-						var id = parseInt($(this).data('id'));
+					
+					var id = parseInt($(this).data('id'));
+					
+					db.transaction(function(tx) {
+					
+						query = 'SELECT is_read FROM NOTIFICATIONS WHERE id = ' + id;
+						//console.log(query);
+						tx.executeSql(query, [], function(tx, results) {
+							notification = results.rows.item(0);
+							if(!notification.is_read) {
+								var total = parseInt(localStorage.getItem('fitNotificationsCount'));
+								total = total - 1;
+								localStorage.setItem('fitNotificationsCount', total);
+							}
+						}, function(tx, results) {
+							console.error('Error in selecting test result');
+							//console.log(tx);
+							//console.log(results);
+						});
 						
-						db.transaction(function(tx) {
-							var statement = 'DELETE FROM NOTIFICATIONS WHERE id = ' + id;
-							////console.log(statement);
-						   	tx.executeSql(statement);
-						   	$(this).remove();
-					   	});
-					});
+						var statement = 'DELETE FROM NOTIFICATIONS WHERE id = ' + id;
+						////console.log(statement);
+					   	tx.executeSql(statement);
+					   	
+					   
+					   	$(this).remove();
+				   	});
 					
 				});
 				
@@ -881,7 +923,7 @@ var app = {
 		content.html('');
 		template = $('.module-template');
 		template.hide();
-		
+		console.log(result);
    		$.each(result, function(i, item) {
    		
    			//console.log(item);
@@ -936,7 +978,7 @@ var app = {
 			} else {
 				$('#harjutused_subpage1').find('h3:first').html(muscle_groups[app.muscleGroup]).css('font-size', '15px');
 			}
-			where = where + ' AND muscle = "' + app.muscleGroup + '"';
+			where = where + ' AND (muscle = "' + app.muscleGroup + '" OR muscle2 = "' + app.muscleGroup + '" OR muscle3 = "' + app.muscleGroup + '")';
 		}
 		
 		items = [];
@@ -947,7 +989,7 @@ var app = {
 		
 		db.transaction(function(tx) {
 			query = 'SELECT * FROM EXERCISES ' + where + ' ORDER BY id DESC';
-			//console.log(query);
+			console.log(query);
 			tx.executeSql(query, [], function(tx, results) {
 				
 				var len = results.rows.length, i;
@@ -1026,28 +1068,55 @@ var app = {
 		content2 = $('.items-container2');
 		
 		db.transaction(function(tx) {
-			query = 'SELECT * FROM TRAININGS ORDER BY id DESC';
+			query = 'SELECT id FROM EXERCISES WHERE video = "1"';
 			//console.log(query);
 			tx.executeSql(query, [], function(tx, results) {
-				
 				var len = results.rows.length, i;
 				for (i = 0; i < len; i++) {
 					item = results.rows.item(i);
-					var exercises = JSON.parse(item.exercises);
-					dlExercises = 0;
-					$.each(exercises, function(i, day) {
-						$.each(day, function(j, exercise) {
-							dlExercises = dlExercises+1;
-						});
-					});
-					
-					template.find('.downloadtitle').html(item.name);
-		   			template.find('.downloadcircle').find('span').html('0/' + dlExercises);
-		   			template.find('img').attr('src', app.serverUrl + 'pics/categories/2.jpg');
-		   			template.find('h4').attr('data-cat', item.id).attr('data-type', 'package');
-			   		content1.append(template.html());
-					
+					downloadedVideos.push(item.id);
 				}
+				
+				db.transaction(function(tx) {
+					query = 'SELECT * FROM TRAININGS ORDER BY id DESC';
+					//console.log(query);
+					tx.executeSql(query, [], function(tx, results) {
+						
+						var len = results.rows.length, i;
+						for (i = 0; i < len; i++) {
+							item = results.rows.item(i);
+							var exercises = JSON.parse(item.exercises);
+							dlExercises = 0;
+							$.each(exercises, function(i, day) {
+								$.each(day, function(j, exercise) {
+									dlExercises = dlExercises+1;
+								});
+							});
+							
+							template.find('.downloadtitle').html(item.name);
+				   			template.find('.downloadcircle').find('span').html('0/' + dlExercises);
+				   			template.find('img').attr('src', app.serverUrl + 'pics/categories/2.jpg');
+				   			template.find('h4').attr('data-id', item.id).attr('data-type', 'package');
+					   		content1.append(template.html());
+							
+						}
+					}, function(tx, results) {
+						console.error('Error in selecting test result');
+						//console.log(tx);
+						//console.log(results);
+					});
+				}, function(error) {
+					console.error('Error in selecting test result');
+					//console.log(error);
+				});
+		   		
+		   		setTimeout(function() {
+			   		$('.items-container1, .items-container2').find('h4').click(function(e) {
+			   			app.downloadExerciseVideos($(this).data('type'), $(this).data('id'));
+				   		$(this).html('Laen..');
+			   		});
+		   		}, 800);
+				
 			}, function(tx, results) {
 				console.error('Error in selecting test result');
 				//console.log(tx);
@@ -1057,72 +1126,159 @@ var app = {
 			console.error('Error in selecting test result');
 			//console.log(error);
 		});
-   		cats = localStorage.getObject('fitCats');
+		cats = localStorage.getObject('fitCats');
    		$.each(cats, function(i, item) {
-   			template.find('.downloadtitle').html(item.name);
-   			template.find('.downloadcircle').find('span').html('0/' + item.total);
-   			template.find('img').attr('src', app.serverUrl + 'pics/categories/' + item.cat_id + '.jpg');
-   			template.find('h4').attr('data-cat', item.cat_id).attr('data-type', 'category');
-	   		content2.append(template.html());
-   		});
    		
-   		$('.items-container1, .items-container2').find('h4').click(function(e) {
+   			db.transaction(function(tx) {
+				query = 'SELECT COUNT(id) AS total FROM EXERCISES WHERE video="1" AND category = "' + item.cat_id + '"';
+				//console.log(query);
+				tx.executeSql(query, [], function(tx, results) {
+					result = results.rows.item(0);
+					template.find('.downloadtitle').html(item.name);
+		   			template.find('.downloadcircle').find('span').html(result.total + '/' + item.total);
+		   			template.find('img').attr('src', app.serverUrl + 'pics/categories/' + item.cat_id + '.jpg');
+		   			template.find('h4').attr('data-id', item.cat_id).attr('data-type', 'category');
+			   		content2.append(template.html());
+					
+				}, function(tx, results) {
+					console.error('Error in selecting test result');
+					//console.log(tx);
+					//console.log(results);
+				});
+			}, function(error) {
+				console.error('Error in selecting test result');
+				//console.log(error);
+			});
    			
-   			app.downloadExerciseVideos($(this).data('type'), $(this).data('id'));
-   			
-	   		$(this).html('Laen..');
-   		});
-		
-		/*
-		* each packages & each categories
-		*/
-				
+   		});	
 	},
 	//approx 2-3h to finish this shit
 	downloadExerciseVideos: function(type, id) {
+		console.log(type+' - ' + id);
 		//localStore object with video id-s
-		$.each(videos, function(i, video) {
+		//downloadedVideos = localStorage.getObject('fitExerciseVideos');
+		//if(!downloadedVideos)
+		//	downloadedVideos = [];
+		if(type == 'package') {
+			db.transaction(function(tx) {
+				query = 'SELECT * FROM TRAININGS WHERE id = ' + id + '';
+				console.log(query);
+				tx.executeSql(query, [], function(tx, results) {
+					item = results.rows.item(0);
+					var exercises = JSON.parse(item.exercises);
+					$.each(exercises, function(i, day) {
+						$.each(day, function(j, exercise) {
+							//if not downloaded
+							app.downloadExerciseVideo(exercise.id, type, id);
+							
+						});
+					});
+				}, function(tx, results) {
+					console.error('Error in selecting test result');
+					console.log(tx);
+					console.log(results);
+				});
+			}, function(error) {
+				console.error('Error in selecting test result');
+				//console.log(error);
+			});
+		} else {
 			
-		});
-		
-		//download sources: categories, training plans
-		//get category, get training plan
-		//foreach exercises check if this exercise has video already, 
-		//if not then download add to category or training plan count
+			db.transaction(function(tx) {
+				query = 'SELECT id FROM EXERCISES WHERE category = "' + id + '"';
+				//console.log(query);
+				tx.executeSql(query, [], function(tx, results) {
+					var len = results.rows.length, i;
+					for (i = 0; i < len; i++) {
+						item = results.rows.item(i);
+						app.downloadExerciseVideo(item.id, type, id);
+					}
+				}, function(tx, results) {
+					console.error('Error in selecting test result');
+					//console.log(tx);
+					//console.log(results);
+				});
+			}, function(error) {
+				console.error('Error in selecting test result');
+				//console.log(error);
+			});
+			
+		}
 			
 	},
-	//approx 2-3h to finish this shit
-	downloadPics: function(module, pics) {
-		
-		//download sources: categories, exercises
-		//foreach categories download pic, if download add checkmark to cats
-		//foreach all the exercises download pic and add checkmark downloaded
-		//finish this shit...
+	downloadExerciseVideo: function(exercise, type, id) {
+		var uri = encodeURI(app.serverUrl + 'videos/' + exercise + '.mp4');
 		if(deviceMode) {
-			var fileTransfer = new FileTransfer();
-			extension = 'jpg';
-			
-			var uri = encodeURI(app.serverUrl + type + '/' + module + '/' + id + '.' + extension);
-			
 			fileTransfer.download(
 			    uri,
 			    filePath,
 			    function(entry) {
 			        //console.log("download complete: " + entry.fullPath);
 			        //$('img.')
-			    },
-			    function(error) {
+			        downloadedVideos.push(exercise.id);
+			        db.transaction(function(tx) {
+			        	var statement = 'UPDATE EXERCISES SET video = "1" WHERE id = ' + exercise;
+					   	tx.executeSql(statement);
+			        }, function(error) {
+						console.error('Error in selecting test result');
+						//console.log(error);
+					});
+			    }, function(error) {
 			        //console.log("download error source " + error.source);
 			        //console.log("download error target " + error.target);
 			        //console.log("upload error code" + error.code);
-			    },
-			    false,
-			    {
+			    }, false, {
 			        headers: {
 			            "Authorization": "Basic dGVzdHVzZXJuYW1lOnRlc3RwYXNzd29yZA=="
 			        }
 			    }
 			);
+		} else {
+			console.log('have to be on device :(');
+		}
+	},
+	//approx 2-3h to finish this shit
+	downloadPics: function(module, pics) {
+		
+		//download sources: categories, exercises
+		//no checkmarks all those lil filthy pics must be on the phone!!!
+		
+		if(deviceMode) {
+			extension = 'jpg';
+			
+			window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function onFileSystemSuccess(fileSystem) {
+		        fileSystem.root.getFile(
+		        "dummy.html", {create: true, exclusive: false}, 
+		        function gotFileEntry(fileEntry) {
+		            var sPath = fileEntry.fullPath.replace("dummy.html","");
+		            var fileTransfer = new FileTransfer();
+		            fileEntry.remove();
+		            $.each(pics, function(pic) {
+			            var uri = encodeURI(app.serverUrl + 'pics/' + module + '/' + pic.id + '.jpg');
+			            fileTransfer.download(
+			                uri,
+			                sPath + module + '/' + pic.id + '.jpg',
+			                function(theFile) {
+			                    console.log("download complete: " + theFile.toURL());
+			                    //showLink(theFile.toURL());
+			                },
+			                function(error) {
+			                    console.log("download error source " + error.source);
+			                    console.log("download error target " + error.target);
+			                    console.log("upload error code: " + error.code);
+			                }
+			            );
+		            });
+		        }, function(e) {
+				    console.log(e);
+			    });
+		    }, function(e) {
+			    console.log(e);
+		    });
+			
+			
+		} else {
+			console.log('have to be on device :(');
 		}
 	},
 	
@@ -1405,16 +1561,16 @@ var app = {
 		
 		$.get(app.apiUrl + '?action=getFitshop', data, function(result) {
 	   		$.each(result, function(i, item) {
-	   		
-	   			items[item.id] = item;
-		   		
-		   		template.find('h4:first').html(item.name);
-		   		template.find('h4:last').html(item.price + ' €');
-		   		template.find('img:last').attr('src', app.serverUrl + 'pics/fitshop/' + item.id + '.jpg');
-		   		template.find('.box33').attr('data-id', item.id);
-		   		
-		   		container.append(template.html());
-		   		
+	   			if(item.name) {
+		   			items[item.id] = item;
+			   		
+			   		template.find('h4:first').html(item.name);
+			   		template.find('h4:last').html(item.price + ' €');
+			   		template.find('img:last').attr('src', app.serverUrl + 'pics/fitshop/' + item.id + '.jpg');
+			   		template.find('.box33').attr('data-id', item.id);
+			   		
+			   		container.append(template.html());
+		   		}
 	   		});
 	   		//console.log(result);
 	   		
@@ -1425,7 +1581,7 @@ var app = {
 				//e.preventDefault();
 				addHover( this );
 				$('.voucher').show();
-				$('#overlay').find('img:first').attr('src', app.serverUrl + 'pics/trainers/' + id + '.jpg');
+				$('#overlay').find('img:first').attr('src', app.serverUrl + 'pics/fitshop/' + id + '.jpg');
 				$('#overlay').find('h1').html(items[id].name);
 				$('#overlay').find('h2').html(items[id].price + ' €');
 				$('#overlay').find('h4').html('');

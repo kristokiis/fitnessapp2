@@ -129,6 +129,35 @@
 
 
 
+#thefilter .muscles{
+	display: none;
+}
+
+#thefilter .muscleslist {
+  display: block;
+  margin: 5% 5% 0;
+  text-align: center;
+}
+
+#thefilter .muscleslist a{
+	color:#2D2D2D;
+  display: block;
+  float: left;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 3px 1%;
+  padding: 10px 0;
+  width: 48%;
+  background: none repeat scroll 0 0 #F0F0F0;
+}
+
+
+#thefilter .muscleslist a:hover, #thefilter .muscleslist a:active{
+	color:#FACB23;
+	font-weight: 800;
+}
+
+
 
 
 .anim_10_a23{

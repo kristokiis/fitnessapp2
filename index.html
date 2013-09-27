@@ -14,6 +14,9 @@
 				var androidversion = parseFloat(ua.slice(ua.indexOf("Android")+8)); 
 				if (androidversion <= 2.3) {
 					document.write('<link rel="stylesheet" href="css/main_a23.css">');
+					var is23 = true;
+				}else{
+					var is23 = false;
 				}
 			}
 	    </script>

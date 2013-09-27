@@ -117,35 +117,30 @@ var nolevel = false;
 
 
 
-
 jQuery(window).resize(function ($) {
 
 	offset = jQuery('.topbar').height();
 	jQuery('.centered').css('top', offset + 'px');
-	//jQuery('.page-wrap').css('height', Number(jQuery(aligner).height() + plus) +  'px');
 
-	//console.log(jQuery(window).width() + 'px');
-	
-	////console.log( window.outerHeight, jQuery(window).height() );
 });
 
 
 function resizeby(_this, _plus) {
 
 	me = jQuery(_this + ' .me').height();
-
 	//wind = Number(wind) - Number(iofsett);
 	var toscrollheight = Number(wind - (offset + me + bbar));
-	////console.log(newheight , toscrollheight);
+
 	
-	//alert('ok');
+	//alert(agentID);
 	
 	jQuery('.page-wrap').css('height', wind + 'px');
-	//setTimeout(function () {
 	
-		if(_this == '#homepage')
-			toscrollheight = toscrollheight - 46;
-		
+		if(_this == '#homepage'){
+			var off43 = 0;
+			if(is23) off43 = 47;
+			toscrollheight = toscrollheight - off43;
+		}
 		
 		jQuery('.toscroll').css('height', toscrollheight + 'px');
 
@@ -164,11 +159,9 @@ function resizeby(_this, _plus) {
 
 		nolevel = false;
 		goingback = false;
-	//}, 100);
+
 	aligner = _this;
 	plus = _plus;
-
-	//alert( jQuery(window).height() );
 }
 
 function reposition() {
@@ -191,6 +184,30 @@ function reposition() {
 				jQuery( this ).addClass( 'selected' );
 			}
 		});
+		
+		// iScroll is needed everywhere, as overflow scroll not supported on old androids :(
+		if(is23){
+			var diaryscroll = jQuery('#diaryscroll').length;
+			if(diaryscroll){
+				var scroll = new iScroll('diaryscroll');
+				scroll.enableStickyHeaders('h4');
+			}else{
+				
+				jQuery('.toscroll').attr('id','toscroll');
+				jQuery('#toscroll').children().wrapAll("<div />");
+				
+					var toscroll = $('#toscroll').length;
+					if(toscroll){
+						var scroll2 = new iScroll('toscroll');
+						jQuery('#toscroll').on('touchstart', function(){
+							jQuery('.answer input').blur();
+						});
+					}
+				
+				
+			}
+		}
+		//iScroll
 		
 	}, 400);
 }
@@ -289,6 +306,9 @@ function afterTeleport(where, extra) {
 			break;
 		case 'treening_naidiskava':
 			trainings.getTraining(extra);
+			break;
+		case 'treening_naidiskava_markused':
+			trainings.getTrainingDescription(extra);
 			break;
 		case 'treening_naidiskavad_1paev':
 			trainings.getTrainingsDetail(extra);
