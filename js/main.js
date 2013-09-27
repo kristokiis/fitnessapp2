@@ -117,24 +117,31 @@ var nolevel = false;
 
 
 
+
 jQuery(window).resize(function ($) {
 
 	offset = jQuery('.topbar').height();
 	jQuery('.centered').css('top', offset + 'px');
+	//jQuery('.page-wrap').css('height', Number(jQuery(aligner).height() + plus) +  'px');
 
+	//console.log(jQuery(window).width() + 'px');
+	
+	////console.log( window.outerHeight, jQuery(window).height() );
 });
 
 
 function resizeby(_this, _plus) {
 
 	me = jQuery(_this + ' .me').height();
+
 	//wind = Number(wind) - Number(iofsett);
 	var toscrollheight = Number(wind - (offset + me + bbar));
-
+	////console.log(newheight , toscrollheight);
 	
 	//alert(agentID);
 	
 	jQuery('.page-wrap').css('height', wind + 'px');
+	//setTimeout(function () {
 	
 		if(_this == '#homepage'){
 			var off43 = 0;
@@ -159,9 +166,11 @@ function resizeby(_this, _plus) {
 
 		nolevel = false;
 		goingback = false;
-
+	//}, 100);
 	aligner = _this;
 	plus = _plus;
+
+	//alert( jQuery(window).height() );
 }
 
 function reposition() {

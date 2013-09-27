@@ -196,7 +196,7 @@ var app = {
 				});
 				if (!localStorage.getItem('fitNotFirstTime')) {
 					app.downloadPics('categories', cats);
-					localStorage.setItem('fitNotFirstTime', true);
+					//localStorage.setItem('fitNotFirstTime', true);
 				}
 				
 			}, 'jsonp');
@@ -1048,11 +1048,13 @@ var app = {
 			   		$('#video').find('h3:first').html(exercise['name_' + lang]);
 			   		$('#video').find('.text_wrap').html(exercise['name_' + description]);
 			   	}
-				if (exercise.video && exercise.video != "0") {
-					$('#video').find('.video-container').html('<video id="video" height="41%" width="100%" controls="" preload="" autoplay="" poster="' + app.serverUrl + 'videos/' + exercise.id + '.png" onclick="this.play();" onload="this.play();"><source src="' + app.serverUrl + 'videos/' + exercise.id + '.mp4" poster="' + app.serverUrl + 'videos/' + exercise.id + '.png"></video>');
-				} else {
-					$('#video').find('.video-container').html('<video id="video" height="41%" width="100%" controls="" preload="" autoplay="" poster="' + app.serverUrl + 'videos/' + exercise.id + '.png" onclick="this.play();" onload="this.play();"><source src="' + app.serverUrl + 'videos/' + exercise.id + '.mp4" poster="' + app.serverUrl + 'videos/' + exercise.id + '.png"></video>');
-				}
+				if (exercise.video && exercise.video != "0") 
+					videoLink = sPath + 'videos/' + exercise + '.mp4';
+				else
+					videoLink = app.serverUrl + 'videos/' + exercise.id + '.mp4';
+					
+					$('#video').find('.video-container').html('<video id="video" height="41%" width="100%" controls="" preload="" autoplay="" poster="' + sPath + 'exercises/' + exercise.id + '.jpg' + '" onclick="this.play();" onload="this.play();"><source src="' + videoLink + '" poster="' + sPath + 'exercises/' + exercise.id + '.jpg' + '"></video>');
+					
 				
 			}, function(tx, results) {
 				console.error('Error in selecting test result');
@@ -1071,7 +1073,7 @@ var app = {
 		template = $('.item-template');
 		content1 = $('.items-container1');
 		content2 = $('.items-container2');
-		
+		downloadedVideos = [];
 		db.transaction(function(tx) {
 			query = 'SELECT id FROM EXERCISES WHERE video = "1"';
 			//console.log(query);
@@ -1079,7 +1081,7 @@ var app = {
 				var len = results.rows.length, i;
 				for (i = 0; i < len; i++) {
 					item = results.rows.item(i);
-					downloadedVideos.push(item.id);
+					downloadedVideos.push(parseInt(item.id));
 				}
 				
 				db.transaction(function(tx) {
@@ -1091,17 +1093,27 @@ var app = {
 						for (i = 0; i < len; i++) {
 							item = results.rows.item(i);
 							var exercises = JSON.parse(item.exercises);
-							dlExercises = 0;
+							var dlExercises = 0;
+							var exExercises = 0;
 							$.each(exercises, function(i, day) {
 								$.each(day, function(j, exercise) {
 									dlExercises = dlExercises+1;
+									if((downloadedVideos.indexOf(parseInt(exercise.id)) > -1)) {
+										exExercises = exExercises+1;
+									}
 								});
 							});
 							
 							template.find('.downloadtitle').html(item.name);
-				   			template.find('.downloadcircle').find('span').html('0/' + dlExercises);
+				   			template.find('.downloadcircle').find('span').html(exExercises + '/' + dlExercises);
 				   			template.find('img').attr('src', app.serverUrl + 'pics/categories/2.jpg');
-				   			template.find('h4').attr('data-id', item.id).attr('data-type', 'package');
+				   			template.find('.nobg_item').attr('data-id', item.id).attr('data-type', 'package');
+				   			if(exExercises == dlExercises)
+				   				template.find('.nobg_item').html('<img src="i/icon_ok.png" alt="">').removeClass('arrow');
+				   			else if(exExercises == 0 || exExercises == '0') 
+				   				template.find('.nobg_item').html('<h4>Alusta laadimist</h4>').addClass('arrow');
+				   			else
+				   				template.find('.nobg_item').html('<h4>Jätka laadimist</h4>').addClass('arrow');
 					   		content1.append(template.html());
 							
 						}
@@ -1116,9 +1128,10 @@ var app = {
 				});
 		   		
 		   		setTimeout(function() {
-			   		$('.items-container1, .items-container2').find('h4').click(function(e) {
+			   		$('.items-container1, .items-container2').find('.nobg_item').click(function(e) {
+			   			console.log($(this).data('type') + ' ja ' + $(this).data('id'));
 			   			app.downloadExerciseVideos($(this).data('type'), $(this).data('id'));
-				   		$(this).html('Laen..');
+				   		$(this).html('<img src="i/icon_pause.png" alt="">').removeClass('arrow');
 			   		});
 		   		}, 800);
 				
@@ -1142,7 +1155,13 @@ var app = {
 					template.find('.downloadtitle').html(item.name);
 		   			template.find('.downloadcircle').find('span').html(result.total + '/' + item.total);
 		   			template.find('img').attr('src', app.serverUrl + 'pics/categories/' + item.cat_id + '.jpg');
-		   			template.find('h4').attr('data-id', item.cat_id).attr('data-type', 'category');
+		   			template.find('.nobg_item').attr('data-id', item.cat_id).attr('data-type', 'category');
+		   			if(result.total == item.total)
+		   				template.find('.nobg_item').html('<img src="i/icon_ok.png" alt="">').removeClass('arrow');
+		   			else if(result.total == 0 || result.total == '0') 
+		   				template.find('.nobg_item').html('<h4>Alusta laadimist</h4>').addClass('arrow');
+		   			else
+		   				template.find('.nobg_item').html('<h4>Jätka laadimist</h4>').addClass('arrow');
 			   		content2.append(template.html());
 					
 				}, function(tx, results) {
@@ -1164,6 +1183,7 @@ var app = {
 		//downloadedVideos = localStorage.getObject('fitExerciseVideos');
 		//if(!downloadedVideos)
 		//	downloadedVideos = [];
+		var _exercises = [];
 		if(type == 'package') {
 			db.transaction(function(tx) {
 				query = 'SELECT * FROM TRAININGS WHERE id = ' + id + '';
@@ -1174,10 +1194,11 @@ var app = {
 					$.each(exercises, function(i, day) {
 						$.each(day, function(j, exercise) {
 							//if not downloaded
-							app.downloadExerciseVideo(exercise.id, type, id);
+							_exercises.push(exercise.id);
 							
 						});
 					});
+					app.downloadExerciseVideo(_exercises, 'package', id);
 				}, function(tx, results) {
 					console.error('Error in selecting test result');
 					console.log(tx);
@@ -1195,9 +1216,10 @@ var app = {
 				tx.executeSql(query, [], function(tx, results) {
 					var len = results.rows.length, i;
 					for (i = 0; i < len; i++) {
-						item = results.rows.item(i);
-						app.downloadExerciseVideo(item.id, type, id);
+						exercise = results.rows.item(i);
+						_exercises.push(exercise.id);
 					}
+					app.downloadExerciseVideo(_exercises, 'category', id);
 				}, function(tx, results) {
 					console.error('Error in selecting test result');
 					//console.log(tx);
@@ -1211,9 +1233,8 @@ var app = {
 		}
 			
 	},
-	downloadExerciseVideo: function(exercise, type, id) {
-		var uri = encodeURI(app.serverUrl + 'videos/' + exercise + '.mp4');
-		console.log(exercise + ' ja ' + type + ' ja ' + id);
+	downloadExerciseVideo: function(exercises, type, id) {
+	
 		if(deviceMode) {
 		
 			window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function onFileSystemSuccess(fileSystem) {
@@ -1223,29 +1244,43 @@ var app = {
 		            sPath = fileEntry.fullPath.replace("dummy.html","");
 		            var fileTransfer = new FileTransfer();
 		            fileEntry.remove();
-		            
-		            //var uri = encodeURI(app.serverUrl + 'pics/' + module + '/' + pic + '.jpg');
-		            fileTransfer.download(
-		                uri,
-		                sPath + 'videos/' + exercise + '.mp4',
-		                function(theFile) {
-		                    console.log("download complete: " + theFile.toURL());
-		                    downloadedVideos.push(exercise.id);
-					        db.transaction(function(tx) {
-					        	var statement = 'UPDATE EXERCISES SET video = "1" WHERE id = ' + exercise;
-							   	tx.executeSql(statement);
-					        }, function(error) {
-								console.error('Error in selecting test result');
-								//console.log(error);
-							});
-		                    //showLink(theFile.toURL());
-		                },
-		                function(error) {
-		                    console.log("download error source " + error.source);
-		                    console.log("download error target " + error.target);
-		                    console.log("upload error code: " + error.code);
-		                }
-		            );
+		            $.each(exercises, function(i, exercise) {
+		            	var uri = encodeURI(app.serverUrl + 'videos/' + exercise + '.mp4');
+			            fileTransfer.download(
+			                uri,
+			                sPath + 'videos/' + exercise + '.mp4',
+			                function(theFile) {
+			                    console.log("download complete: " + theFile.toURL());
+			                    db.transaction(function(tx) {
+						        	var statement = 'UPDATE EXERCISES SET video = "1" WHERE id = ' + exercise;
+								   	tx.executeSql(statement);
+								   	//downloadedVideos.push(exercise.id);
+									$('.toscroll').find('.downloadgroup').find('.nobg_item').each(function(j, element) {
+														   	
+									   if($(element).data('id') == id && $(element).data('type') == type) {
+										   
+										   stats_span = $(element).parent().parent().find('.downloadcircle').find('span');
+										   var numbers = stats_span.html().split('/');
+										   nr1 = parseInt(numbers[0]);
+										   stats_span.html((nr1+1)+'/'+numbers[1]);
+										   
+										   if((nr1+1) == parseInt(numbers[1])) {
+											   $(element).html('<img src="i/icon_ok.png" alt="">');
+										   }
+									   }	
+								   	});
+								}, function(error) {
+									console.error('Error in selecting test result');
+									//console.log(error);
+								});
+			                },
+			                function(error) {
+			                    console.log("download error source " + error.source);
+			                    console.log("download error target " + error.target);
+			                    console.log("upload error code: " + error.code);
+			                }
+			            );
+			        });
 		        }, function(e) {
 				    console.log(e);
 			    });

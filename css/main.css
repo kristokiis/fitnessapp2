@@ -705,13 +705,29 @@ background: radial-gradient(ellipse at center,  rgba(255,255,255,0.71) 0%,rgba(2
 
 
 #login .tagasibtn{
-	background: #999;
+	background: rgb(250,203,36);
+	background: -moz-linear-gradient(top,  rgba(250,203,36,1) 0%, rgba(250,203,36,1) 33%, rgba(214,167,0,1) 67%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(250,203,36,1)), color-stop(33%,rgba(250,203,36,1)), color-stop(67%,rgba(214,167,0,1)));
+	background: -webkit-linear-gradient(top,  rgba(250,203,36,1) 0%,rgba(250,203,36,1) 33%,rgba(214,167,0,1) 67%);
+	background: linear-gradient(to bottom,  rgba(250,203,36,1) 0%,rgba(250,203,36,1) 33%,rgba(214,167,0,1) 67%);
 	padding: 9% 28%;
 	text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.5);
 }
 #login .tagasibtn span{
 	color: #000;
 }
+ #login .tagasibtn span:after {
+  background: url("../i/arrowback.png") no-repeat scroll 0 0 transparent;
+  background-size: 100% auto;
+  content: "";
+  height: 75%;
+  left: 10%;
+  position: absolute;
+  width: 10%;
+  top: 32%;
+}
+
+
 
 #frontpage .acc.active, #login .acc.active{
 	background: rgb(214,167,0);
@@ -1934,7 +1950,7 @@ div.icon_select {
 }
 
 #treenerpakkumised .box33.active {
-    background: none repeat scroll 0 0 #444;
+    background: none repeat scroll 0 0 #777;
 }
 
 
@@ -1945,6 +1961,10 @@ div.icon_select {
   width: 29%;
   border-radius: 6px 6px 6px 6px;
   padding: 0 0 5px;
+  	
+	-webkit-transition: all 0.20s ease;
+	-moz-transition: all 0.20s ease;
+	transition: all 0.20s ease;
 }
 
 .box33.selected{
@@ -2004,9 +2024,14 @@ div.icon_select {
 	position: relative;
 }
 
-
-.box33.active{
-	background: #222;
+.details.active{
+	background: #404040;
+}
+.box33.active, .box33:active, .box33:hover{
+	background: #333;
+	-webkit-transform: scale(0.85);
+	-moz-transform: scale(0.85);
+	transform: scale(0.85);
 }
 
 .details span:after {
@@ -2046,6 +2071,9 @@ div.icon_select {
 	
 }
 
+.buybtn.active, .buybtn:hover, .buybtn:active{
+	background: rgb(69,67,67);
+}
 
 .buybtn.slideIn{
 	top: 0;
@@ -2826,6 +2854,24 @@ div.icon_select {
 	z-index: 5000;
 }
 
+#voucher{
+	background: url(../i/voucher.png)no-repeat center center transparent;
+	background-size: 100% 100%;
+	width: 100%;
+	position: relative;
+}
+#voucher div {
+  font-size: 14px;
+  line-height: 18px;
+  padding: 24px 25%;
+}
+#voucher span {
+  color: #FFFFFF;
+  font-size: 26px;
+  position: absolute;
+  right: 3%;
+  top: 33%;
+}
 
 #ajaxoverlay h2 {
   color: #FFFFFF;
@@ -3883,5 +3929,13 @@ div.icon_select {
 	.langselector a{
 		padding: 0 2px;
 		font-size: 12px;
+	}
+	
+	#voucher span {
+	  color: #FFFFFF;
+	  font-size: 21px;
+	  position: absolute;
+	  right: 3%;
+	  top: 36%;
 	}
 }
