@@ -28,6 +28,9 @@ translations.et['continue_training'] = 'Jätka treeningut';
 translations.et['special_offers'] = 'Eripakkumised';
 translations.et['all_special_offers'] = 'Kõik sooduspakkumised';
 translations.et['notifications'] = 'Teated';
+translations.et['trainings'] = 'Treeningud';
+translations.et['training_hours'] = 'Treeningtunnid';
+translations.et['last_training'] = 'Viimane treening';
 
 //DIARY
 translations.et['date'] = 'Kuupäev';
@@ -35,6 +38,8 @@ translations.et['pack'] = 'Kava';
 translations.et['trainingday'] = 'Treeningpäev';
 translations.et['training_length'] = 'Treeningu kestus';
 translations.et['score'] = 'Tulemus';
+translations.et['no_trainings'] = 'Treeningud puuduvad..';
+translations.et['_length'] = 'Kestus';
 
 translations.et['month_1'] = 'Jaanuar';
 translations.et['month_2'] = 'Veebruar';
@@ -59,6 +64,23 @@ translations.et['log_out'] = 'Logi välja';
 translations.et['save'] = 'SALVESTA';
 
 //EXERCISES
+translations.et['download_videos'] = 'Lae alla videod';
+translations.et['choose_muscles'] = 'Vali lihasgrupp';
+translations.et['muscle_group_1'] = 'Trapets';
+translations.et['muscle_group_2'] = 'Rind';
+translations.et['muscle_group_3'] = 'Kõht';
+translations.et['muscle_group_4'] = 'Esireis';
+translations.et['muscle_group_5'] = 'Säär';
+translations.et['muscle_group_6'] = 'Õlg';
+translations.et['muscle_group_7'] = 'Biitseps';
+translations.et['muscle_group_8'] = 'Ranne';
+translations.et['muscle_group_9'] = 'Ülaselg';
+translations.et['muscle_group_10'] = 'Alaselg';
+translations.et['muscle_group_11'] = 'Tuhar';
+translations.et['muscle_group_12'] = 'Tagareis';
+translations.et['muscle_group_13'] = 'Triitseps';
+translations.et['clean'] = 'Puhasta';
+
 
 //FITNESSTEST
 translations.et['test_1'] = 'Kätekõverdused';
@@ -66,4 +88,28 @@ translations.et['test_2'] = 'Kõhulihased';
 translations.et['test_3'] = 'Kükid';
 translations.et['test_4'] = 'Ettepainduvus';
 translations.et['test_5'] = 'Aeroobne';
-//
+translations.et['result_7'] = 'Suurepärane';
+translations.et['result_6'] = 'Hea';
+translations.et['result_5'] = 'Üle keskmise';
+translations.et['result_4'] = 'Keskmine';
+translations.et['result_3'] = 'Alla keskmise';
+translations.et['result_2'] = 'Nõrk';
+translations.et['result_1'] = 'Väga nõrk';
+
+//PACKS
+translations.et['sample_plans'] = 'Näidiskavad';
+translations.et['order_plans'] = 'Personaalsed kavad';
+translations.et['nutrition_plan'] = 'TOITUMISPLAAN';
+translations.et['training_plan'] = 'TREENINGPLAAN';
+
+//TRAININGS
+translations.et['serie'] = 'Seeria';
+translations.et['DAY'] = 'PÄEV';
+translations.et['day'] = 'päev';
+
+translations.et['no_notifications'] = 'Teated puuduvad..';
+
+//videos
+translations.et['start_download'] = 'Alusta laadimist';
+translations.et['continue_download'] = 'Jätka laadimist';
+translations.et['sum'] = 'Summa';

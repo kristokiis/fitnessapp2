@@ -44,8 +44,6 @@ var app = {
 	
 	init: function() {
 		
-		$('#frontpage').find('.w50').show();
-		
 		con = checkConnection();
 		
 		//console.log('checking connection');
@@ -74,31 +72,19 @@ var app = {
 		$('.langselector').find('a').click(function(e) {
 			e.preventDefault();
 			lang = $(this).data('lang');
-			localStorage.setItem('fit_lang', 'et');
+			localStorage.setItem('fit_lang', lang);
 			app.translateApp();
 			$('.langselector').find('a').removeClass('active');
 			$(this).addClass('active');
 		});
+		if(localStorage.getItem('sPath')) {
+			sPath = localStorage.getItem('sPath');
+			console.log(sPath);
+		}
 		
 		//console.log('going to initlogin');
 		
 		app.initLogin(false);
-		
-		window.plugins.localNotification.add({
-		    fireDate        : Math.round(new Date().getTime()/1000 + 25),
-		    alertBody       : "This is a local notification.",
-		    action          : "View",
-		    repeatInterval  : "daily",
-		    soundName       : "beep.caf",
-		    badge           : 0,
-		    notificationId  : 123,
-		    foreground      : function(notificationId){ 
-		        alert("Hello World! This alert was triggered by notification " + notificationId); 
-		    },
-		    background  : function(notificationId){
-		        alert("Hello World! This alert was triggered by notification " + notificationId);
-		    }           
-		});
 
 		//localStorage.removeItem('fitNotFirstTime');
 	},
@@ -118,6 +104,8 @@ var app = {
 		
 			//empty all the databases
 			localStorage.removeItem('fitCats');
+			
+			localStorage.removeItem('sPath');
 			
 			localStorage.removeItem('fitNotificationsCount');
 			localStorage.removeItem('fitNotifications');
@@ -185,8 +173,8 @@ var app = {
 				db.transaction(function(tx) {
 					$.each(result, function(i, item) {
 					
-						var statement = "INSERT INTO DIARY (day, month, year, package, training_day, length, plan_name, day_name, day_data, type, synced) VALUES ('" + curr_year + "-" + curr_month + "-" + curr_date + "', '" + curr_month + "', '" + curr_year + "'," + trainings.currentTraining.id + ", " + trainings.currentDay + ", 0, '" + trainings.currentTraining.name + "', '" + day_name + "', '" + JSON.stringify(curDay) + "', 'exercise', 1)";
-						//console.log(statement);
+						var statement = "INSERT INTO DIARY (day, month, year, package, training_day, length, plan_name, day_name, day_data, type, synced) VALUES ('" + item.day + "', '" + item.month + "', '" + item.year + "'," + item.package + ", " + item.training_day + ", '" + item.length + "', '" + item.plan_name + "', '" + item.day_name + "', '" + item.day_data + "', '" + item.type + "', 1)";
+						console.log(statement);
 						tx.executeSql(statement);
 					
 				   	});
@@ -293,7 +281,7 @@ var app = {
 					localStorage.setItem('fitNotificationsCount', notificationsCount);
 					setTimeout(function() {
 						var count = localStorage.getItem('fitNotificationsCount');
-						if($('#homepage').length && count)
+						if($('#homepage').length && count != '0')
 							$('#homepage').find('#notificationsCount').html('(' + localStorage.getItem('fitNotificationsCount') + ')').parent().parent().parent().show();
 					}, 600);
 				}, errorCB, function() {
@@ -404,15 +392,11 @@ var app = {
 					if (len) {
 						for (i = 0; i < len; i++) {
 							var day = results.rows.item(i);
-							
+							day.user_id = user.id;
 							var statement = 'UPDATE DIARY SET synced = 1 WHERE id = ' + day.id;
 						   	tx.executeSql(statement);
 							
-							$.get(app.apiUrl + '?action=updateDiary', user, function(result) {
-				
-								user.lastSynced = new Date();
-								localStorage.setObject('fitUser', user);
-							},'jsonp');
+							$.get(app.apiUrl + '?action=updateDiary', day, function(result) {},'jsonp');
 							
 						}
 					}
@@ -445,7 +429,7 @@ var app = {
 				if (len) {
 					for (i = 0; i < len; i++) {
 						notification = results.rows.item(i);
-						var shortText = jQuery.trim(notification.message).substring(0, 40).split(" ").slice(0, -1).join(" ") + '...';
+						var shortText = jQuery.trim(notification.message).substring(0, 30).split(" ").slice(0, -1).join(" ") + '...';
 						template.find('.item').attr('data-id', notification.id);
 						template.find('h6').html(notification.heading);
 						template.find('h4').html(notification.send);
@@ -467,13 +451,13 @@ var app = {
 					$('#teated').find('.remove-overlay').click(function(e) {
 						e.preventDefault();
 						e.stopPropagation();
-						
-						var id = parseInt($(this).data('id'));
+						element = $(this).parent();
+						var id = parseInt(element.data('id'));
 						
 						db.transaction(function(tx) {
 						
 							query = 'SELECT is_read FROM NOTIFICATIONS WHERE id = ' + id;
-							//console.log(query);
+							console.log(query);
 							tx.executeSql(query, [], function(tx, results) {
 								notification = results.rows.item(0);
 								if(!notification.is_read) {
@@ -483,8 +467,8 @@ var app = {
 								}
 							}, function(tx, results) {
 								console.error('Error in selecting test result');
-								//console.log(tx);
-								//console.log(results);
+								console.log(tx);
+								console.log(results);
 							});
 							
 							var statement = 'DELETE FROM NOTIFICATIONS WHERE id = ' + id;
@@ -492,13 +476,13 @@ var app = {
 						   	tx.executeSql(statement);
 						   	
 						   
-						   	$(this).remove();
+						   	element.remove();
 					   	});
 						
 					});
 					
 				} else {
-					$('#teated').find('.training-content').html('<section class="month"><h4>Teated puuduvad..</h4></section>');
+					$('#teated').find('.training-content').html('<section class="month"><h4>'+translations[lang]['no_notifications']+'</h4></section>');
 				}
 			}, function(tx, results) {
 				console.error('Error in selecting test result');
@@ -565,6 +549,8 @@ var app = {
 	translateApp: function() {
 		$.getScript("js/translations/" + lang + ".js", function() {
 			app.replaceWords();
+			$('#frontpage').find('.w50').show();
+			
 			//console.log('going to replace words');
 		});	
 	},
@@ -584,6 +570,9 @@ var app = {
 		
 		$('.fb').unbind('click');
 		$('.fb').click(function(e) {
+		
+			addHover(this);
+		
 			e.preventDefault();
 			var con = checkConnection();
 		
@@ -606,7 +595,7 @@ var app = {
 		$('.loginformbtn').unbind(eventEnd).bind(eventEnd, function (e) {
 		
 			hideKeyBoard();
-		
+			addHover(this);
 			e.preventDefault();
 			////console.log('submit');
 			
@@ -806,27 +795,38 @@ var app = {
 			teleportMe('profile');
 		});
 		
-		db.transaction(function(tx) {
-			query = 'SELECT SUM(length) as total_length, COUNT(*) as total, plan_name FROM DIARY ORDER BY day DESC';
-			//console.log(query);
-			tx.executeSql(query, [], function(tx, results) {
-				diary = results.rows.item(0);
-				//console.log(diary);
-				$('.treeningud_number').html(diary.total);
-				if(diary.total_length)
-					$('.treeningud_time').html(secToHour(diary.total_length));
-				else
-					$('.treeningud_time').html('00:00:00');
-				$('.last_update').html(diary.plan_name);
-			}, function(tx, results) {
+		if(firstLoad) {
+			firstLoad = false;
+			timing = 1500;
+		} else {
+			timing = 100;
+		}
+			
+		
+		setTimeout(function() {
+			db.transaction(function(tx) {
+				query = 'SELECT SUM(length) as total_length, COUNT(*) as total, plan_name FROM DIARY ORDER BY day DESC';
+				//console.log(query);
+				tx.executeSql(query, [], function(tx, results) {
+					diary = results.rows.item(0);
+					//console.log(diary);
+					$('.treeningud_number').html(diary.total);
+					if(diary.total_length)
+						$('.treeningud_time').html(secToHour(diary.total_length));
+					else
+						$('.treeningud_time').html('00:00:00');
+					$('.last_update').html(diary.plan_name);
+				}, function(tx, results) {
+					console.error('Error in selecting test result');
+					//console.log(tx);
+					//console.log(results);
+				});
+			}, function(error) {
 				console.error('Error in selecting test result');
-				//console.log(tx);
-				//console.log(results);
+				//console.log(error);
 			});
-		}, function(error) {
-			console.error('Error in selecting test result');
-			//console.log(error);
-		});
+		}, timing);
+		
 			
 	},
 
@@ -872,11 +872,12 @@ var app = {
 			
 			$('.save-button').hide();
 			
-			$('#selectiveoverlay').find('.selection-content').find('.touchhover').unbind('click');
-			$('#selectiveoverlay').find('.selection-content').find('.touchhover').click(function(e) {
+			$('#selectiveoverlay').find('.selection-content').find('.nobg_item').unbind('click');
+			$('#selectiveoverlay').find('.selection-content').find('.nobg_item').click(function(e) {
 				
 				lang = $(this).data('lang');
 				app.translateApp();
+				localStorage.setItem('fit_lang', lang);
 				$('#selectiveoverlay').removeClass('scale');
 				setTimeout(function () {
 					$('#selectiveoverlay').removeClass('scaleIn');
@@ -958,7 +959,10 @@ var app = {
    		
    			//console.log(item);
    			categories[item.cat_id] = item.name;
-   			template.find('h3').html(item.name);
+   			if (lang == 'et')
+	   			template.find('h3').html(item.name);
+	   		else
+	   			template.find('h3').html(item['name_' + lang]);
    			
    			//console.log(app.muscleGroup + '_total');
    			
@@ -1077,7 +1081,9 @@ var app = {
 					videoLink = sPath + 'videos/' + exercise + '.mp4';
 				else
 					videoLink = app.serverUrl + 'videos/' + exercise.id + '.mp4';
-					
+				
+				console.log(sPath);
+				
 					$('#video').find('.video-container').html('<video id="video" height="41%" width="100%" controls="" preload="" autoplay="" poster="' + sPath + 'exercises/' + exercise.id + '.jpg' + '" onclick="this.play();" onload="this.play();"><source src="' + videoLink + '" poster="' + sPath + 'exercises/' + exercise.id + '.jpg' + '"></video>');
 					
 				
@@ -1131,14 +1137,14 @@ var app = {
 							
 							template.find('.downloadtitle').html(item.name);
 				   			template.find('.downloadcircle').find('span').html(exExercises + '/' + dlExercises);
-				   			template.find('img').attr('src', app.serverUrl + 'pics/categories/2.jpg');
+				   			template.find('img').attr('src', sPath + 'exercises/2.jpg');
 				   			template.find('.nobg_item').attr('data-id', item.id).attr('data-type', 'package');
 				   			if(exExercises == dlExercises)
 				   				template.find('.nobg_item').html('<img src="i/icon_ok.png" alt="">').removeClass('arrow');
 				   			else if(exExercises == 0 || exExercises == '0') 
-				   				template.find('.nobg_item').html('<h4>Alusta laadimist</h4>').addClass('arrow');
+				   				template.find('.nobg_item').html('<h4>'+translations[lang]['start_download']+'</h4>').addClass('arrow');
 				   			else
-				   				template.find('.nobg_item').html('<h4>Jätka laadimist</h4>').addClass('arrow');
+				   				template.find('.nobg_item').html('<h4>'+translations[lang]['continue_download']+'</h4>').addClass('arrow');
 					   		content1.append(template.html());
 							
 						}
@@ -1182,14 +1188,14 @@ var app = {
 					result = results.rows.item(0);
 					template.find('.downloadtitle').html(item.name);
 		   			template.find('.downloadcircle').find('span').html(result.total + '/' + item.total);
-		   			template.find('img').attr('src', app.serverUrl + 'pics/categories/' + item.cat_id + '.jpg');
+		   			template.find('img').attr('src', sPath + 'exercises/' + item.cat_id + '.jpg');
 		   			template.find('.nobg_item').attr('data-id', item.cat_id).attr('data-type', 'category');
 		   			if(result.total == item.total)
 		   				template.find('.nobg_item').html('<img src="i/icon_ok.png" alt="">').removeClass('arrow');
 		   			else if(result.total == 0 || result.total == '0') 
-		   				template.find('.nobg_item').html('<h4>Alusta laadimist</h4>').addClass('arrow');
+		   				template.find('.nobg_item').html('<h4>'+translations[lang]['start_download']+'</h4>').addClass('arrow');
 		   			else
-		   				template.find('.nobg_item').html('<h4>Jätka laadimist</h4>').addClass('arrow');
+		   				template.find('.nobg_item').html('<h4>'+translations[lang]['continue_download']+'</h4>').addClass('arrow');
 			   		content2.append(template.html());
 					
 				}, function(tx, results) {
@@ -1203,6 +1209,62 @@ var app = {
 			});
    			
    		});	
+   		
+   		$('.remove-all').click(function() {
+	   		
+	   		db.transaction(function(tx) {
+				query = 'SELECT id FROM EXERCISES WHERE video="1"';
+				//console.log(query);
+				tx.executeSql(query, [], function(tx, results) {
+					var len = results.rows.length, i;
+					
+						window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function onFileSystemSuccess(fileSystem) {
+				       		fileSystem.root.getFile("dummy.html", {create: true, exclusive: false}, 
+				       			function gotFileEntry(fileEntry) {
+					       			sPath = fileEntry.fullPath.replace("dummy.html","");
+					       			
+					       			for (i = 0; i < len; i++) {
+										item = results.rows.item(i);
+										fileSystem.root.getFile(sPath + 'videos/' + item.id + '.mp4', {create: false, exclusive: false}, 									
+										function(fileEntry){
+											console.log(fileEntry);
+											fileEntry.remove(function(s) {console.log('success');}, function(e) {console.log(e);});
+										}, function(error) {
+											console.log(error);
+										});
+										
+									}
+									
+									$('.toscroll').find('.downloadgroup').find('.nobg_item').each(function(j, element) {
+										   
+									   stats_span = $(element).parent().parent().find('.downloadcircle').find('span');
+									   var numbers = stats_span.html().split('/');
+									   nr1 = parseInt(numbers[0]);
+									   stats_span.html('0/'+numbers[1]);
+								   	});
+								   	db.transaction(function(tx) {
+						        		var statement = 'UPDATE EXERCISES SET video = "0"';
+						        		tx.executeSql(statement);
+						        	});
+					       			
+					       		}
+					       	);
+				        });
+					
+						
+					
+				}, function(tx, results) {
+					console.error('Error in selecting test result');
+					//console.log(tx);
+					//console.log(results);
+				});
+			}, function(error) {
+				console.error('Error in selecting test result');
+				//console.log(error);
+			});
+	   		
+   		});
+   		
 	},
 	//approx 2-3h to finish this shit
 	downloadExerciseVideos: function(type, id) {
@@ -1316,7 +1378,32 @@ var app = {
 			    console.log(e);
 		    });
 		} else {
-			console.log('have to be on device :(');
+			$.each(exercises, function(i, exercise) {
+		            	
+                console.log("download complete: " + exercise);
+                db.transaction(function(tx) {
+		        	var statement = 'UPDATE EXERCISES SET video = "1" WHERE id = ' + exercise;
+				   	tx.executeSql(statement);
+				   	//downloadedVideos.push(exercise.id);
+					$('.toscroll').find('.downloadgroup').find('.nobg_item').each(function(j, element) {
+										   	
+					   if($(element).data('id') == id && $(element).data('type') == type) {
+						   
+						   stats_span = $(element).parent().parent().find('.downloadcircle').find('span');
+						   var numbers = stats_span.html().split('/');
+						   nr1 = parseInt(numbers[0]);
+						   stats_span.html((nr1+1)+'/'+numbers[1]);
+						   
+						   if((nr1+1) == parseInt(numbers[1])) {
+							   $(element).html('<img src="i/icon_ok.png" alt="">');
+						   }
+					   }	
+				   	});
+				}, function(error) {
+					console.error('Error in selecting test result');
+					//console.log(error);
+				});
+			});
 		}
 	},
 	//approx 2-3h to finish this shit
@@ -1360,7 +1447,7 @@ var app = {
 			    console.log(e);
 		    });
 			
-			
+			localStorage.setItem('sPath', sPath);
 		} else {
 			console.log('have to be on device :(');
 		}
@@ -1445,6 +1532,7 @@ var app = {
 			$('#templateIntro').unbind(eventEnd).bind(eventEnd, function (e) {
 			   		
 		   		$('#voucher').hide();
+		   		$('.buybtn').hide();
 		   		
 	   			var id = $(this).parent().data('id');
 	   		
@@ -1478,7 +1566,7 @@ var app = {
 			
 			html += '<div class="inbasket"><div class="naming">'+ template.name +'</div><div class="pricing">'+ template.price +'</div><div class="clear"></div></div>';
 			
-			html += '<div class="intotal"><div class="naming">Summa:</div><div class="pricing">'+ template.price +'  €</div><div class="clear"></div></div>';
+			html += '<div class="intotal"><div class="naming">'+translations[lang]['sum']+':</div><div class="pricing">'+ template.price +'  €</div><div class="clear"></div></div>';
 			
 			here.append(html);
 			
@@ -1841,16 +1929,8 @@ var app = {
 					//console.log(error);
 				});
 				
-				$('#yesnooverlay').addClass('scale');
-				setTimeout(function () {
-					$('#yesnooverlay').addClass('scaleIn');
-				}, 100);
-				$('#yesnooverlay').find('.yesno').unbind('click');
-				$('#yesnooverlay').find('.yesno').click(function() {
-					$('#yesnooverlay').removeClass('scaleIn').removeClass('scale');
-					LEVEL = 1;
-					teleportMe('homepage', {});
-				});
+				LEVEL = 1;
+				teleportMe('homepage', {});
 			}
 		})
 		
@@ -1869,16 +1949,19 @@ var app = {
 				
 				var r = $('#tulemusinput' + n).val();
 				r = Number(r);
-				
+				var originalR = r;
+				var repeater = 1;
 				if(n == '5' || n == 5) {
-					if (selectedExercise == 'running') {
-						r = r;
-					} else if (selectedExercise == 'bicycle') {
-						r = r*2.5;
+					var repeater = 1;
+					if (selectedExercise == 'bicycle') {
+						repeater = 2.5;
 					} else if (selectedExercise == 'boat') {
-						r = r*1.2;
+						repeater = 1.2;
 					}
+					
+					//r = repeater*r
 				}
+				console.log(repeater);
 				
 				if(r && r < 10000 && r > -100){
 					
@@ -1911,26 +1994,29 @@ var app = {
 									extra = '';
 									separator = '-';
 								}
+								var min_score = parseInt(repeater * parseInt(item.min_score));
+								var max_score = parseInt(repeater * parseInt(item.max_score));
+								console.log(min_score + ' ja ' + max_score);
 								
-								if (item.min_score == '0' && item.max_score == '0') {
+								if (min_score == '0' && max_score == '0') {
 									$('.grade-' + item.grade).html('0');
-								} else if(item.min_score == '0' || item.min_score == '-1000') {
-									$('.grade-' + item.grade).html('<' + item.max_score);
-								} else if(item.max_score == '10000' || item.max_score == '0') {
-									$('.grade-' + item.grade).html('>' + item.min_score);
+								} else if(min_score == '0' || min_score <= '-1000') {
+									$('.grade-' + item.grade).html('<' + max_score);
+								} else if(max_score >= '10000' || max_score == '0') {
+									$('.grade-' + item.grade).html('>' + min_score);
 								} else {
-									$('.grade-' + item.grade).html(item.min_score + separator + item.max_score);
+									$('.grade-' + item.grade).html(min_score + separator + max_score);
 								}
 								
-								if (item.min_score <= r && item.max_score >= r) {
-									if (item.min_score == '0' && item.max_score == '0') {
+								if (min_score <= r && max_score >= r) {
+									if (min_score == '0' && max_score == '0') {
 										$('.result-text').html('0'+extra);
-									} else if(item.min_score == '0' || item.min_score == '-1000') {
-										$('.result-text').html('<' + item.max_score+extra);
-									} else if(item.max_score == '10000' || item.max_score == '0') {
-										$('.result-text').html('>' + item.min_score+extra);
+									} else if(min_score == '0' || min_score == '-1000') {
+										$('.result-text').html('<' + max_score+extra);
+									} else if(max_score == '10000' || max_score == '0') {
+										$('.result-text').html('>' + min_score+extra);
 									} else {
-										$('.result-text').html(item.min_score + separator + item.max_score+extra);
+										$('.result-text').html(min_score + separator + max_score+extra);
 									}
 									
 									grade = item.grade;
@@ -1971,25 +2057,25 @@ var app = {
 							
 							if (grade == 7) {
 								anim = '7';
-								tulemus = 'Suurepärane';
+								tulemus = translations[lang]['result_7'];
 							} else if(grade == 6) {
 								anim = '6';
-								tulemus = 'Hea';
+								tulemus = translations[lang]['result_6'];
 							} else if(grade == 5) {
 								anim = '5';
-								tulemus = 'Üle keskmise';
+								tulemus = translations[lang]['result_5'];
 							} else if(grade == 4) {
 								anim = '4';
-								tulemus = 'Keskmine';
+								tulemus = translations[lang]['result_4'];
 							} else if(grade == 3) {
 								anim = '3';
-								tulemus = 'Alla keskmise';
+								tulemus = translations[lang]['result_3'];
 							} else if(grade == 2) {
 								anim = '2';
-								tulemus = 'Nõrk';
+								tulemus = translations[lang]['result_2'];
 							} else if(grade == 1) {
 								anim = '1';
-								tulemus = 'Väga nõrk';
+								tulemus = translations[lang]['result_1'];
 							}
 							
 							setTimeout(function(){
@@ -2105,12 +2191,14 @@ Storage.prototype.getObject = function(key) {
 function isOdd(num) { return num % 2;}
 
 function deliverError(msg, url, line) {
-	console.log(msg);	
+	console.log(msg);
+	console.log(url);
+	console.log(line);
 }
 
-window.onerror = function (msg, url, line) {
+/*window.onerror = function (msg, url, line) {
 	deliverError(msg, url, line);
-}
+}*/
 
 function errorCB(e, a, b) {
 	deliverError('Error in DB: ' + e, 'app.js', 800);
@@ -2122,7 +2210,7 @@ function errorCB(e, a, b) {
 
 function checkConnection() {
 	if(navigator.network) {
-		var networkState = navigator.network.connection.type;
+		var networkState = navigator.connection.type;
 	
 	    var states = {};
 	    states[Connection.UNKNOWN]  = 'Unknown';

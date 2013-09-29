@@ -1,4 +1,5 @@
 var currentTime = false;
+var pausedTime = {};
 var mainTimer = {};
 //finish this file on friday
 var packs = {
@@ -48,16 +49,16 @@ var packs = {
 						day = results.rows.item(i);
 							
 						if(day.type == 'exercise') {
-							template.find('.trainings-content').append('<div class="treening" data-id="' + day.id + '"><div class="arrow"><div>'+translations.et['date']+': <span class="date">' + day.day + '</span></div><div>'+translations.et['pack']+': <span class="kava">' + day.plan_name + '</span></div><div>'+translations.et['trainingday']+': <span class="paev">' + day.day_name + '</span></div><div>'+translations.et['training_length']+': <span class="length">' + secToHour(day.length) + '</span></div></div></div>');
+							template.find('.trainings-content').append('<div class="treening" data-id="' + day.id + '"><div class="arrow"><div>'+translations[lang]['date']+': <span class="date">' + day.day + '</span></div><div>'+translations[lang]['pack']+': <span class="kava">' + day.plan_name + '</span></div><div>'+translations[lang]['trainingday']+': <span class="paev">' + day.day_name + '</span></div><div>'+translations[lang]['training_length']+': <span class="length">' + secToHour(day.length) + '</span></div></div></div>');
 						} else {
-							template.find('.trainings-content').append('<div class="treening" data-id="' + day.id + '"><div class="arrow"><div>'+translations.et['date']+': <span class="date">' + day.day + '</span></div><div>'+translations.et['pack']+': <span class="kava">Fitness test</span></div><div>'+translations.et['score']+': <span class="paev">' + day.day_name + '</span></div></div></div>');
+							template.find('.trainings-content').append('<div class="treening" data-id="' + day.id + '"><div class="arrow"><div>'+translations[lang]['date']+': <span class="date">' + day.day + '</span></div><div>'+translations[lang]['pack']+': <span class="kava">'+translations[lang]['fitness_test']+'</span></div><div>'+translations[lang]['score']+': <span class="paev">' + day.day_name + '</span></div></div></div>');
 						}
 						if (!month) {
 							month = parseInt(day.month);
 							timesCounter = 1;
 						}
 						if(month != parseInt(month) || ((i+1) == len)) {
-							template.find('.followMeBar').html(translations.et['month_' + parseInt(day.month)] + ' ' + day.year + ' (' + timesCounter + ' treening korda)');
+							template.find('.followMeBar').html(translations[lang]['month_' + parseInt(day.month)] + ' ' + day.year + ' (' + timesCounter + ' treening korda)');
 							content.html(template.html());
 							timesCounter = 1;
 						} else {
@@ -82,7 +83,7 @@ var packs = {
 					});
 				
 				} else {
-					$('.diary-content').html('<section class="month"><h4>Treeningud puuduvad..</h4></section>');
+					$('.diary-content').html('<section class="month"><h4>'+translations[lang]['no_trainings']+'</h4></section>');
 				}
 				
 			}, function(tx, results) {
@@ -143,12 +144,12 @@ var packs = {
 						if (exercise) {
 							$('.exercise-template').find('h3').html(exercise.name);
 							if(exercise.type == 'time') {
-								$('.exercise-template').find('.info-content').html('<p>Kestus: ' + exercise.time + '</p>');
+								$('.exercise-template').find('.info-content').html('<p>'+translations[lang]['length']+': ' + exercise.time + '</p>');
 							} else {
 								$('.exercise-template').find('.info-content').html('');
 								$.each(exercise.series, function(j, serie) {
 									if(serie.status == 'done')
-										$('.exercise-template').find('.info-content').append('<p>Seeria ' + (j+1) + ': ' + serie.repeats + 'x' + serie.weights + '</p>');
+										$('.exercise-template').find('.info-content').append('<p>'+translations[lang]['serie']+' ' + (j+1) + ': ' + serie.repeats + 'x' + serie.weights + '</p>');
 								});
 								
 								
@@ -272,17 +273,17 @@ var trainings = {
 		$('.main-contents').html('');
 		
 		if (trainings.doingExercise) {
-			$('.main-contents').append('<section class="item jatkakava teleport" data-page="treening_jatka" data-level="2"><div class="item_wrap"><h3>Jätka treeningkava</h3></div></section>');
+			$('.main-contents').append('<section class="item jatkakava teleport" data-page="treening_jatka" data-level="2"><div class="item_wrap"><h3>'+translations[lang]['continue_training']+'</h3></div></section>');
 		}	
 		
 		if (trainings.samplePackages) {
-			$('.main-contents').append('<section class="item noicon teleport" data-page="treening_naidiskavad" data-level="2"  data-type="sample"><div class="item_wrap"><h3>Näidiskavad</h3></div></section>');
+			$('.main-contents').append('<section class="item noicon teleport" data-page="treening_naidiskavad" data-level="2"  data-type="sample"><div class="item_wrap"><h3>'+translations[lang]['sample_plans']+'</h3></div></section>');
 		}
 
 		if (trainings.orderPackages) {
-			$('.main-contents').append('<section class="item noicon soodustusedbtn teleport" data-page="treening_naidiskavad" data-level="2" data-type="order"><div class="item_wrap"><h3>Personaalsed kavad</h3></div></section>');
+			$('.main-contents').append('<section class="item noicon soodustusedbtn teleport" data-page="treening_naidiskavad" data-level="2" data-type="order"><div class="item_wrap"><h3>'+translations[lang]['order_plans']+'</h3></div></section>');
 		} else {
-			$('.main-contents').append('<section class="item noicon soodustusedbtn teleport" data-page="personaalsed_treeningkavad" data-level="2"><div class="item_wrap"><h3>Personaalsed kavad</h3></div></section>');
+			$('.main-contents').append('<section class="item noicon soodustusedbtn teleport" data-page="personaalsed_treeningkavad" data-level="2"><div class="item_wrap"><h3>'+translations[lang]['order_plans']+'</h3></div></section>');
 		}
 		
 		$('#uustreening').find('.teleport').click(function(e) {
@@ -391,7 +392,7 @@ var trainings = {
 							muscle_groups_str = muscle_groups_str + ', ' + muscle_groups[muscle]; 
 					});
 				
-					$('#treening_naidiskava').find('.training-content').append('<section class="item noicon teleport day-item" data-page="treening_naidiskavad_1paev" data-level="3" data-day="' + day + '"><div class="item_wrap"><h6>' + day + '. päev</h6><h3>' + muscle_groups_str + '</h3></div></section>');
+					$('#treening_naidiskava').find('.training-content').append('<section class="item noicon teleport day-item" data-page="treening_naidiskavad_1paev" data-level="3" data-day="' + day + '"><div class="item_wrap"><h6>' + day + '. '+translations[lang]['day']+'</h6><h3>' + muscle_groups_str + '</h3></div></section>');
 					
 				});
 				
@@ -443,7 +444,7 @@ var trainings = {
 				muscle_groups_str = muscle_groups_str + ', ' + muscle_groups[muscle]; 
 		});
 		
-		header = day + '. PÄEV ' + muscle_groups_str;	
+		header = day + '. '+translations[lang]['DAY']+' ' + muscle_groups_str;	
 		$('#treening_naidiskavad_1paev').find('h3:first').html(header);
 		if(day) {
 		
@@ -611,6 +612,12 @@ var trainings = {
 				currentTime = unFormatTime(trainings.currentExercise.time + ':00:00');
 				$('.timer-exercise .nobg_item').show();
 			}
+			
+			if(pausedTime[element]) {
+				console.log('got hammerTime');
+				$('#timerStuff').html(formatTime(pausedTime[element]));
+				currentTime = pausedTime[element];
+			}
 		
 			$('#treening_naidiskavad_1paev_nXn').find('h1').html(trainings.currentExercise.time + 'min');
 			
@@ -738,11 +745,15 @@ var trainings = {
 	    $countdown = $('#timerStuff');
         // Setup the timer
         var timer = $.timer(function updateTimer() {
-
+	        if(!$('#timerStuff').length) {
+            	console.log('stop, hammertime!');
+            	pausedTime[element] = currentTime;
+            	timer.pause();
+            }
 	        // Output timer position
 	        var timeString = formatTime(currentTime);
 	        $('#timerStuff').html(timeString);
-	
+	        
 	        // If timer is complete, trigger alert
 	        if (currentTime == 0) {
 	            timer.stop();
@@ -903,7 +914,7 @@ var trainings = {
 				if (!len) {
 					// then its first time and generate day data..curDay
 					db.transaction(function(tx) {
-						var statement = "INSERT INTO DIARY (day, month, year, package, training_day, length, plan_name, day_name, day_data, type) VALUES ('" + curr_year + "-" + curr_month + "-" + curr_date + "', '" + curr_month + "', '" + curr_year + "'," + trainings.currentTraining.id + ", " + trainings.currentDay + ", 0, '" + trainings.currentTraining.name + "', '" + day_name + "', '" + JSON.stringify(curDay) + "', 'exercise')";
+						var statement = "INSERT INTO DIARY (day, month, year, package, training_day, length, plan_name, day_name, day_data, type, synced) VALUES ('" + curr_year + "-" + curr_month + "-" + curr_date + "', '" + curr_month + "', '" + curr_year + "'," + trainings.currentTraining.id + ", " + trainings.currentDay + ", 0, '" + trainings.currentTraining.name + "', '" + day_name + "', '" + JSON.stringify(curDay) + "', 'exercise', 0)";
 						//console.log(statement);
 					   	tx.executeSql(statement);
 				   	}, function(error) {
@@ -969,7 +980,7 @@ var trainings = {
 		
 		db.transaction(function(tx) {
 			var statement = "UPDATE DIARY SET day_data = '" + JSON.stringify(curDay) + "', length = '" + difference + "' WHERE day = '" + curr_year + "-" + curr_month + "-" + curr_date + "' AND package = " + trainings.currentTraining.id + " AND training_day = " + trainings.currentDay;
-			//console.log(statement);
+			console.log(statement);
 		   	tx.executeSql(statement);
 		   	localStorage.removeItem('fitCurDay');
 		   	trainings.doingExercise = false;
@@ -1000,13 +1011,13 @@ var nutritions = {
 		//console.log(this.orderNutritions);
 		
 		if (this.sampleNutritions.length) {
-			$('.main-contents').append('<section class="item noicon treenerpakkumisedbtn teleport" data-page="naidiskavad" data-level="2" data-type="sample"><div class="item_wrap"><h3>Näidiskavad</h3></div></section>');
+			$('.main-contents').append('<section class="item noicon treenerpakkumisedbtn teleport" data-page="naidiskavad" data-level="2" data-type="sample"><div class="item_wrap"><h3>'+translations[lang]['sample_plans']+'</h3></div></section>');
 		}
 		
 		if (this.orderNutritions.length) {
-			$('.main-contents').append('<section class="item noicon soodustusedbtn teleport" data-page="naidiskavad" data-level="2" data-type="order"><div class="item_wrap"><h3>Personaalsed kavad</h3></div></section>');
+			$('.main-contents').append('<section class="item noicon soodustusedbtn teleport" data-page="naidiskavad" data-level="2" data-type="order"><div class="item_wrap"><h3>'+translations[lang]['order_plans']+'</h3></div></section>');
 		} else {
-			$('.main-contents').append('<section class="item noicon soodustusedbtn teleport" data-page="personaalsed_toitumiskavad" data-level="2"><div class="item_wrap"><h3>Personaalsed kavad</h3></div></section>');
+			$('.main-contents').append('<section class="item noicon soodustusedbtn teleport" data-page="personaalsed_toitumiskavad" data-level="2"><div class="item_wrap"><h3>'+translations[lang]['order_plans']+'</h3></div></section>');
 			
 		}
 		
@@ -1068,7 +1079,7 @@ var nutritions = {
 			}
 		});
 		
-		$('#toitumisplaan1').find('h3').html('TOITUMISPLAAN:<br>' + nutritions.currentNutrition.name);
+		$('#toitumisplaan1').find('h3').html(translations[lang]['nutrition_plan'] + ':<br>' + nutritions.currentNutrition.name);
 		
 		$.each(nutritions.currentNutrition.meals, function(type, meal) {
 			

@@ -1998,6 +1998,7 @@ div.icon_select {
 .box33 h4.name{
   height: 43px;
   overflow: hidden;
+  word-wrap: break-word; 
 }
 
 .box33 h5 {
@@ -3882,7 +3883,7 @@ div.icon_select {
 		
 		
 	.harjutus_item h3{
-
+		min-height: 40px;
 		font-size: 12px;
 	}
 	

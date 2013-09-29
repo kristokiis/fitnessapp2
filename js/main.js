@@ -145,7 +145,16 @@ function resizeby(_this, _plus) {
 	
 		if(_this == '#homepage'){
 			var off43 = 0;
-			if(is23) off43 = 47;
+			if(is23) { 
+				console.log('..');
+				off43 = 47;
+			}
+			if(!is23) { off43 = -20;
+				setTimeout(function() {
+					toscrollheight = toscrollheight - 67;
+					jQuery('.toscroll').css('height', toscrollheight + 'px');
+				}, 1500)
+			}
 			toscrollheight = toscrollheight - off43;
 		}
 		
@@ -544,8 +553,12 @@ function bindEvents() {
 			extra.extra_id = $(this).data('extra_id');
 		
 		
-		$('#buyoverlay').remove();
-		$('#minuandmed').remove();
+		
+		if($('#buyoverlay').length) {
+			$('#buyoverlay').remove();
+			$('#minuandmed').remove();
+		}
+		
 			
 		
 		if (where == 'tavatest') {
@@ -595,6 +608,9 @@ $('#svgFront g').unbind(eventEnd).bind(eventEnd, function (e) {
 	var id = $(this).attr("data-group");
 	var classes = $(this).attr("class");
 	var name =  $(this).attr("data-name");
+	app.muscleGroup = $(this).data("muscle");
+	
+	name = translations[lang]['muscle_group_' + app.muscleGroup];
 	
 	var hasclass = classes.replace( "group" + id + " ", '');
 	
@@ -613,11 +629,11 @@ $('#svgFront g').unbind(eventEnd).bind(eventEnd, function (e) {
 	}else{
 		$('#svgFront .group' + id).attr("class", "group" + id);
 		
-		$('.lihasname').text( 'Vali lihasgrupp' );
-		$('#harjutused .me h3').text('HARJUTUSED');
+		$('.lihasname').text(translations[lang]['choose_muscles']);
+		$('#harjutused .me h3').text(translations[lang]['exercises']);
 	}
 	
-	app.muscleGroup = $(this).data("muscle");
+	
 	if (LEVEL != 2)
 		app.exerciseCat = 0;
 	LEVEL = 2;
@@ -631,7 +647,8 @@ $('#svgBack g').unbind(eventEnd).bind(eventEnd, function (e) {
 	////console.log(this);
 	var id = $(this).attr("data-group");
 	var classes = $(this).attr("class");
-	var name =  $(this).attr("data-name");
+	app.muscleGroup = $(this).data("muscle");
+	name = translations[lang]['muscle_group_' + app.muscleGroup];
 	
 	var hasclass = classes.replace( "group" + id + " ", '');
 	
@@ -650,11 +667,10 @@ $('#svgBack g').unbind(eventEnd).bind(eventEnd, function (e) {
 	}else{
 		$('#svgBack .group' + id).attr("class", "group" + id);
 		
-		$('.lihasname').text( 'Vali lihasgrupp' );
-		$('#harjutused .me h3').text('HARJUTUSED');
+		$('.lihasname').text(translations[lang]['choose_muscles']);
+		$('#harjutused .me h3').text(translations[lang]['exercises']);
 	}
 	
-	app.muscleGroup = $(this).data("muscle");
 	if (LEVEL != 2)
 		app.exerciseCat = 0;
 	LEVEL = 2;
@@ -681,8 +697,8 @@ $('.resetfilter').unbind(eventEnd).bind(eventEnd, function (e) {
 			$(this).attr("class", clas.replace(' pathOver',''));
 		});
 
-		$('.lihasname').text( 'Vali lihasgrupp' );
-		$('#harjutused .me h3').text('HARJUTUSED');
+		$('.lihasname').text(translations[lang]['choose_muscles']);
+		$('#harjutused .me h3').text(translations[lang]['exercises']);
 		
 		addHover( this );
 		
@@ -718,7 +734,7 @@ $('.manFlip').unbind(eventEnd).bind(eventEnd, function (e) {
 			}, 5);
 		}
 
-		$('.lihasname').text( 'Vali lihasgrupp' );
+		$('.lihasname').text(translations[lang]['choose_muscles']);
 });
 
 
