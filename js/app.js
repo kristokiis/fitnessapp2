@@ -1078,7 +1078,7 @@ var app = {
 			   		$('#video').find('.text_wrap').html(exercise['name_' + description]);
 			   	}
 				if (exercise.video && exercise.video != "0") 
-					videoLink = sPath + 'videos/' + exercise + '.mp4';
+					videoLink = sPath + 'videos/' + exercise.id + '.mp4';
 				else
 					videoLink = app.serverUrl + 'videos/' + exercise.id + '.mp4';
 				
@@ -1137,7 +1137,7 @@ var app = {
 							
 							template.find('.downloadtitle').html(item.name);
 				   			template.find('.downloadcircle').find('span').html(exExercises + '/' + dlExercises);
-				   			template.find('img').attr('src', sPath + 'exercises/2.jpg');
+				   			template.find('img').attr('src', sPath + 'categories/2.jpg');
 				   			template.find('.nobg_item').attr('data-id', item.id).attr('data-type', 'package');
 				   			if(exExercises == dlExercises)
 				   				template.find('.nobg_item').html('<img src="i/icon_ok.png" alt="">').removeClass('arrow');
@@ -1188,7 +1188,7 @@ var app = {
 					result = results.rows.item(0);
 					template.find('.downloadtitle').html(item.name);
 		   			template.find('.downloadcircle').find('span').html(result.total + '/' + item.total);
-		   			template.find('img').attr('src', sPath + 'exercises/' + item.cat_id + '.jpg');
+		   			template.find('img').attr('src', sPath + 'categories/' + item.cat_id + '.jpg');
 		   			template.find('.nobg_item').attr('data-id', item.cat_id).attr('data-type', 'category');
 		   			if(result.total == item.total)
 		   				template.find('.nobg_item').html('<img src="i/icon_ok.png" alt="">').removeClass('arrow');
@@ -1236,11 +1236,12 @@ var app = {
 									}
 									
 									$('.toscroll').find('.downloadgroup').find('.nobg_item').each(function(j, element) {
-										   
+									   $(this).html('<h4>'+translations[lang]['start_download']+'</h4>').addClass('arrow');
 									   stats_span = $(element).parent().parent().find('.downloadcircle').find('span');
 									   var numbers = stats_span.html().split('/');
 									   nr1 = parseInt(numbers[0]);
 									   stats_span.html('0/'+numbers[1]);
+									   template.find('.nobg_item').html('<h4>'+translations[lang]['start_download']+'</h4>').addClass('arrow');
 								   	});
 								   	db.transaction(function(tx) {
 						        		var statement = 'UPDATE EXERCISES SET video = "0"';
