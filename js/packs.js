@@ -547,11 +547,13 @@ var trainings = {
 				$('.next-exercise').show();
 			}
 		}
-		
+		$('.to-back').unbind('click');
 		$('.to-back').click(function(e) {
-			
-			$('.backbtn').click();
+			LEVEL = 4;
+			teleportMe('treening_naidiskavad_1paev');
+			//$('.backbtn').click();
 		});
+		$('.next-exercise').unbind('click');
 		$('.next-exercise').click(function(e) {
 			addHover(this);
 			$('.toscroll').scrollTop(0);
@@ -559,6 +561,7 @@ var trainings = {
 			LEVEL = null;
 			teleportMe('treening_naidiskavad_1paev_nXn', next);
 		});
+		$('.end-training').unbind('click');
 		$('.end-training').click(function(e) {
 			trainings.endTraining();
 			LEVEL = 1;
@@ -607,17 +610,14 @@ var trainings = {
 				//$('#timerStuff').html(started);
 				//currentTime = unFormatTime(started);
 				$('.timer-exercise .nobg_item').show();
+				$('.timer-exercise .nobg_item').removeClass('started').find('h3').text('START');
 			} else {
 				$('#timerStuff').html(trainings.currentExercise.time + ':00:00');
 				currentTime = unFormatTime(trainings.currentExercise.time + ':00:00');
 				$('.timer-exercise .nobg_item').show();
+				$('.timer-exercise .nobg_item').addClass('started').find('h3').text('PAUS');
 			}
 			
-			if(pausedTime[element]) {
-				console.log('got hammerTime');
-				$('#timerStuff').html(formatTime(pausedTime[element]));
-				currentTime = pausedTime[element];
-			}
 		
 			$('#treening_naidiskavad_1paev_nXn').find('h1').html(trainings.currentExercise.time + 'min');
 			
@@ -633,6 +633,7 @@ var trainings = {
 			teleportMe('video', id);
 		});
 		
+		$('.theicon').unbind('click');
 		$('.theicon').click(function() {
 			if ($(this).hasClass('unchecked')) {
 				trainings.doingExercise = true;
@@ -745,11 +746,6 @@ var trainings = {
 	    $countdown = $('#timerStuff');
         // Setup the timer
         var timer = $.timer(function updateTimer() {
-	        if(!$('#timerStuff').length) {
-            	console.log('stop, hammertime!');
-            	pausedTime[element] = currentTime;
-            	timer.pause();
-            }
 	        // Output timer position
 	        var timeString = formatTime(currentTime);
 	        $('#timerStuff').html(timeString);
@@ -856,10 +852,6 @@ var trainings = {
 				}
 				
 			}
-			
-			
-			
-			//updateExercises.push(exercise);
 			
 		});
 		

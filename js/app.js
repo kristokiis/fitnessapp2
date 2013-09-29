@@ -108,7 +108,6 @@ var app = {
 			localStorage.removeItem('sPath');
 			
 			localStorage.removeItem('fitNotificationsCount');
-			localStorage.removeItem('fitNotifications');
 			
 			localStorage.removeItem('fitTrainingsCount');
 			localStorage.removeItem('fitTrainings');
@@ -253,9 +252,6 @@ var app = {
 			var notificationsCount = parseInt(localStorage.getItem('fitNotificationsCount'));
 			if(!notificationsCount)
 				var notificationsCount = 0;
-			var no_notIDs = localStorage.getObject('fitNotifications');
-			if(!no_notIDs)
-				no_notIDs = [];
 			data = {};	
 			data.ids = no_notIDs;
 			data.user = user.id;
@@ -268,16 +264,11 @@ var app = {
 						////console.log(statement);
 							//return false;
 					   	tx.executeSql(statement);
-					
-						no_notIDs.push(item.id);
+					   	
+					   	alert('Said teate');
 						notificationsCount = notificationsCount + 1;
 					});
 					
-					no_notIDs = no_notIDs.filter(function (e, i, no_notIDs) {
-					    return no_notIDs.lastIndexOf(e) === i;
-					});
-					
-					localStorage.setObject('fitNotifications', no_notIDs);
 					localStorage.setItem('fitNotificationsCount', notificationsCount);
 					setTimeout(function() {
 						var count = localStorage.getItem('fitNotificationsCount');
