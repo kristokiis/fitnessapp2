@@ -367,8 +367,9 @@ var app = {
 			*UPDATE USER
 			*/
 			data = {};
+			user.lang = lang;
 			data.user = user;
-			data.test = localStorage.setObject('fitTest');
+			//data.test = localStorage.setObject('fitTest');
 			
 			$.get(app.apiUrl + '?action=updateUser', user, function(result) {
 				user.lastSynced = new Date();

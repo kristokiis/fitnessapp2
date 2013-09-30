@@ -130,18 +130,27 @@ jQuery(window).resize(function ($) {
 	////console.log( window.outerHeight, jQuery(window).height() );
 });
 
+var fisrstrun = true;
 
 function resizeby(_this, _plus) {
 	
 	me = jQuery(_this + ' .me').height();
 
-	var toscrollheight = Number(wind - (offset + me ));
+	var toscrollheight = Number(wind - (offset + me));
 	////console.log(newheight , toscrollheight);
 	var frame = jQuery('.open').height();
 
 	jQuery('.page-wrap').css('height', wind + 'px');
 	//setTimeout(function () {
 	
+	if(_this == '#homepage'){
+		if(fisrstrun && !is23){
+			fisrstrun = false;		
+			toscrollheight = toscrollheight - Number(bbar) + 12;
+		}
+	}
+	
+
 	//alert(_this);
 		//if(_this == '#homepage'){
 			var off43 = 0;
@@ -154,8 +163,6 @@ function resizeby(_this, _plus) {
 				setTimeout(function() {
 					toscrollheight = toscrollheight - Number(bbar) + 1;
 
-					
-					
 					jQuery('.toscroll').css('height', toscrollheight + 'px');
 					
 				}, 1500);
@@ -165,6 +172,7 @@ function resizeby(_this, _plus) {
 		//}
 		
 		if(ios > 0) jQuery('.frame').css('height', Number(frame) - Number(ios) + 'px');
+		
 		
 		jQuery('.toscroll').css('height', toscrollheight + 'px');
 
@@ -188,6 +196,7 @@ function resizeby(_this, _plus) {
 	plus = _plus;
 
 	//alert( jQuery(window).height() );
+
 }
 
 function reposition() {
@@ -453,6 +462,7 @@ function teleportMe( where, extra ){
 				$(data).insertAfter( LATEST )
 				
 				jQuery('.centered').css('top', offset + 'px');
+				
 				resizeby('#' + where, 105);
 				
 				////console.log(LATEST);
