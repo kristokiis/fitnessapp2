@@ -165,7 +165,7 @@ function resizeby(_this, _plus) {
 
 					jQuery('.toscroll').css('height', toscrollheight + 'px');
 					
-				}, 1500);
+				}, 800);
 			}
 			toscrollheight = toscrollheight - off43;
 			//alert(toscrollheight);
@@ -479,7 +479,7 @@ function teleportMe( where, extra ){
 					if ( LEVEL >= '1' ){
 						setTimeout(function() {
 							$('.bottombar, .topbar').addClass('menuin');
-						}, 1000);
+						}, 500);
 						
 					} else {
 						$('.bottombar, .topbar').removeClass('menuin');
