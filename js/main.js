@@ -138,9 +138,9 @@ function resizeby(_this, _plus) {
 	var toscrollheight = Number(wind - (offset + me + bbar));
 	////console.log(newheight , toscrollheight);
 	
-	//alert(agentID);
+	//alert(iofsett);
 	
-	jQuery('.page-wrap').css('height', wind + 'px');
+	jQuery('.page-wrap').css('height', Number(wind) - Number(iofsett) + 'px');
 	//setTimeout(function () {
 	
 		if(_this == '#homepage'){
@@ -149,9 +149,9 @@ function resizeby(_this, _plus) {
 				console.log('..');
 				off43 = 47;
 			}
-			if(!is23) { off43 = -20;
+			if(!is23) { off43 = 0;
 				setTimeout(function() {
-					toscrollheight = toscrollheight - 67;
+					toscrollheight = toscrollheight;
 					jQuery('.toscroll').css('height', toscrollheight + 'px');
 				}, 1500)
 			}

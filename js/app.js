@@ -253,7 +253,7 @@ var app = {
 			if(!notificationsCount)
 				var notificationsCount = 0;
 			data = {};	
-			data.ids = no_notIDs;
+			data.ids = {};
 			data.user = user.id;
 			data.club = club_id;
 			$.get(app.apiUrl + '?action=getNotifications', data, function(result) {
@@ -265,7 +265,7 @@ var app = {
 							//return false;
 					   	tx.executeSql(statement);
 					   	
-					   	alert('Said teate');
+					   	//alert('Said teate');
 						notificationsCount = notificationsCount + 1;
 					});
 					
@@ -376,7 +376,7 @@ var app = {
 			},'jsonp');
 			
 			db.transaction(function(tx) {
-				query = 'SELECT * FROM DIARY WHERE synced = 0 ORDER BY day DESC';
+				query = 'SELECT * FROM DIARY WHERE synced = 0 OR synced = "" ORDER BY day DESC';
 				//console.log(query);
 				tx.executeSql(query, [], function(tx, results) {
 					var len = results.rows.length, i;
@@ -710,7 +710,7 @@ var app = {
 	},
 	
 	initHome: function() {
-	
+		$('body').scrollTop(0);
 		if (localStorage.getObject('fitTest')) {
 			$('#homepage').find('.fitnesstest').hide();
 		}
@@ -1890,7 +1890,7 @@ var app = {
 						if (!len) {
 							// then its first time and generate day data..curDay
 							db.transaction(function(tx) {
-								var statement = "INSERT INTO DIARY (day, month, year, package, training_day, length, plan_name, day_name, day_data, type) VALUES ('" + curr_year + "-" + curr_month + "-" + curr_date + "', '" + curr_month + "', '" + curr_year + "',0, 0, 0, 'Fitness test', '" + TOTALRESULT + "/100', '" + JSON.stringify(testResults) + "', 'test')";
+								var statement = "INSERT INTO DIARY (day, month, year, package, training_day, length, plan_name, day_name, day_data, type, synced) VALUES ('" + curr_year + "-" + curr_month + "-" + curr_date + "', '" + curr_month + "', '" + curr_year + "',0, 0, 0, 'Fitness test', '" + TOTALRESULT + "/100', '" + JSON.stringify(testResults) + "', 'test', 0)";
 								//console.log(statement);
 							   	tx.executeSql(statement);
 						   	}, function(error) {
@@ -1900,7 +1900,7 @@ var app = {
 						} else {
 							
 							db.transaction(function(tx) {
-								var statement = "UPDATE DIARY SET day_data = '" + JSON.stringify(testResults) + "' WHERE day = '" + curr_year + "-" + curr_month + "-" + curr_date + "' AND type = 'test'";
+								var statement = "UPDATE DIARY SET day_data = '" + JSON.stringify(testResults) + "', synced = 0 WHERE day = '" + curr_year + "-" + curr_month + "-" + curr_date + "' AND type = 'test'";
 								////console.log(statement);
 							   	tx.executeSql(statement);
 						   	}, function(error) {
@@ -1920,9 +1920,6 @@ var app = {
 					console.error('Error in selecting test result');
 					//console.log(error);
 				});
-				
-				LEVEL = 1;
-				teleportMe('homepage', {});
 			}
 		})
 		
@@ -1950,7 +1947,7 @@ var app = {
 					} else if (selectedExercise == 'boat') {
 						repeater = 1.2;
 					}
-					
+					testResults['extra'] = selectedExercise;
 					//r = repeater*r
 				}
 				console.log(repeater);

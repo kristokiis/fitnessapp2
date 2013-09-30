@@ -1,6 +1,8 @@
 var currentTime = false;
 var pausedTime = {};
 var mainTimer = {};
+var timer = {};
+var pauseTimer = false;
 //finish this file on friday
 var packs = {
 	hasSpecialOffers: false,
@@ -114,22 +116,26 @@ var packs = {
 				var day_data = JSON.parse(day.day_data);
 				console.log(day_data);
 				if(day.type == 'test') {
-				
 					$('#diary_detail').find('.date').html(day.day);
 					$('#diary_detail').find('.kava').html('Fitness test');
 					$('#diary_detail').find('.paev').parent().html(translations[lang]['score'] + ': <span class="paev">' + day.day_name + '</span>');
 					$('#diary_detail').find('.length').parent().hide();
 					$('.exercise-template').find('.info-content').html('');
 					$.each(day_data, function(test, scores) {
-						if(test == 4) {
-							ext = 'cm';
-						} else if(test == 5) {
-							ext = 'm';
-						} else {
-							ext = 'tk';
+						if(parseInt(test)) {
+							if(test == 4) {
+								ext = 'cm';
+								test = translations[lang]['test_' + test];
+							} else if(test == 5) {
+								ext = 'm';
+								test = translations[lang]['test_' + test] + '(' + translations[lang][day_data.extra] + ')';
+							} else {
+								ext = 'tk';
+								test = translations[lang]['test_' + test];
+							}
+							
+							$('.exercise-template').find('.info-content').append('<p>' + test + ': ' + scores.score + 'p (' + scores.points + ext + ')</p>');
 						}
-						test = translations[lang]['test_' + test];
-						$('.exercise-template').find('.info-content').append('<p>' + test + ': ' + scores.score + 'p (' + scores.points + ext + ')</p>');
 					});
 					$('.exercises-content').append($('.exercise-template').html());
 				} else {
@@ -144,7 +150,7 @@ var packs = {
 						if (exercise) {
 							$('.exercise-template').find('h3').html(exercise.name);
 							if(exercise.type == 'time') {
-								$('.exercise-template').find('.info-content').html('<p>'+translations[lang]['length']+': ' + exercise.time + '</p>');
+								$('.exercise-template').find('.info-content').html('<p>'+translations[lang]['_length']+': ' + exercise.time + '</p>');
 							} else {
 								$('.exercise-template').find('.info-content').html('');
 								$.each(exercise.series, function(j, serie) {
@@ -505,6 +511,8 @@ var trainings = {
 			teleportMe('homepage', {});
 		});
 		
+		console.log(trainings.currentTraining);
+		
 	},
 	
 	getTrainingsExercise: function(element) {
@@ -518,11 +526,13 @@ var trainings = {
 		iteration = false;
 		next = false;
 		
+		console.log(trainings.currentTraining.exercises[trainings.currentDay][element]);
+		
 		$('.videopreview').attr('data-id', trainings.currentExercise.exercise_id);
 		$('.videopreview').find('img:last').attr('src', app.serverUrl + 'pics/exercises/' + trainings.currentExercise.exercise_id + '.jpg');
 		
 		var curDay = localStorage.getObject('fitCurDay');
-		
+		console.log(curDay);
 		$.each(trainings.currentTraining.exercises[trainings.currentDay], function(i, item) {
 			j++;
 			if (i == element) 
@@ -602,20 +612,27 @@ var trainings = {
 		} else {
 		
 			if(curDay && curDay.exercises[element] && curDay.exercises[element].status == 'done') {
+				console.log('here');
 				$('#timerStuff').html('00:00:00');
 				currentTime = unFormatTime('00:00:00');
 				$('.timer-exercise .nobg_item').hide();
 			} else if (curDay && curDay.exercises[element] && curDay.exercises[element].status == 'doing') {
+				console.log('here');
 				//started = new Date(curDay.exercises[element].started).getTime();
 				//$('#timerStuff').html(started);
 				//currentTime = unFormatTime(started);
 				$('.timer-exercise .nobg_item').show();
-				$('.timer-exercise .nobg_item').removeClass('started').find('h3').text('START');
+				//$('.timer-exercise .nobg_item').removeClass('started').find('h3').text('START');
 			} else {
+				console.log('here');
 				$('#timerStuff').html(trainings.currentExercise.time + ':00:00');
 				currentTime = unFormatTime(trainings.currentExercise.time + ':00:00');
 				$('.timer-exercise .nobg_item').show();
-				$('.timer-exercise .nobg_item').addClass('started').find('h3').text('PAUS');
+				//$('.timer-exercise .nobg_item').addClass('started').find('h3').text('PAUS');
+			}
+			if (pauseTimer) {
+				$('.timer-exercise .nobg_item').removeClass('started').find('h3').text('START');
+				$('#timerStuff').html(formatTime(currentTime));
 			}
 			
 		
@@ -727,15 +744,28 @@ var trainings = {
 				
 				data = {};
 				data.type = 'time';
-				data.status = 'start';
+				if(pauseTimer && curDay && curDay.exercises && curDay.exercises[element])
+					data.status = 'resume';
+				else
+					data.status = 'start';
+				pauseTimer = false;
+				
 				data.length = unFormatTime($('#timerStuff').html());
 				trainings.doTraining(data);
-				timer.toggle();
+				console.log(trainings.currentTraining);
+				timer.play();
+				pauseTimer = false;
 				
 			}else{
+				console.log(trainings.currentTraining);
 				$(this).removeClass('started');
 				$(this).find('h3').text('START');
-				timer.toggle();
+				data = {};
+				data.type = 'time';
+				data.status = 'pause';
+				trainings.doTraining(data);
+				//timer.pause();
+				pauseTimer = true;
 			}
 		});
 		
@@ -749,7 +779,10 @@ var trainings = {
 	        // Output timer position
 	        var timeString = formatTime(currentTime);
 	        $('#timerStuff').html(timeString);
-	        
+	        if(pauseTimer) {
+	        	console.log('paused');
+	        	timer.pause();
+	        }
 	        // If timer is complete, trigger alert
 	        if (currentTime == 0) {
 	            timer.stop();
@@ -771,7 +804,12 @@ var trainings = {
 	        if (currentTime < 0) currentTime = 0;
 	
 	    }, incrementTime, false);
-		
+	    console.log(curDay);
+		if(!curDay || !curDay.exercises || !curDay.exercises[element] || curDay.exercises[element].status != 'doing') {
+			pauseTimer = true;
+			timer.stop();
+			console.log('no curday :(');
+		}
 	},
 	//approx 5-6h to finish this shit
 	doTraining: function(data) {
@@ -790,39 +828,80 @@ var trainings = {
 			
 			
 		});
-		
+		console.log(trainings.currentTraining);
 		exCounter = 0;
 		var updateExercises = [];
 		$.each(trainings.currentTraining.exercises[trainings.currentDay], function(i, exercise) {
+			var newEx = exercise;
+			if(!newEx.paused)
+				newEx.paused = '';
+			if(!newEx.ignorep)
+				newEx.ignorep = false;
+			
 			if(curDay && curDay.exercises[i]) {
-				if(curDay.exercises[i].status == 'done')
+				if(curDay.exercises[i].status == 'done') {
 					exCounter = exCounter+1;
+				} else if(curDay.exercises[i].status == 'doing' && curDay.exercises[i].type == 'time' && trainings.currentExercise.id != exercise.id) {
+					pauseTimer = true;
+					newEx.paused = new Date();
+					curDay.exercises[i] = newEx;
+					console.log('pause IT');
+					console.log(newEx);
+				}
 			}
 		
 			if(trainings.currentExercise.id == exercise.id) {
 				if (data.type == 'time' && data.status == 'start') {
-					exercise.status = 'doing';
-					exercise.started = new Date();
-					exercise.time = parseInt(data.length)/60000;
+					console.log('start!');
+					newEx.status = 'doing';
+					newEx.started = new Date();
+					newEx.time = parseInt(data.length)/60000;
+					console.log(newEx);
+				} else if (data.type == 'time' && data.status == 'pause') {
+					console.log('add pause!!');
+					newEx.paused = new Date();
+					newEx.ignorep = false;
+					console.log(exercise);
+				} else if (data.type == 'time' && data.status == 'resume') {
+					console.log(exercise);
+					var startedTime = new Date(newEx.started).getTime();
+					var pausedTime = new Date(newEx.paused).getTime();
+					console.log(startedTime);
+					console.log(pausedTime);
+					var difference = (parseInt(pausedTime) - parseInt(startedTime))/1000;
+					newEx.paused = false;
+					console.log(difference);
+					var t = new Date();
+					t.setSeconds(t.getSeconds() + difference);
+					newEx.started = t;
+					console.log('updated time!!');
+					newEx.ignorep = true;
+					newEx.iresumed = true;
+					newEx.paused = false;
+					newEx.paused = '';
+					newEx.status = 'doing';
+					console.log(exercise);
+					
 				} else if (data.type == 'time' && data.status == 'end') {
-					exercise.status = 'done';
+					newEx.status = 'done';
+					console.log(newEx);
 					//exercise.time = parseInt(data.length)/6000;
 				} else {
 				
 					if (curDay && curDay.exercises[i] && curDay.exercises[i].done_series) { 
-						exercise.done_series = curDay.exercises[i].done_series + 1;
+						newEx.done_series = curDay.exercises[i].done_series + 1;
 					} else {
-						exercise.done_series = 1;
+						newEx.done_series = 1;
 						
 					}
 					if (exercise.series.length == exercise.done_series)
-						exercise.status = 'done';
+						newEx.status = 'done';
 					$.each(exercise.series, function(j, serie) {
 						if(j == data.serie) {
 							serie.repeats = data.repeats;
 							serie.weight = data.weight;
 							serie.status = 'done';
-							exercise.series[j] = serie;
+							newEx.series[j] = serie;
 						}/* else {
 							serie.status = false;
 							exercise.series[j] = serie;
@@ -832,7 +911,7 @@ var trainings = {
 					
 				}
 				if (curDay) {
-					curDay.exercises[i] = exercise;
+					curDay.exercises[i] = newEx;
 					newDay = false;
 				} else {
 					startBigTimer(0);
@@ -841,11 +920,11 @@ var trainings = {
 					curDay.plan_id = trainings.currentTraining.id;
 					curDay.day = trainings.currentDay;
 					curDay.exercises = {};
-					curDay.exercises[i] = exercise;
+					curDay.exercises[i] = newEx;
 					newDay = true;
 				}
 				curDay.last_activity = new Date();
-				if(exercise.status == 'done' && (exCounter+1) == Object.keys(trainings.currentTraining.exercises[trainings.currentDay]).length) {
+				if(newEx.status == 'done' && (exCounter+1) == Object.keys(trainings.currentTraining.exercises[trainings.currentDay]).length) {
 					$('.end-training').show();
 					$('.to-back').hide();
 					$('.next-exercise').hide();
@@ -854,7 +933,7 @@ var trainings = {
 			}
 			
 		});
-		
+		console.log(trainings.currentTraining);
 		
 		
 		/*db.transaction(function(tx) {
@@ -935,13 +1014,13 @@ var trainings = {
 			console.error('Error in selecting test result');
 			//console.log(error);
 		});
-		
+		console.log(trainings.currentTraining);
 	},
 	
 	endTraining: function() {
 		
 		curDay = localStorage.getObject('fitCurDay', curDay);
-	
+		
 		curTime = new Date();
 		if(curDay.started)
 			lastTime = new Date(curDay.started).getTime();
@@ -962,10 +1041,19 @@ var trainings = {
 	    $.each(curDay.exercises, function(i, exercise) {
 	    
 		   if (exercise.status == 'doing' && exercise.started) {
-			   var startedTime = new Date(curDay.started).getTime();
-			   difference2 = (curTime.getTime() - startedTime)/1000;
+			   var startedTime = new Date(exercise.started).getTime();
+			   console.log(exercise);
+			   if(exercise.paused) {
+				   var pausedTime = new Date(exercise.paused).getTime();
+				   difference2 = (Number(pausedTime) - Number(startedTime))/1000;
+			   } else {
+				   difference2 = (curTime.getTime() - startedTime)/1000;
+			   }
+			   console.log(difference2);
 			   exercise.time = secToHour(difference2);
-		   } 
+		   } else if(exercise.status == 'done') {
+			   exercise.time = exercise.time + ':00:00';
+		   }
 		   curDay.exercises[i] = exercise;
 	    });
 		console.log(curDay);
@@ -981,9 +1069,13 @@ var trainings = {
 			//console.log(error);
 		});
 	},
-	
+	//15min
 	checkActivity: function() {
-		
+		if(curDay.last_activity) {
+			
+			
+			
+		}
 		//last_activity > 30min, show dialog where you can end day or renew activity, stop timers
 		
 	}

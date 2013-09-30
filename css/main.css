@@ -142,7 +142,7 @@ body{
 	background-color: #000;
 	background-repeat: no-repeat;
 	background-position: center top;
-	overflow: hidden;
+	overflow: hidden !important;
 	
     -webkit-background-size: 100% auto;
     -moz-background-size: 100% 100%;
@@ -248,7 +248,6 @@ background: radial-gradient(ellipse at center,  rgba(255,255,255,0.71) 0%,rgba(2
 	-moz-transition: all 0s;
 	transition: all 0s;
 	
-
 	
 	opacity: 1;
 }
