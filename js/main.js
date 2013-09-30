@@ -107,7 +107,8 @@ var bbar = "";
 var wind = jQuery(window).height();
 var toBuy = new Array();
 var eventEnd = (navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPod/i)) ? "click" : "click";
-var iofsett = (navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPod/i)) ? 20 : 0;
+var iofsett = (navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPod/i)) ? 47 : 0;
+var ios = (navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPod/i)) ? 20 : 0;
 var goingback = false;
 var updating = false;
 var anim = '1';
@@ -134,13 +135,11 @@ function resizeby(_this, _plus) {
 
 	me = jQuery(_this + ' .me').height();
 
-	//wind = Number(wind) - Number(iofsett);
 	var toscrollheight = Number(wind - (offset + me + bbar));
 	////console.log(newheight , toscrollheight);
-	
-	//alert(iofsett);
-	
-	jQuery('.page-wrap').css('height', Number(wind) - Number(iofsett) + 'px');
+	var frame = jQuery('.open').height();
+
+	jQuery('.page-wrap').css('height', wind + 'px');
 	//setTimeout(function () {
 	
 		if(_this == '#homepage'){
@@ -149,11 +148,14 @@ function resizeby(_this, _plus) {
 				console.log('..');
 				off43 = 47;
 			}
-			if(!is23) { off43 = 0;
+			if(!is23) { 
+				off43 = iofsett;
 				setTimeout(function() {
 					toscrollheight = toscrollheight;
+					if(ios > 0) jQuery('.open').css('height', Number(frame) - Number(ios) + 'px');
 					jQuery('.toscroll').css('height', toscrollheight + 'px');
-				}, 1500)
+					
+				}, 1500);
 			}
 			toscrollheight = toscrollheight - off43;
 		}

@@ -2315,6 +2315,7 @@ div.icon_select {
 }
 
 .carusel {
+  max-width: 400px;
   margin: 6% auto 0;
   text-align: center;
   width: 90%;
