@@ -1167,7 +1167,7 @@ var nutritions = {
 		
 		$.each(nutritions.currentNutrition.meals, function(type, meal) {
 			
-			$('#toitumisplaan1').find('.toscroll').append('<section class="whiteitem noicon teleport" data-page="menuu1_hommikusook1" data-level="4" data-type="' + type + '"><div class="item_wrap"><h3>' + type + '</h3></div></section>');
+			$('#toitumisplaan1').find('.toscroll').append('<section class="whiteitem noicon teleport" data-page="menuu1_hommikusook1" data-level="4" data-type="' + type + '"><div class="item_wrap"><h3>' + translation[lang][type] + '</h3></div></section>');
 			
 		});
 		$('#toitumisplaan1').find('.teleport').click(function(e) {

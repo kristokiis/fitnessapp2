@@ -110,6 +110,19 @@ translations.et['serie'] = 'Seeria';
 translations.et['DAY'] = 'PÄEV';
 translations.et['day'] = 'päev';
 
+//NUTRITIONS
+translations.et['before_breakfast'] = 'Enne hommikusööki';
+translations.et['breakfast'] = 'Hommikusöögiks';
+translations.et['after_breakfast'] = 'Peale hommikusööki';
+translations.et['before_lunch'] = 'Vahepala';
+translations.et['lunch'] = 'Lõunasöök';
+translations.et['after_lunch'] = 'Hilislõuna';
+translations.et['before_training'] = 'Enne trenni';
+translations.et['training'] = 'Treeninguks';
+translations.et['after_training'] = 'Peale trenni';
+translations.et['dinner'] = 'Õhtusöök';
+translations.et['overall'] = 'Üldised soovitused';
+
 translations.et['no_notifications'] = 'Teated puuduvad..';
 
 //videos
