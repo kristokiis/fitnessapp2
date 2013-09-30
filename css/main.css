@@ -232,6 +232,10 @@ background: radial-gradient(ellipse at center,  rgba(255,255,255,0.71) 0%,rgba(2
 	
 }
 
+/* bidy, html, .page-wrap, .frame{
+	overflow: hidden !important;
+} */
+
 
 .frame{
 	

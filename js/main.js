@@ -132,33 +132,39 @@ jQuery(window).resize(function ($) {
 
 
 function resizeby(_this, _plus) {
-
+	
 	me = jQuery(_this + ' .me').height();
 
-	var toscrollheight = Number(wind - (offset + me + bbar));
+	var toscrollheight = Number(wind - (offset + me ));
 	////console.log(newheight , toscrollheight);
 	var frame = jQuery('.open').height();
 
 	jQuery('.page-wrap').css('height', wind + 'px');
 	//setTimeout(function () {
 	
-		if(_this == '#homepage'){
+	//alert(_this);
+		//if(_this == '#homepage'){
 			var off43 = 0;
 			if(is23) { 
 				console.log('..');
 				off43 = 47;
 			}
 			if(!is23) { 
-				off43 = iofsett;
+				off43 = 0;
 				setTimeout(function() {
-					toscrollheight = toscrollheight;
-					if(ios > 0) jQuery('.open').css('height', Number(frame) - Number(ios) + 'px');
+					toscrollheight = toscrollheight - Number(bbar) + 1;
+
+					
+					
 					jQuery('.toscroll').css('height', toscrollheight + 'px');
 					
 				}, 1500);
 			}
 			toscrollheight = toscrollheight - off43;
-		}
+			//alert(toscrollheight);
+		//}
+		
+		if(ios > 0) jQuery('.frame').css('height', Number(frame) - Number(ios) + 'px');
 		
 		jQuery('.toscroll').css('height', toscrollheight + 'px');
 
