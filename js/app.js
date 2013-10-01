@@ -1649,6 +1649,11 @@ var app = {
 						$('#minuandmed').removeClass('scaleIn');
 					}, 100);
 					
+					$('#buyoverlay').find('.checkoutcontent').hide();
+					$('#buyoverlay').find('.checkout-form').show();
+					$('#buyoverlay').find('.checkout').show();
+					$('#buyoverlay').find('.backbtn').show();
+					
 					$('#buyoverlay').addClass('prepare').addClass('scale');
 					setTimeout(function () {
 						$('#buyoverlay').addClass('scaleIn');
@@ -1701,6 +1706,7 @@ var app = {
 						$('#buyoverlay').find('.checkoutcontent').hide();
 						$('#buyoverlay').find('.checkout').hide();
 						$('#buyoverlay').find('.checkout-banklink-success').show();
+						$('#buyoverlay').find('.backbtn').hide();
 					}
 					
 					if(event.url == 'http://projects.efley.ee/fitnessapp/admin/payment.php?order=' + order_id + '&bank=' + type + '&error=1') {
@@ -1709,6 +1715,11 @@ var app = {
 						$('#buyoverlay').find('.checkoutcontent').hide();
 						$('#buyoverlay').find('.checkout').hide();
 						$('#buyoverlay').find('.checkout-banklink-error').show();
+						$('#buyoverlay').find('.backbtn').hide();
+						$('#buyoverlay').find('.ok-error').unbind('click');
+						$('#buyoverlay').find('.ok-error').click(function(e) {
+							$('#buyoverlay').find('.backbtn').click();
+						});
 					}
 				
 					//console.log('stoped');
@@ -1721,6 +1732,7 @@ var app = {
 				$('#buyoverlay').find('.checkoutcontent').hide();
 				$('#buyoverlay').find('.checkout').hide();
 				$('#buyoverlay').find('.checkout-bill').show();
+				$('#buyoverlay').find('.backbtn').hide();
 			}
 		
 		}, 'jsonp');
