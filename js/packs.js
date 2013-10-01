@@ -274,6 +274,7 @@ var trainings = {
 	currentTraining: {},
 	currentDay: 0,
 	isItDone: false,
+	currentType: 'sample',
 	
 	getTrainingsMain: function() {
 		$('.main-contents').html('');
@@ -315,10 +316,15 @@ var trainings = {
 	},
 	
 	getTrainings: function(type) {
+		if(!type)
+			type = trainings.currentType;
+		else
+			trainings.currentType = type;
+		
+		console.log(type);
 		
 		db.transaction(function(tx) {
 			query = 'SELECT * FROM TRAININGS WHERE type = "' + type + '"';
-			console.log(query);
 			tx.executeSql(query, [], function(tx, results) {
 				
 				var len = results.rows.length, i;
@@ -1088,6 +1094,7 @@ var nutritions = {
 	sampleNutritions: [],
 	orderNutritions: [], 
 	currentNutrition: {},
+	currentType: 'sample',
 	
 	getNutritionsMain: function() {
 		$('.main-contents').html('');	
@@ -1125,7 +1132,12 @@ var nutritions = {
 		
 	},
 	getNutritions: function(type) {
-	
+		
+		if(!type)
+			type = nutritions.currentType;
+		else
+			nutritions.currentType = type;
+		
 		//console.log(type);
 		
 		if (type == 'order')
