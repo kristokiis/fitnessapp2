@@ -1167,7 +1167,7 @@ var nutritions = {
 		
 		$.each(nutritions.currentNutrition.meals, function(type, meal) {
 			
-			$('#toitumisplaan1').find('.toscroll').append('<section class="whiteitem noicon teleport" data-page="menuu1_hommikusook1" data-level="4" data-type="' + type + '"><div class="item_wrap"><h3>' + translation[lang][type] + '</h3></div></section>');
+			$('#toitumisplaan1').find('.toscroll').append('<section class="whiteitem noicon teleport" data-page="menuu1_hommikusook1" data-level="4" data-type="' + type + '"><div class="item_wrap"><h3>' + translations[lang][type] + '</h3></div></section>');
 			
 		});
 		$('#toitumisplaan1').find('.teleport').click(function(e) {
@@ -1226,7 +1226,7 @@ var nutritions = {
 			var meal = nutritions.currentNutrition.meals[meal_type][0];
 		}
 		
-		$('#menuu1_hommikusook1').find('h3').html(meal.meal_type);
+		$('#menuu1_hommikusook1').find('h3').html(translations[lang][meal.meal_type]);
 		$('#menuu1_hommikusook1').find('h4').html(meal.meal_name);
 		$('#menuu1_hommikusook1').find('.meal-content').html(meal.meal_content);
 		$('#menuu1_hommikusook1').find('.nutrition-image').attr('src', 'i/nutrions/' + meal_type + '.jpg');

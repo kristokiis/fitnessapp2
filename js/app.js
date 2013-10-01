@@ -86,7 +86,7 @@ var app = {
 		
 		app.initLogin(false);
 
-		//localStorage.removeItem('fitNotFirstTime');
+		localStorage.removeItem('fitNotFirstTime');
 	},
 	
 	/*
@@ -656,6 +656,7 @@ var app = {
 				data.sex = response.gender;
 				data.birthday = response.birthday;
 				data.mail = response.email;
+				data.club_id = club_id;
 				app.doLogin(data);
 			}
 		});
@@ -1525,7 +1526,7 @@ var app = {
 			$('#templateIntro').unbind(eventEnd).bind(eventEnd, function (e) {
 			   		
 		   		$('#voucher').hide();
-		   		$('.buybtn').hide();
+		   		$('#overlay').find('.buybtn').hide();
 		   		
 	   			var id = $(this).parent().data('id');
 	   		
