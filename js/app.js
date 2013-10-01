@@ -1521,21 +1521,20 @@ var app = {
 			
 			items = [];
 			
-			data.template_id = app.packageTrainer;
-			
+			data.template_id = app.packageTemplate;
+			console.log(template);
+			console.log(data);
 			$('.treener').find('img').attr('src', app.serverUrl + 'pics/templates/' + template.id + '.jpg');
 			$('.treener').find('h2').html(template.name);
 			
 			$('#templateIntro').unbind(eventEnd).bind(eventEnd, function (e) {
-			   		
+			   	e.preventDefault();
 		   		$('#voucher').hide();
 		   		$('#overlay').find('.buybtn').hide();
 		   		
-	   			var id = $(this).parent().data('id');
-	   		
-				//e.preventDefault();
-				addHover( this );
 				
+				addHover( this );
+				console.log('whaaaat');
 				$('#overlay').find('img:first').attr('src', app.serverUrl + 'pics/templates/' + template.id + '.jpg');
 				$('#overlay').find('h1').html(template.name).css('font-size', '13px');
 				$('#overlay').find('h2').html(template.price + '€');
@@ -1588,7 +1587,8 @@ var app = {
 		   		
 		   		$('.choosebtn').parent().unbind(eventEnd).bind(eventEnd, function (e) {
 			   		
-			   		$('#voucher').hide();	
+			   		$('#voucher').hide();
+			   		$('#overlay').find('.buybtn').show();	
 			   		
 		   			trainer_id = $(this).data('id');
 		   			
@@ -1652,7 +1652,10 @@ var app = {
 					$('#buyoverlay').addClass('prepare').addClass('scale');
 					setTimeout(function () {
 						$('#buyoverlay').addClass('scaleIn');
-						$('.alternatiivbtn').html('').click();
+						//$('.alternatiivbtn').html('').click();
+						$('.alternatiivbtn').addClass('active');
+						$('.popup').removeClass('pophide');
+						$('.popup').addClass('popshow');
 					}, 500);
 					
 					$('.bank-link').click(function(e) {
@@ -1693,7 +1696,7 @@ var app = {
 				
 					console.log(event.url);
 					if(event.url == 'http://projects.efley.ee/fitnessapp/admin/payment.php?order=' + order_id + '&bank=' + type + '&success=1') {
-						iabRed.close();
+						iabRef.close();
 						
 						$('#buyoverlay').find('.checkoutcontent').hide();
 						$('#buyoverlay').find('.checkout').hide();
@@ -1701,7 +1704,7 @@ var app = {
 					}
 					
 					if(event.url == 'http://projects.efley.ee/fitnessapp/admin/payment.php?order=' + order_id + '&bank=' + type + '&error=1') {
-						iabRed.close();
+						iabRef.close();
 						
 						$('#buyoverlay').find('.checkoutcontent').hide();
 						$('#buyoverlay').find('.checkout').hide();

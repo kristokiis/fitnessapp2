@@ -870,29 +870,6 @@ $('.manFlip').unbind(eventEnd).bind(eventEnd, function (e) {
 		}, 350);
 	});
 	
-	
-	
-	$('.soovitusedbtn, .alternatiivbtn').unbind(eventEnd).bind(eventEnd, function (e) {
-	
-		if( !$(this).hasClass('active') ){
-			$(this).addClass('active') 
-			$('.popup').removeClass('pophide');
-			setTimeout(function(){
-				$('.popup').addClass('popshow');
-			}, 100);
-		}else{
-			$(this).removeClass('active') 
-			$('.popup').removeClass('popshow');
-			setTimeout(function(){
-				$('.popup').addClass('pophide');
-			}, 300);
-		}
-	
-	});
-	
-	
-	
-	
 	$('.touchhover').on('touchstart', function(e){
 		e.preventDefault();
 		$(this).addClass('hover');
