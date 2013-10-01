@@ -844,7 +844,7 @@ var app = {
 			$('#selectiveoverlay').find('.club-nr').val(user.club_nr)
 			$('#selectiveoverlay').find('.save-button').unbind('click');
 			$('#selectiveoverlay').find('.save-button').click(function(e) {
-				
+				addHover(this);
 				user.club_nr = $('#selectiveoverlay').find('.club-nr').val();
 				//user.club_pass = $('#selectiveoverlay').find('.club-pass').val();
 				$('#selectiveoverlay').removeClass('scale');
@@ -904,6 +904,7 @@ var app = {
 		$('textarea').autoResize();
 		
 		$('#saveUserData').click(function() {
+			addHover(this);
 			user.firstname = $('#firstname').val();
 			user.lastname = $('#lastname').val();
 			user.mail = $('#mail').val();
@@ -927,6 +928,7 @@ var app = {
 			}, 100);
 			$('#yesnooverlay').find('.yesno').unbind('click');
 			$('#yesnooverlay').find('.yesno').click(function() {
+				addHover(this);
 				$('#yesnooverlay').removeClass('scaleIn').removeClass('scale');
 			});
 			
@@ -1482,7 +1484,7 @@ var app = {
 		   		});
 		   		
 		   		$('.selectbtn').unbind(eventEnd).bind(eventEnd, function (e) {
-		   		
+					addHover(this);
 		   			var id = $(this).data('id');
 		   			////console.log('id');
 		   			app.packageTemplate = id;
@@ -1499,6 +1501,7 @@ var app = {
 			if(!user.club_nr) {
 				$('#askClubNr').find('.save-button').unbind('click');
 				$('#askClubNr').find('.save-button, .cancel-button').click(function(e) {
+					addHover(this);
 					if($(this).hasClass('save-button'))
 						user.club_nr = $('#askClubNr').find('.club-nr').val();
 					$('#askClubNr').removeClass('scale');
@@ -1608,10 +1611,11 @@ var app = {
 			
 				$('.buybtn').unbind(eventEnd).bind(eventEnd, function (e) {
 					//e.preventDefault();
+					addHover(this);
 					app.parseUserDetails();
 					$('#minuandmed').addClass('scale');
 					setTimeout(function () {
-						$('#minuandmed').addClass('scaleIn');
+						$('#minuandmed').addClass('scaleIn').css('height', wind + 'px');
 					}, 500);
 					
 					$('#overlay').removeClass('scale');
@@ -1622,7 +1626,7 @@ var app = {
 				});
 				
 				$('.orderbtn').unbind(eventEnd).bind(eventEnd, function (e) {
-					
+					addHover(this);
 					user.firstname = $('#firstname').val();
 					user.lastname = $('#lastname').val();
 					user.mail = $('#mail').val();
@@ -1653,6 +1657,7 @@ var app = {
 					
 					$('.bank-link').click(function(e) {
 						e.preventDefault();
+						addHover(this);
 						app.createOrder($(this).data('bank'), trainer_id);
 					});
 					

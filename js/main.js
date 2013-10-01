@@ -115,7 +115,7 @@ var anim = '1';
 var tulemus = '';
 var TOTALRESULT = 0;
 var nolevel = false;
-
+var fisrstrun = true;
 
 
 
@@ -130,7 +130,7 @@ jQuery(window).resize(function ($) {
 	////console.log( window.outerHeight, jQuery(window).height() );
 });
 
-var fisrstrun = true;
+
 
 function resizeby(_this, _plus) {
 	
@@ -144,9 +144,10 @@ function resizeby(_this, _plus) {
 	//setTimeout(function () {
 	
 	if(_this == '#homepage'){
-		if(fisrstrun && !is23){
+		if(fisrstrun && ios > 0){
 			fisrstrun = false;		
 			toscrollheight = toscrollheight - Number(bbar) + 12;
+			
 		}
 	}
 	
@@ -489,14 +490,13 @@ function teleportMe( where, extra ){
 
 					reposition();
 					
-					hideMenu();
-					
-					bindEvents();
+					hideMenu();					
 					
 					updating = false;
-						
 					
 					afterTeleport(where, extra);
+					
+					bindEvents();
 					
 				}, 20);
 
@@ -535,27 +535,21 @@ function showLoading(){
 
 function bindEvents() {
 	
-	////console.log('binding..');
-	
-	//$('textarea').autoResize();
-	
-	////console.log('binding this shit..');
-	
-	
+	var diaryscroll = jQuery('#diaryscroll').length;
+	if(diaryscroll){
+		setTimeout(function(){
+			$('#diaryscroll .diary-content').append('<section class="pseudomonth" style="height: ' + bbar + 'px"></section>');
+			var scroll = new iScroll('diaryscroll');
+			scroll.enableStickyHeaders('h4');
+		}, 0);
+	}
 
-	////console.log('binding this shit still..');
-
+	
 	$('.teleport').unbind(eventEnd).bind(eventEnd, function (e) {
 		e.preventDefault();
-		
 		addHover( this );
 		
-		//updating = true;
-				
-		//$('.menu').removeClass('active');
-		
-		var where = $(this).attr('data-page');
-		
+		var where = $(this).attr('data-page');	
 		var LEV = $(this).attr('data-level');
 		if( LEV != 'none' ) {
 			LEVEL = LEV;
