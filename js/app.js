@@ -86,7 +86,7 @@ var app = {
 		
 		app.initLogin(false);
 
-		localStorage.removeItem('fitNotFirstTime');
+		//localStorage.removeItem('fitNotFirstTime');
 	},
 	
 	/*

@@ -279,20 +279,20 @@ var trainings = {
 		$('.main-contents').html('');
 		
 		if (trainings.doingExercise) {
-			$('.main-contents').append('<section class="item jatkakava teleport" data-page="treening_jatka" data-level="2"><div class="item_wrap"><h3>'+translations[lang]['continue_training']+'</h3></div></section>');
+			$('.main-contents').append('<section class="item jatkakava" data-page="treening_jatka" data-level="2"><div class="item_wrap"><h3>'+translations[lang]['continue_training']+'</h3></div></section>');
 		}	
 		
 		if (trainings.samplePackages) {
-			$('.main-contents').append('<section class="item noicon teleport" data-page="treening_naidiskavad" data-level="2"  data-type="sample"><div class="item_wrap"><h3>'+translations[lang]['sample_plans']+'</h3></div></section>');
+			$('.main-contents').append('<section class="item noicon" data-page="treening_naidiskavad" data-level="2"  data-type="sample"><div class="item_wrap"><h3>'+translations[lang]['sample_plans']+'</h3></div></section>');
 		}
 
 		if (trainings.orderPackages) {
-			$('.main-contents').append('<section class="item noicon soodustusedbtn teleport" data-page="treening_naidiskavad" data-level="2" data-type="order"><div class="item_wrap"><h3>'+translations[lang]['order_plans']+'</h3></div></section>');
+			$('.main-contents').append('<section class="item noicon soodustusedbtn" data-page="treening_naidiskavad" data-level="2" data-type="order"><div class="item_wrap"><h3>'+translations[lang]['order_plans']+'</h3></div></section>');
 		} else {
-			$('.main-contents').append('<section class="item noicon soodustusedbtn teleport" data-page="personaalsed_treeningkavad" data-level="2"><div class="item_wrap"><h3>'+translations[lang]['order_plans']+'</h3></div></section>');
+			$('.main-contents').append('<section class="item noicon soodustusedbtn" data-page="personaalsed_treeningkavad" data-level="2"><div class="item_wrap"><h3>'+translations[lang]['order_plans']+'</h3></div></section>');
 		}
 		
-		$('#uustreening').find('.teleport').click(function(e) {
+		$('#uustreening').find('.item').click(function(e) {
 			e.preventDefault();
 			if ($(this).data('page') == 'kavade_ostmine') {
 				app.buyType = 'training';
@@ -318,16 +318,16 @@ var trainings = {
 		
 		db.transaction(function(tx) {
 			query = 'SELECT * FROM TRAININGS WHERE type = "' + type + '"';
-			//console.log(query);
+			console.log(query);
 			tx.executeSql(query, [], function(tx, results) {
 				
 				var len = results.rows.length, i;
 				for (i = 0; i < len; i++) {
 					training = item = results.rows.item(i);
-					$('#treening_naidiskavad').find('.training-content').append('<section class="item noicon treenerpakkumisedbtn teleport" data-page="treening_naidiskava" data-level="3" data-id="' + training.id + '"><div class="item_wrap"><h3>' + training.name + '</h3></div><div class="remove-overlay"><span class="remove-icon"></span></div></section>');
+					$('#treening_naidiskavad').find('.training-content').append('<section class="item noicon treenerpakkumisedbtn" data-page="treening_naidiskava" data-level="3" data-id="' + training.id + '"><div class="item_wrap"><h3>' + training.name + '</h3></div><div class="remove-overlay"><span class="remove-icon"></span></div></section>');
 				}
 		
-				$('#treening_naidiskavad').find('.teleport').click(function(e) {
+				$('#treening_naidiskavad').find('.training-content').find('.item').click(function(e) {
 					e.preventDefault();
 					//currenttraining = $(this).data('id');
 					LEVEL = 3;
@@ -398,7 +398,7 @@ var trainings = {
 							muscle_groups_str = muscle_groups_str + ', ' + muscle_groups[muscle]; 
 					});
 				
-					$('#treening_naidiskava').find('.training-content').append('<section class="item noicon teleport day-item" data-page="treening_naidiskavad_1paev" data-level="3" data-day="' + day + '"><div class="item_wrap"><h6>' + day + '. '+translations[lang]['day']+'</h6><h3>' + muscle_groups_str + '</h3></div></section>');
+					$('#treening_naidiskava').find('.training-content').append('<section class="item noicon day-item" data-page="treening_naidiskavad_1paev" data-level="3" data-day="' + day + '"><div class="item_wrap"><h6>' + day + '. '+translations[lang]['day']+'</h6><h3>' + muscle_groups_str + '</h3></div></section>');
 					
 				});
 				
@@ -480,7 +480,7 @@ var trainings = {
 					//}
 				}
 			
-				$('#treening_naidiskavad_1paev').find('.exercises-content').append('<section class="whiteitem gym noicon teleport" data-page="treening_naidiskavad_1paev_Xmin" data-level="4" data-exercise="' + i + '"><div class="item_wrap"><h3><span>' + exercise.name + '</span></h3><div class="info"><span>'+status+'</span></div><div class="clear"></div></div></section>');
+				$('#treening_naidiskavad_1paev').find('.exercises-content').append('<section class="whiteitem gym noicon" data-page="treening_naidiskavad_1paev_Xmin" data-level="4" data-exercise="' + i + '"><div class="item_wrap"><h3><span>' + exercise.name + '</span></h3><div class="info"><span>'+status+'</span></div><div class="clear"></div></div></section>');
 				
 			});
 			if (exCounter == Object.keys(trainings.currentTraining.exercises[trainings.currentDay]).length) {
@@ -488,7 +488,7 @@ var trainings = {
 			} else {
 				trainings.isItDone = false;
 			}
-			$('#treening_naidiskavad_1paev').find('.teleport').click(function(e) {
+			$('#treening_naidiskavad_1paev').find('.whiteitem').click(function(e) {
 				e.preventDefault();
 				LEVEL = 5;
 				teleportMe('treening_naidiskavad_1paev_nXn', $(this).data('exercise'));
@@ -1095,17 +1095,17 @@ var nutritions = {
 		//console.log(this.orderNutritions);
 		
 		if (this.sampleNutritions.length) {
-			$('.main-contents').append('<section class="item noicon treenerpakkumisedbtn teleport" data-page="naidiskavad" data-level="2" data-type="sample"><div class="item_wrap"><h3>'+translations[lang]['sample_plans']+'</h3></div></section>');
+			$('.main-contents').append('<section class="item noicon treenerpakkumisedbtn" data-page="naidiskavad" data-level="2" data-type="sample"><div class="item_wrap"><h3>'+translations[lang]['sample_plans']+'</h3></div></section>');
 		}
 		
 		if (this.orderNutritions.length) {
-			$('.main-contents').append('<section class="item noicon soodustusedbtn teleport" data-page="naidiskavad" data-level="2" data-type="order"><div class="item_wrap"><h3>'+translations[lang]['order_plans']+'</h3></div></section>');
+			$('.main-contents').append('<section class="item noicon soodustusedbtn" data-page="naidiskavad" data-level="2" data-type="order"><div class="item_wrap"><h3>'+translations[lang]['order_plans']+'</h3></div></section>');
 		} else {
-			$('.main-contents').append('<section class="item noicon soodustusedbtn teleport" data-page="personaalsed_toitumiskavad" data-level="2"><div class="item_wrap"><h3>'+translations[lang]['order_plans']+'</h3></div></section>');
+			$('.main-contents').append('<section class="item noicon soodustusedbtn" data-page="personaalsed_toitumiskavad" data-level="2"><div class="item_wrap"><h3>'+translations[lang]['order_plans']+'</h3></div></section>');
 			
 		}
 		
-		$('#toitumiskavad').find('.teleport').click(function(e) {
+		$('#toitumiskavad').find('.item').click(function(e) {
 			e.preventDefault();
 			if ($(this).data('page') == 'kavade_ostmine') {
 				app.buyType = 'nutrition';
@@ -1137,13 +1137,13 @@ var nutritions = {
 		
 		$.each(_nutritions, function(i, nutrition) {
 				
-			$('#naidiskavad').find('.toscroll').append('<section class="item noicon treenerpakkumisedbtn teleport" data-page="toitumisplaan1" data-level="3" data-id="' + nutrition.id + '"><div class="item_wrap"><h3>' + nutrition.name + '</h3></div></section>');
+			$('#naidiskavad').find('.toscroll').append('<section class="item noicon treenerpakkumisedbtn" data-page="toitumisplaan1" data-level="3" data-id="' + nutrition.id + '"><div class="item_wrap"><h3>' + nutrition.name + '</h3></div></section>');
 				
 		});
 		
 		nutritions.nutritions = _nutritions;
 		
-		$('#naidiskavad').find('.teleport').click(function(e) {
+		$('#naidiskavad').find('.item').click(function(e) {
 			e.preventDefault();
 			addHover(this);
 			//currentNutrition = $(this).data('id');
@@ -1167,10 +1167,10 @@ var nutritions = {
 		
 		$.each(nutritions.currentNutrition.meals, function(type, meal) {
 			
-			$('#toitumisplaan1').find('.toscroll').append('<section class="whiteitem noicon teleport" data-page="menuu1_hommikusook1" data-level="4" data-type="' + type + '"><div class="item_wrap"><h3>' + translations[lang][type] + '</h3></div></section>');
+			$('#toitumisplaan1').find('.toscroll').append('<section class="whiteitem noicon" data-page="menuu1_hommikusook1" data-level="4" data-type="' + type + '"><div class="item_wrap"><h3>' + translations[lang][type] + '</h3></div></section>');
 			
 		});
-		$('#toitumisplaan1').find('.teleport').click(function(e) {
+		$('#toitumisplaan1').find('.whiteitem').click(function(e) {
 			e.preventDefault();
 			LEVEL = 4;
 			teleportMe('menuu1_hommikusook1', $(this).data('type'));
