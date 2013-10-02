@@ -169,8 +169,11 @@ function resizeby(_this, _plus) {
 					//568 ja 46 ja 22
 					jQuery('.toscroll').css('height', toscrollheight + 'px');
 					//if two windows opened, remove last one, because new one is fresh and working one :)
-					if(('.open').length > 1)
+					if($('.open').length > 1) {
+						//console.log();
 						$('.open:first').remove();
+					}
+						
 				}, 800);
 				
 			}
