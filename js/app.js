@@ -1772,6 +1772,12 @@ var app = {
 		data.trainer = isTrainer;
 		
 		$.get(app.apiUrl + '?action=getFitshop', data, function(result) {
+		
+			if (result.trainer) {
+				$('.treener').find('img').attr('src', app.serverUrl + 'pics/trainers/' + result.trainer.id + '.jpg');
+				$('.treener').find('h2').html(result.trainer.realname);
+			}
+		
 	   		$.each(result.items, function(i, item) {
 	   			if(item.name) {
 		   			items[item.id] = item;
