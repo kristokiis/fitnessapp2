@@ -104,11 +104,14 @@ translations.et['sample_plans'] = 'Näidiskavad';
 translations.et['order_plans'] = 'Personaalsed kavad';
 translations.et['nutrition_plan'] = 'TOITUMISPLAAN';
 translations.et['training_plan'] = 'TREENINGPLAAN';
+translations.et['sample_packages'] = 'NÄIDISKAVAD';
+translations.et['order_packages'] = 'PERSONAALSED KAVAD';
 
 //TRAININGS
 translations.et['serie'] = 'Seeria';
 translations.et['DAY'] = 'PÄEV';
 translations.et['day'] = 'päev';
+translations.et['series'] = 'seeriat';
 
 //NUTRITIONS
 translations.et['before_breakfast'] = 'Enne hommikusööki';

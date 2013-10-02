@@ -42,41 +42,59 @@ var packs = {
 				timesCounter = 0;
 				month = false;
 				var len = results.rows.length, i;
-				
+				content.html('');
 				testResults = localStorage.getObject('fitTest');
 				
 				if (len && len > 0) {
 				
 					for (i = 0; i < len; i++) {
 						day = results.rows.item(i);
+						
+						if (!month) {
+							month = parseInt(day.month);
+							timesCounter = 1;
+						} 
+						
+						if(month != parseInt(day.month)) {
 							
+							template.find('.followMeBar').html(translations[lang]['month_' + parseInt(month)] + ' ' + day.year + ' (' + (timesCounter-1) + ' treening korda)');
+							console.log('wut');
+							console.log(template.html());
+							content.append(template.html());
+							month = parseInt(day.month);
+							template.find('.trainings-content').html('');
+							timesCounter = 1;
+						} else {
+							timesCounter = timesCounter + 1;
+						}
+						
 						if(day.type == 'exercise') {
 							template.find('.trainings-content').append('<div class="treening" data-id="' + day.id + '"><div class="arrow"><div>'+translations[lang]['date']+': <span class="date">' + day.day + '</span></div><div>'+translations[lang]['pack']+': <span class="kava">' + day.plan_name + '</span></div><div>'+translations[lang]['trainingday']+': <span class="paev">' + day.day_name + '</span></div><div>'+translations[lang]['training_length']+': <span class="length">' + secToHour(day.length) + '</span></div></div></div>');
 						} else {
 							template.find('.trainings-content').append('<div class="treening" data-id="' + day.id + '"><div class="arrow"><div>'+translations[lang]['date']+': <span class="date">' + day.day + '</span></div><div>'+translations[lang]['pack']+': <span class="kava">'+translations[lang]['fitness_test']+'</span></div><div>'+translations[lang]['score']+': <span class="paev">' + day.day_name + '</span></div></div></div>');
 						}
-						if (!month) {
-							month = parseInt(day.month);
+						
+						
+						if((i+1) == len) {
+							template.find('.followMeBar').html(translations[lang]['month_' + parseInt(month)] + ' ' + day.year + ' (' + timesCounter + ' treening korda)');
+							console.log('wut');
+							console.log(template.html());
+							content.append(template.html());
+							template.find('.trainings-content').html('');
 							timesCounter = 1;
 						}
-						if(month != parseInt(month) || ((i+1) == len)) {
-							template.find('.followMeBar').html(translations[lang]['month_' + parseInt(day.month)] + ' ' + day.year + ' (' + timesCounter + ' treening korda)');
-							content.html(template.html());
-							timesCounter = 1;
-						} else {
-							timesCounter = timesCounter + 1;
-						}
+						
 					}
 					
 						
-					content.html(template.html());
+					//content.html(template.html());
 					setTimeout(function() {
 						var diaryscroll = $('#diaryscroll').length;
 						if(diaryscroll){
 							var scroll = new iScroll('diaryscroll');
 							scroll.enableStickyHeaders('h4');
 						}
-					}, 500);
+					}, 1500);
 					
 					
 					$('.treening').click(function(e) {
@@ -323,6 +341,8 @@ var trainings = {
 		
 		console.log(type);
 		
+		$('#treening_naidiskavad').find('h3:first').html(translations[lang][type + '_packages']);
+		
 		db.transaction(function(tx) {
 			query = 'SELECT * FROM TRAININGS WHERE type = "' + type + '"';
 			tx.executeSql(query, [], function(tx, results) {
@@ -330,7 +350,7 @@ var trainings = {
 				var len = results.rows.length, i;
 				for (i = 0; i < len; i++) {
 					training = item = results.rows.item(i);
-					$('#treening_naidiskavad').find('.training-content').append('<section class="item noicon treenerpakkumisedbtn" data-page="treening_naidiskava" data-level="3" data-id="' + training.id + '"><div class="item_wrap"><h3>' + training.name + '</h3></div><div class="remove-overlay"><span class="remove-icon"></span></div></section>');
+					$('#treening_naidiskavad').find('.training-content').append('<section class="item noicon treenerpakkumisedbtn" data-page="treening_naidiskava" data-level="3" data-id="' + training.id + '"><div class="item_wrap avoid-clicks"><h3 class="avoid-clicks">' + training.name + '</h3></div><div class="remove-overlay"><span class="remove-icon"></span></div></section>');
 				}
 		
 				$('#treening_naidiskavad').find('.training-content').find('.item').click(function(e) {
@@ -393,7 +413,7 @@ var trainings = {
 				trainings.currentTraining = plan;
 				trainings.currentDay = curDay.day;
 				
-				$('#treening_naidiskava').find('h3:first').html('TREENINGPLAAN:<br>' + trainings.currentTraining.name);
+				$('#treening_naidiskava').find('h3:first').html('<img src="i/icon_list.png" alt=""/>' /*+ translations[lang]['training_plan']*/ + ': ' + trainings.currentTraining.name);
 	
 				$.each(trainings.currentTraining.exercises, function(day, exercises) {
 				
@@ -468,7 +488,7 @@ var trainings = {
 			
 				if(!curDay || !curDay.exercises[i]) {
 					if(exercise.type == 'weight' && exercise.series_count)
-						var status = exercise.series_count + 'x' + exercise.series[0].repeats;
+						var status = exercise.series_count + ' ' + translations[lang]['series'];
 					else
 						var status = exercise.time + 'min';
 				} else {
@@ -1146,10 +1166,10 @@ var nutritions = {
 			var _nutritions = this.sampleNutritions;
 			
 		//console.log(_nutritions);
-		
+		$('#naidiskavad').find('h3:first').html(translations[lang][type + '_packages']);
 		$.each(_nutritions, function(i, nutrition) {
 				
-			$('#naidiskavad').find('.toscroll').append('<section class="item noicon treenerpakkumisedbtn" data-page="toitumisplaan1" data-level="3" data-id="' + nutrition.id + '"><div class="item_wrap"><h3>' + nutrition.name + '</h3></div></section>');
+			$('#naidiskavad').find('.toscroll').append('<section class="item noicon treenerpakkumisedbtn" data-page="toitumisplaan1" data-level="3" data-id="' + nutrition.id + '"><div class="item_wrap avoid-clicks"><h3 class="avoid-clicks">' + nutrition.name + '</h3></div><div class="remove-overlay"><span class="remove-icon"></span></div></section>');
 				
 		});
 		
@@ -1164,6 +1184,20 @@ var nutritions = {
 			
 		});
 		
+		$('#naidiskavad').find('.remove-overlay').click(function(e) {
+			e.preventDefault();
+			e.stopPropagation();
+			var id = parseInt($(this).data('id'));
+			
+			db.transaction(function(tx) {
+				var statement = 'DELETE FROM NUTRITIONS WHERE id = ' + id;
+				//console.log(statement);
+			   	tx.executeSql(statement);
+			   	$(this).remove();
+		   	});
+			
+		});
+		
 	},
 	getNutrition: function(id) {
 		$.each(nutritions.nutritions, function(i, nutrition) {
@@ -1175,7 +1209,7 @@ var nutritions = {
 			}
 		});
 		
-		$('#toitumisplaan1').find('h3').html(translations[lang]['nutrition_plan'] + ':<br>' + nutritions.currentNutrition.name);
+		$('#toitumisplaan1').find('h3').html('<img src="i/icon_toit.png" alt=""/>'/* + translations[lang]['nutrition_plan']*/ + ': ' + nutritions.currentNutrition.name);
 		
 		$.each(nutritions.currentNutrition.meals, function(type, meal) {
 			

@@ -2010,6 +2010,7 @@ div.icon_select {
   font-weight: normal;
   line-height: 14px;
   padding: 4px 2px;
+  height: 43px;
 }
 .box33 h4.name{
   height: 43px;
@@ -2981,7 +2982,6 @@ div.icon_select {
 
 #personaalsed_toitumiskavad .title h3{
 	font-size: 15px;
-	padding: 3.4% 0 0;
 }
 
 .text_item{

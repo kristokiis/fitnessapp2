@@ -133,6 +133,8 @@ jQuery(window).resize(function ($) {
 
 
 function resizeby(_this, _plus) {
+	setTimeout(function() {
+		
 	
 	me = jQuery(_this + ' .me').height();
 
@@ -163,10 +165,14 @@ function resizeby(_this, _plus) {
 				off43 = 0;
 				setTimeout(function() {
 					toscrollheight = toscrollheight - Number(bbar) + 1;
-
+					//568 ja 46 ja 73 
+					//568 ja 46 ja 22
 					jQuery('.toscroll').css('height', toscrollheight + 'px');
-					
+					//if two windows opened, remove last one, because new one is fresh and working one :)
+					if(('.open').length > 1)
+						$('.open:first').remove();
 				}, 800);
+				
 			}
 			toscrollheight = toscrollheight - off43;
 			//alert(toscrollheight);
@@ -195,7 +201,7 @@ function resizeby(_this, _plus) {
 	//}, 100);
 	aligner = _this;
 	plus = _plus;
-
+	}, 400);
 	//alert( jQuery(window).height() );
 
 }
@@ -991,7 +997,7 @@ function hideKeyBoard() {
 		
 		$('body').touchwipe({
 			wipeLeft : function () {
-				if(($('#teated') && $('#teated').html()) || ($('#treening_naidiskavad') && $('#treening_naidiskavad').html())) {
+				if(($('#teated') && $('#teated').html()) || ($('#treening_naidiskavad') && $('#treening_naidiskavad').html()) || ($('#naidiskavad') && $('#naidiskavad').html())) {
 					//alert($(touchElement).attr('class'));
 					$(touchElement).addClass('remove-item');
 					return true;
@@ -1014,7 +1020,7 @@ function hideKeyBoard() {
 				}
 			},
 			wipeRight : function () {
-				if(($('#teated') && $('#teated').html()) || ($('#treening_naidiskavad') && $('#treening_naidiskavad').html())) {
+				if(($('#teated') && $('#teated').html()) || ($('#treening_naidiskavad') && $('#treening_naidiskavad').html()) || ($('#naidiskavad') && $('#naidiskavad').html())) {
 					//alert($(touchElement).attr('class'));
 					$(touchElement).removeClass('remove-item');
 					return true;

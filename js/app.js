@@ -86,7 +86,7 @@ var app = {
 		
 		app.initLogin(false);
 
-		//localStorage.removeItem('fitNotFirstTime');
+		localStorage.removeItem('fitNotFirstTime');
 	},
 	
 	/*
@@ -1498,22 +1498,7 @@ var app = {
 			template2 = $('.content-template-vali-kava');
 			container2 = $('.content-content-vali-kava');
 			container2.html('');
-			if(!user.club_nr) {
-				$('#askClubNr').find('.save-button').unbind('click');
-				$('#askClubNr').find('.save-button, .cancel-button').click(function(e) {
-					addHover(this);
-					if($(this).hasClass('save-button'))
-						user.club_nr = $('#askClubNr').find('.club-nr').val();
-					$('#askClubNr').removeClass('scale');
-					setTimeout(function () {
-						$('#askClubNr').removeClass('scaleIn');
-					}, 100);
-				});
-				$('#askClubNr').addClass('scale');
-				setTimeout(function () {
-					$('#askClubNr').addClass('scaleIn');
-				}, 100);
-			}
+			
 			var template = items[app.packageTemplate];
 			//console.log(items);
 			//console.log(app.packageTemplate);
@@ -1624,8 +1609,35 @@ var app = {
 					}, 100);
 			
 				});
-				
 				$('.orderbtn').unbind(eventEnd).bind(eventEnd, function (e) {
+					if(!user.club_nr) {
+						$('#askClubNr').find('.save-button').unbind('click');
+						$('#askClubNr').find('.save-button, .cancel-button').click(function(e) {
+							addHover(this);
+							if($('#askClubNr').find('.club-nr').val() && $(this).hasClass('save-button')) {
+								user.club_nr = $('#askClubNr').find('.club-nr').val();
+								$('#askClubNr').removeClass('scale');
+								setTimeout(function () {
+									$('#askClubNr').removeClass('scaleIn');
+								}, 100);
+							} else if(!$('#askClubNr').find('.club-nr').val() && $(this).hasClass('save-button')) {
+								$('#askClubNr').find('.club-nr').addClass('error');
+							} else {
+								$('#askClubNr').removeClass('scale');
+								setTimeout(function () {
+									$('#askClubNr').removeClass('scaleIn');
+								}, 100);
+							}
+							
+							
+						});
+						$('#askClubNr').addClass('scale');
+						setTimeout(function () {
+							$('#askClubNr').addClass('scaleIn');
+						}, 100);
+					} 
+				
+				
 					addHover(this);
 					user.firstname = $('#firstname').val();
 					user.lastname = $('#lastname').val();
@@ -1718,7 +1730,10 @@ var app = {
 						$('#buyoverlay').find('.backbtn').hide();
 						$('#buyoverlay').find('.ok-error').unbind('click');
 						$('#buyoverlay').find('.ok-error').click(function(e) {
-							$('#buyoverlay').find('.backbtn').click();
+							$('#buyoverlay').find('.checkoutcontent').hide();
+							$('#buyoverlay').find('.checkout-form').show();
+							$('#buyoverlay').find('.checkout').show();
+							$('#buyoverlay').find('.backbtn').show();
 						});
 					}
 				
