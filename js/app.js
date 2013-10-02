@@ -616,9 +616,9 @@ var app = {
 				data.fb_id = false;
 				
 				app.doLogin(data);
-			} else {
+			}/* else {
 				navigator.notification.vibrate(200);
-			}
+			}*/
 			
 		});
 		
@@ -674,7 +674,7 @@ var app = {
 			if (user.club_nr != data.client_nr) {
 				$('#clientNr').addClass('error');
 		   		$('#clientPass').addClass('error');
-		   		navigator.notification.vibrate(200);
+		   		//navigator.notification.vibrate(200);
 			} else {
 				//console.log('LOG IN');
 				LEVEL = 1;
@@ -686,7 +686,7 @@ var app = {
 		   		if (result.login == false) {
 			   		$('#clientNr').addClass('error');
 			   		$('#clientPass').addClass('error');
-			   		navigator.notification.vibrate(200);
+			   		//navigator.notification.vibrate(200);
 		   		} else {
 		   			if (result.user_new)
 		   				user = data;

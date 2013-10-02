@@ -20,17 +20,13 @@
     
     <access origin="*" />
     
-    <preference name="phonegap-version" value="2.9.0" />
+    <preference name="phonegap-version" value="3.0.0" />
     <preference name="fullscreen"       value="false" />
     <preference name="webviewbounce" 	value="false" />
     <preference name="orientation" 		value="portrait" />
     
     <preference name="splash-screen-duration" value="5000" />
     <preference name="load-url-timeout" value="10000" />
-    
-    <feature name="http://api.phonegap.com/1.0/camera"/>
-	<feature name="http://api.phonegap.com/1.0/file"/>
-	<feature name="http://api.phonegap.com/1.0/network"/>
     
     <icon src="assets/sparta_ico.png" />
 
@@ -51,5 +47,11 @@
 	    <param name="APP_ID" value="161092774064906" />
 	    <param name="APP_NAME" value="FitnessMobile" />
 	</gap:plugin>	
-
+	
+	<gap:plugin name="org.apache.cordova.core.file" />
+	<gap:plugin name="org.apache.cordova.core.file-transfer" />
+	<gap:plugin name="org.apache.cordova.core.network-information" />
+	<gap:plugin name="org.apache.cordova.core.dialogs" />
+	<gap:plugin name="org.apache.cordova.core.inappbrowser" />
+	
 </widget>

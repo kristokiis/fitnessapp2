@@ -152,7 +152,7 @@ body{
 	background-color: #000;
 	background-repeat: no-repeat;
 	background-position: center top;
-	/* overflow: hidden; */
+	overflow: hidden;
 	
     -webkit-background-size: 100% auto;
     -moz-background-size: 100% 100%;
@@ -3393,8 +3393,29 @@ li {
 
 @media screen and (min-width: 650px) {
 
+.showmenu{
+	-webkit-transform: translate3d(40%, 0, 0) !important;
+	-moz-transform: translate3d(40%, 0, 0) !important;
+}
+
+#themenu {
+  width: 40%;
+}
+
+#voucher div {
+  font-size: 17px;
+  line-height: 18px;
+  padding: 60px 25%;
+}
+
+.loadedcontent p {
+  font-size: 17px;
+  line-height: 24px;
+  margin-bottom: 4%;
+}
+
 .logo {
-  margin: 2% auto 3%;
+  margin: 2% auto 30%;
 }
 
 
@@ -3405,7 +3426,7 @@ li {
 
 div.icon_select {
   background: url("../i/select.png") no-repeat scroll center center transparent;
-  background-size: 90% auto;
+  background-size: 50% auto;
   content: "";
   padding: 15px 5px;
   pointer-events: none;
@@ -3585,10 +3606,37 @@ div.icon_select {
 	background-size: 3% auto;
 }
 
-.testing img {
-
-  max-width: 300px;
+.testing h3 {
+  font-size: 24px;
+  margin-bottom: 3%;
 }
+.testing img {
+  max-width: 200px;
+}
+.testing p {
+  font-size: 15px;
+}
+.answer label {
+  font-size: 20px;
+  line-height: 24px;
+  width: 25%;
+  margin-top: 1%;
+}
+.answer input {
+  padding: 1% 2%;
+  width: 71%;
+}
+
+.answer .nobg_item {
+  width: 100%;
+}
+.answer .nobg_item h3 {
+	background-size: 2% auto;
+	padding: 15px 8% 15px 2%;
+	font-size: 20px;
+	margin: 0;
+}
+
 
 .carusel .normal {
   width: auto;
@@ -3669,7 +3717,7 @@ div.icon_select {
 }
 
 .toscroll img {
-  max-width: 300px;
+  /* max-width: 300px; */
 }
 .harjutus_item .img .bubble {
   right: 15%;
@@ -3678,12 +3726,12 @@ div.icon_select {
 .me.title img {
   margin: 0.5% 2% 0.5% 3%;
 }
-.harjutused.title img {
-  margin: 24px 2% 0.5% 3%;
+.me.harjutused img.filter {
+  padding: 0.5% 6% ;
 }
 
 .harjutused .me.harjutused h3 {
-  padding: 30px 0 0;
+  padding: 10px 0 0;
 }
 
 .manFlip {
@@ -3714,6 +3762,28 @@ div.icon_select {
 }
 
 }
+
+
+@media all and (orientation: landscape) {
+	.logo {
+	  margin: 1% auto 2%;
+	}
+	
+	#frontpage hgroup, #login hgroup {
+		  margin: 0 auto 3%;
+		  width: 28%;
+	}
+
+	
+	.langselector {
+	  margin: 4% 30% 0;
+	}
+	
+	.bg {
+	  top: -76%;
+	}
+}
+
 
 
 @media screen and (max-width: 480px) {

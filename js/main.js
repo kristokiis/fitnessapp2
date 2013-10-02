@@ -930,7 +930,7 @@ function hideKeyBoard() {
 				if(newLATEST) {
 					newLATESTnohash = newLATEST.replace('#','');
 				
-					teleportMe( newLATESTnohash, {} );
+					teleportMe( newLATESTnohash, false);
 				}
 
 			} else {
