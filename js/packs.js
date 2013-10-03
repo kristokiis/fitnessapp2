@@ -364,13 +364,14 @@ var trainings = {
 				$('#treening_naidiskavad').find('.remove-overlay').click(function(e) {
 					e.preventDefault();
 					e.stopPropagation();
-					var id = parseInt($(this).data('id'));
+					element = $(this).parent();
+					var id = parseInt(element.data('id'));
 					
 					db.transaction(function(tx) {
 						var statement = 'DELETE FROM TRAININGS WHERE id = ' + id;
 						//console.log(statement);
 					   	tx.executeSql(statement);
-					   	$(this).remove();
+					   	element.remove();
 				   	});
 					
 				});
@@ -1157,69 +1158,101 @@ var nutritions = {
 			nutritions.currentType = type;
 		
 		//console.log(type);
-		
-		if (type == 'order')
-			var _nutritions = this.orderNutritions;
-		else
-			var _nutritions = this.sampleNutritions;
-			
 		//console.log(_nutritions);
 		$('#naidiskavad').find('h3:first').html(translations[lang][type + '_packages']);
-		$.each(_nutritions, function(i, nutrition) {
+		
+		db.transaction(function(tx) {
+			query = 'SELECT * FROM NUTRITIONS WHERE type = "' + type + '"';
+			tx.executeSql(query, [], function(tx, results) {
 				
-			$('#naidiskavad').find('.toscroll').append('<section class="item noicon treenerpakkumisedbtn" data-page="toitumisplaan1" data-level="3" data-id="' + nutrition.id + '"><div class="item_wrap avoid-clicks"><h3 class="avoid-clicks">' + nutrition.name + '</h3></div><div class="remove-overlay"><span class="remove-icon"></span></div></section>');
+				var len = results.rows.length, i;
+				for (i = 0; i < len; i++) {
+					nutrition = item = results.rows.item(i);
+					$('#naidiskavad').find('.toscroll').append('<section class="item noicon treenerpakkumisedbtn" data-page="toitumisplaan1" data-level="3" data-id="' + nutrition.id + '"><div class="item_wrap avoid-clicks"><h3 class="avoid-clicks">' + nutrition.name + '</h3></div><div class="remove-overlay"><span class="remove-icon"></span></div></section>');
+				}
+		
+		
+				$('#naidiskavad').find('.item').click(function(e) {
+					e.preventDefault();
+					addHover(this);
+					//currentNutrition = $(this).data('id');
+					LEVEL = 3;
+					teleportMe('toitumisplaan1', $(this).data('id'));
+					
+				});
 				
-		});
-		
-		nutritions.nutritions = _nutritions;
-		
-		$('#naidiskavad').find('.item').click(function(e) {
-			e.preventDefault();
-			addHover(this);
-			//currentNutrition = $(this).data('id');
-			LEVEL = 3;
-			teleportMe('toitumisplaan1', $(this).data('id'));
+				$('#naidiskavad').find('.remove-overlay').click(function(e) {
+					e.preventDefault();
+					e.stopPropagation();
+					element = $(this).parent();
+					var id = parseInt(element.data('id'));
+					
+					db.transaction(function(tx) {
+						var statement = 'DELETE FROM NUTRITIONS WHERE id = ' + id;
+						console.log(statement);
+					   	tx.executeSql(statement);
+					   	element.remove();
+				   	});
+					
+				});
+			}, function(tx, results) {
+				console.error('Error in selecting test result');
+				console.log(tx);
+				console.log(result);
+			});
 			
-		});
-		
-		$('#naidiskavad').find('.remove-overlay').click(function(e) {
-			e.preventDefault();
-			e.stopPropagation();
-			var id = parseInt($(this).data('id'));
-			
-			db.transaction(function(tx) {
-				var statement = 'DELETE FROM NUTRITIONS WHERE id = ' + id;
-				//console.log(statement);
-			   	tx.executeSql(statement);
-			   	$(this).remove();
-		   	});
-			
-		});
+		}, function(error) {
+			console.error('Error in selecting test result');
+			//console.log(error);
+		});	
 		
 	},
 	getNutrition: function(id) {
-		$.each(nutritions.nutritions, function(i, nutrition) {
-			if(nutrition.id == id) {
-				nutritions.currentNutrition = nutrition;
-				//console.log('Found nutrition:');
-				//console.log(nutrition);
+		
+		if(!id)
+			id = nutritions.currentNutrition.id;
+		
+		db.transaction(function(tx) {
+			query = 'SELECT * FROM NUTRITIONS WHERE id = ' + id;
+			//console.log(query);
+			tx.executeSql(query, [], function(tx, results) {
 				
-			}
-		});
+				item = results.rows.item(0);
+				var meals = JSON.parse(item.meals);
+				var nutrition = {};
+			
+				nutrition.id = item.id;
+				nutrition.name = item.name;
+				nutrition.description = item.description;
+				
+				nutrition.meals = meals;
+				
+				nutritions.currentNutrition = nutrition;
+	
 		
-		$('#toitumisplaan1').find('h3').html('<img src="i/icon_toit.png" alt=""/>'/* + translations[lang]['nutrition_plan']*/ + '' + nutritions.currentNutrition.name);
-		
-		$.each(nutritions.currentNutrition.meals, function(type, meal) {
+				$('#toitumisplaan1').find('h3').html('<img src="i/icon_toit.png" alt=""/>'/* + translations[lang]['nutrition_plan']*/ + '' + nutritions.currentNutrition.name);
+				
+				$.each(nutritions.currentNutrition.meals, function(type, meal) {
+					
+					$('#toitumisplaan1').find('.toscroll').append('<section class="whiteitem noicon" data-page="menuu1_hommikusook1" data-level="4" data-type="' + type + '"><div class="item_wrap"><h3>' + translations[lang][type] + '</h3></div></section>');
+					
+				});
+				$('#toitumisplaan1').find('.whiteitem').click(function(e) {
+					e.preventDefault();
+					LEVEL = 4;
+					teleportMe('menuu1_hommikusook1', $(this).data('type'));
+					
+				});
+			}, function(tx, results) {
+				console.error('Error in selecting test result');
+				console.log(tx);
+				console.log(result);
+			});
 			
-			$('#toitumisplaan1').find('.toscroll').append('<section class="whiteitem noicon" data-page="menuu1_hommikusook1" data-level="4" data-type="' + type + '"><div class="item_wrap"><h3>' + translations[lang][type] + '</h3></div></section>');
-			
-		});
-		$('#toitumisplaan1').find('.whiteitem').click(function(e) {
-			e.preventDefault();
-			LEVEL = 4;
-			teleportMe('menuu1_hommikusook1', $(this).data('type'));
-			
-		});
+		}, function(error) {
+			console.error('Error in selecting test result');
+			//console.log(error);
+		});	
 			
 	},
 	

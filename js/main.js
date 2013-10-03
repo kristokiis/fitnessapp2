@@ -155,6 +155,9 @@ function resizeby(_this, _plus) {
 		$('.toscroll').height(curH);
 		
 		setTimeout(function() {
+			topH = Number($('#topbar').height());
+			bottomH = Number($('#bottombar').height());
+			meH = Number($('.me:last').height());
 			curH = windowH - topH - bottomH - meH;
 			$('.toscroll').height(curH);
 		}, 1000);
