@@ -1783,7 +1783,7 @@ var app = {
 		   			items[item.id] = item;
 			   		
 			   		template.find('h4:first').html(item.name);
-			   		template.find('h4:last').html(item.price + ' €');
+			   		template.find('h5:last').html(item.price + ' €');
 			   		template.find('img:last').attr('src', app.serverUrl + 'pics/fitshop/' + item.id + '.jpg');
 			   		template.find('.box33').attr('data-id', item.id);
 			   		

@@ -495,6 +495,10 @@ function teleportMe( where, extra ){
 					afterTeleport(where, extra);
 					
 					bindEvents();
+					innerH = $('#' + where).find('.toscroll').innerHeight();
+					justH = $('#' + where).find('.toscroll').height();
+					if(where == 'homepage' || justH < innerH )
+						$('#' + where).find('.toscroll').append('<section class="noitem" ></section>');
 					
 				}, 20);
 
