@@ -141,16 +141,29 @@ function resizeby(_this, _plus) {
 	var frame = jQuery('.open').height();
 
 	jQuery('.page-wrap').css('height', wind + 'px');
+	
+	windowH = Number($('.page-wrap').height())
+	topH = Number($('#topbar').height());
+	bottomH = Number($('#bottombar').height());
+	meH = Number($('.me:last').height());
+	
 	//setTimeout(function () {
 	
-	if(_this == '#homepage'){
-		if(fisrstrun && ios > 0){
-			fisrstrun = false;		
-			toscrollheight = toscrollheight - Number(bbar) + 12;
-			
-		}
+	if(_this == '#homepage' && fisrstrun){
+		fisrstrun = false;		
+		curH = windowH - topH - meH + 32;
+		$('.toscroll').height(curH);
+		
+		setTimeout(function() {
+			curH = windowH - topH - bottomH - meH;
+			$('.toscroll').height(curH);
+		}, 1000);
+		
+	} else {
+		curH = windowH - topH - bottomH - meH;
+		$('.toscroll').height(curH);
 	}
-	
+	/*
 
 	//alert(_this);
 		//if(_this == '#homepage'){
@@ -167,7 +180,7 @@ function resizeby(_this, _plus) {
 					if($('.open').length > 1) {
 						$('.open:first').remove();
 					}				
-				}, 800);
+				}, 700);
 			}
 			toscrollheight = toscrollheight - off43;
 		//}
@@ -175,7 +188,7 @@ function resizeby(_this, _plus) {
 		if(ios > 0) jQuery('.frame').css('height', Number(frame) - Number(ios) + 'px');
 			
 		jQuery('.toscroll').css('height', toscrollheight + 'px');
-
+*/
 		if (LEVEL >= 2) {
 			$('#topbar .backbtn').show();
 			$('#menu').hide();
@@ -194,7 +207,7 @@ function resizeby(_this, _plus) {
 	//}, 100);
 	aligner = _this;
 	plus = _plus;
-
+	
 
 }
 
@@ -498,11 +511,25 @@ function teleportMe( where, extra ){
 					innerH = $('#' + where).find('.toscroll').innerHeight();
 					justH = $('#' + where).find('.toscroll').height();
 					
-					console.log(innerH);
+					console.log($('.page-wrap').height());
 					console.log(justH);
 					
-					if(where == 'homepage' || justH < innerH )
-						$('#' + where).find('.toscroll').append('<section class="noitem" ></section>');
+					
+					
+					setTimeout(function() {
+						windowH = Number($('.page-wrap').height())
+						topH = Number($('#topbar').height());
+						bottomH = Number($('#bottombar').height());
+						meH = Number($('.me:last').height());
+						
+						console.log(windowH + ' ja ' + topH + ' ja ' + bottomH + ' ja ' + meH);
+						curH = windowH - topH - bottomH - meH;
+						
+						//$('.toscroll').height(curH);
+							
+						//$('#' + where).find('.toscroll').height(innerH);
+					}, 1200);
+						
 					
 				}, 20);
 

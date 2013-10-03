@@ -413,7 +413,7 @@ var trainings = {
 				trainings.currentTraining = plan;
 				trainings.currentDay = curDay.day;
 				
-				$('#treening_naidiskava').find('h3:first').html('<img src="i/icon_list.png" alt=""/>' /*+ translations[lang]['training_plan']*/ + ': ' + trainings.currentTraining.name);
+				$('#treening_naidiskava').find('h3:first').html('<img src="i/icon_list.png" alt=""/>' /*+ translations[lang]['training_plan']*/ + '' + trainings.currentTraining.name);
 	
 				$.each(trainings.currentTraining.exercises, function(day, exercises) {
 				
@@ -627,14 +627,13 @@ var trainings = {
 				} else {
 					$('.seria-template').find('.theicon').removeClass('checked').addClass('unchecked').find('img').attr('src', 'i/unchecked.png');
 				}
-				
+				$('.seria-template').find('.seeriatitle').html(translations[lang]['serie'] + ' ' + (i+1) + ':');
 				$('.seria-template').find('.times').find('span').html(serie.repeats);
 				$('.seria-template').find('.weight').find('span').html(serie.weights);
 				$('.seria-template').find('.seeria').attr('data-index', i);
 				$('.serias-content').append($('.seria-template').html());
 			});
-			
-			
+						
 		} else {
 		
 			if(curDay && curDay.exercises[element] && curDay.exercises[element].status == 'done') {
@@ -660,7 +659,6 @@ var trainings = {
 				$('.timer-exercise .nobg_item').removeClass('started').find('h3').text('START');
 				$('#timerStuff').html(formatTime(currentTime));
 			}
-			
 		
 			$('#treening_naidiskavad_1paev_nXn').find('h1').html(trainings.currentExercise.time + 'min');
 			
@@ -1209,7 +1207,7 @@ var nutritions = {
 			}
 		});
 		
-		$('#toitumisplaan1').find('h3').html('<img src="i/icon_toit.png" alt=""/>'/* + translations[lang]['nutrition_plan']*/ + ': ' + nutritions.currentNutrition.name);
+		$('#toitumisplaan1').find('h3').html('<img src="i/icon_toit.png" alt=""/>'/* + translations[lang]['nutrition_plan']*/ + '' + nutritions.currentNutrition.name);
 		
 		$.each(nutritions.currentNutrition.meals, function(type, meal) {
 			
