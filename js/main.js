@@ -133,9 +133,7 @@ jQuery(window).resize(function ($) {
 
 
 function resizeby(_this, _plus) {
-	setTimeout(function() {
-		
-	
+
 	me = jQuery(_this + ' .me').height();
 
 	var toscrollheight = Number(wind - (offset + me));
@@ -158,32 +156,24 @@ function resizeby(_this, _plus) {
 		//if(_this == '#homepage'){
 			var off43 = 0;
 			if(is23) { 
-				console.log('..');
-				off43 = 47;
-			}
-			if(!is23) { 
-				off43 = 0;
+				off43 = bbar;
+			} else { 
 				setTimeout(function() {
-					toscrollheight = toscrollheight - Number(bbar) + 1;
+					toscrollheight = toscrollheight - Number(bbar) +1;
 					//568 ja 46 ja 73 
 					//568 ja 46 ja 22
 					jQuery('.toscroll').css('height', toscrollheight + 'px');
 					//if two windows opened, remove last one, because new one is fresh and working one :)
 					if($('.open').length > 1) {
-						//console.log();
 						$('.open:first').remove();
-					}
-						
+					}				
 				}, 800);
-				
 			}
 			toscrollheight = toscrollheight - off43;
-			//alert(toscrollheight);
 		//}
 		
 		if(ios > 0) jQuery('.frame').css('height', Number(frame) - Number(ios) + 'px');
-		
-		
+			
 		jQuery('.toscroll').css('height', toscrollheight + 'px');
 
 		if (LEVEL >= 2) {
@@ -204,8 +194,7 @@ function resizeby(_this, _plus) {
 	//}, 100);
 	aligner = _this;
 	plus = _plus;
-	}, 400);
-	//alert( jQuery(window).height() );
+
 
 }
 

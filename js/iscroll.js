@@ -171,7 +171,7 @@ var m = Math,
 
 		if (that.options.useTransition) that.options.fixedScrollbar = true;
 
-		//that.refresh();
+		that.refresh();
 
 		that._bind(RESIZE_EV, window);
 		that._bind(START_EV);

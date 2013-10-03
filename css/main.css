@@ -152,7 +152,7 @@ body{
 	background-color: #000;
 	background-repeat: no-repeat;
 	background-position: center top;
-	overflow: hidden;
+	/* overflow: hidden; */
 	
     -webkit-background-size: 100% auto;
     -moz-background-size: 100% 100%;
@@ -2706,6 +2706,10 @@ div.icon_select {
 	text-align: center;
 }
 
+.noitem{
+	width: 90%;
+	height: 50px;
+}
 
 .nobg_item{
 
