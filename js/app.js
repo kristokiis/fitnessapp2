@@ -296,6 +296,9 @@ var app = {
 			$.get(app.apiUrl + '?action=getTrainings', data, function(result) {
 				db.transaction(function(tx) {
 			   		$.each(result, function(i, item) {
+			   		
+			   			console.log(item);
+			   		
 			   			var sql = "INSERT INTO TRAININGS (id, type, name, description, exercises, day_names, has_offers) VALUES ("+item.id+", '" + (item.order_id && item.order_id != '0' && item.order_id != 0 ? 'order' : 'sample') + "', '"+item.name+"', '"+item.description+"', '" + JSON.stringify(item.exercises) + "', '" + JSON.stringify(item.day_names) + "', '" + item.has_offers + "')";
 			   			//console.log(sql);
 				   		tx.executeSql(sql);
@@ -1079,7 +1082,14 @@ var app = {
 				
 				console.log(sPath);
 				
-					$('#video').find('.video-container').html('<video id="video" height="41%" width="100%" controls="" preload="" autoplay="" poster="' + sPath + 'exercises/' + exercise.id + '.jpg' + '" onclick="this.play();" onload="this.play();"><source src="' + videoLink + '" poster="' + sPath + 'exercises/' + exercise.id + '.jpg' + '"></video>');
+					$('#video').find('.video-container').html('<video id="video" height="41%" width="100%" controls="" preload="" autoplay=""  ><source src="' + videoLink + '"></video>');
+					
+					setTimeout(function() {
+						//document.getElementById("video").play();
+						//document.getElementById("video").onClick(function() {
+						//	this.play();
+						//});
+					}, 500);
 					
 				
 			}, function(tx, results) {

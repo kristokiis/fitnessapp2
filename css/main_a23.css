@@ -13,6 +13,10 @@
 	-webkit-transition: none !important;
 }
 
+div.select select {
+	z-index: 1000;
+}
+
 
 .frame, .hide{
 	opacity: 0 !important; 

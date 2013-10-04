@@ -192,6 +192,7 @@ function resizeby(_this, _plus) {
 			
 		jQuery('.toscroll').css('height', toscrollheight + 'px');
 */
+
 		if (LEVEL >= 2) {
 			$('#topbar .backbtn').show();
 			$('#menu').hide();

@@ -35,7 +35,7 @@ html{
 body {
     font-size: 1em;
     line-height: 1.4;
-    min-height: 480px;
+    /*min-height: 480px;*/
 }
 
 a{
@@ -157,7 +157,7 @@ body{
     -webkit-background-size: 100% auto;
     -moz-background-size: 100% 100%;
 	background-size: cover;
-	min-height: 480px;
+	/*min-height: 480px;*/
 }
 
 .front{
@@ -1844,8 +1844,7 @@ div.select {
 }
 
 div.select select {
-	-webkit-appearance: none;
-	-moz-appearance: none;
+
     background: none repeat scroll 0 0 transparent;
     border: medium none;
     color: #fff;

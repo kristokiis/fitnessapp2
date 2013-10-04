@@ -36,7 +36,7 @@ var packs = {
 		content = $('.diary-content');
 		
 		db.transaction(function(tx) {
-			query = 'SELECT * FROM DIARY ORDER BY day DESC';
+			query = 'SELECT * FROM DIARY ORDER BY day DESC, id DESC';
 			//console.log(query);
 			tx.executeSql(query, [], function(tx, results) {
 				timesCounter = 0;
@@ -94,13 +94,17 @@ var packs = {
 							var scroll = new iScroll('diaryscroll');
 							scroll.enableStickyHeaders('h4');
 						}
+						
+						$('.treening').unbind('click');
+						$('.treening').click(function(e) {
+							e.preventDefault();
+							LEVEL = 2;
+							teleportMe('diary_detail', $(this).data('id'));
+						});
+						
 					}, 1500);
 					
 					
-					$('.treening').click(function(e) {
-						LEVEL = 2;
-						teleportMe('diary_detail', $(this).data('id'));
-					});
 				
 				} else {
 					$('.diary-content').html('<section class="month"><h4>'+translations[lang]['no_trainings']+'</h4></section>');
@@ -351,6 +355,7 @@ var trainings = {
 				for (i = 0; i < len; i++) {
 					training = item = results.rows.item(i);
 					$('#treening_naidiskavad').find('.training-content').append('<section class="item noicon treenerpakkumisedbtn" data-page="treening_naidiskava" data-level="3" data-id="' + training.id + '"><div class="item_wrap avoid-clicks"><h3 class="avoid-clicks">' + training.name + '</h3></div><div class="remove-overlay"><span class="remove-icon"></span></div></section>');
+					console.log(training);
 				}
 		
 				$('#treening_naidiskavad').find('.training-content').find('.item').click(function(e) {
@@ -403,7 +408,7 @@ var trainings = {
 				var exercises = JSON.parse(item.exercises);
 				var day_names = JSON.parse(item.day_names);
 				var plan = {};
-			
+				console.log(exercises);
 				plan.id = item.id;
 				plan.name = item.name;
 				plan.description = item.description;
@@ -478,7 +483,7 @@ var trainings = {
 		});
 		
 		header = day + '. '+translations[lang]['DAY']+' ' + muscle_groups_str;	
-		$('#treening_naidiskavad_1paev').find('h3:first').html(header);
+		$('#treening_naidiskavad_1paev').find('h3:first').html('<img src="i/icon_list.png" alt=""/>' + header);
 		if(day) {
 		
 			var exercises = trainings.currentTraining.exercises[trainings.currentDay];
@@ -543,8 +548,10 @@ var trainings = {
 	},
 	
 	getTrainingsExercise: function(element) {
-	
-		element = parseInt(element);
+		
+		$('#treening_naidiskavad_1paev').find('h3:first').html('<img src="i/icon_list.png" alt=""/>' + trainings.currentTraining.name);
+		
+		//element = parseInt(element);
 		if(!element)
 			element = trainings.currentExercise.id;
 		//temp
