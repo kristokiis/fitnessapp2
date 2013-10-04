@@ -127,6 +127,12 @@ var packs = {
 		template = $('.diary-template');
 		content = $('.diary-content');
 		
+		setTimeout(function() {
+			console.log($('#diary_detail'));
+			if($('#diary_detail').length > 1)
+				$('.open:last').remove();
+		}, 500);
+		
 		db.transaction(function(tx) {
 		
 			query = 'SELECT * FROM DIARY WHERE id = ' + parseInt(id);
