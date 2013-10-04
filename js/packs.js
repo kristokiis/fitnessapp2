@@ -95,8 +95,10 @@ var packs = {
 							scroll.enableStickyHeaders('h4');
 						}
 						
+						
 						$('.treening').unbind('click');
 						$('.treening').click(function(e) {
+							console.log('click');
 							e.preventDefault();
 							LEVEL = 2;
 							teleportMe('diary_detail', $(this).data('id'));

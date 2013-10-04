@@ -192,7 +192,6 @@ function resizeby(_this, _plus) {
 			
 		jQuery('.toscroll').css('height', toscrollheight + 'px');
 */
-
 		if (LEVEL >= 2) {
 			$('#topbar .backbtn').show();
 			$('#menu').hide();
@@ -571,16 +570,6 @@ function showLoading(){
 }
 
 function bindEvents() {
-	
-	var diaryscroll = jQuery('#diaryscroll').length;
-	if(diaryscroll){
-		setTimeout(function(){
-			$('#diaryscroll .diary-content').append('<section class="pseudomonth" style="height: ' + bbar + 'px"></section>');
-			var scroll = new iScroll('diaryscroll');
-			scroll.enableStickyHeaders('h4');
-		}, 0);
-	}
-
 	
 	$('.teleport').unbind(eventEnd).bind(eventEnd, function (e) {
 		e.preventDefault();
