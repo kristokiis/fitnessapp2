@@ -79,7 +79,7 @@ var app = {
 		});
 		if(localStorage.getItem('sPath')) {
 			sPath = localStorage.getItem('sPath');
-			console.log(sPath);
+			//console.log(sPath);
 		}
 		
 		//console.log('going to initlogin');
@@ -173,7 +173,7 @@ var app = {
 					$.each(result, function(i, item) {
 					
 						var statement = "INSERT INTO DIARY (day, month, year, package, training_day, length, plan_name, day_name, day_data, type, synced) VALUES ('" + item.day + "', '" + item.month + "', '" + item.year + "'," + item.package + ", " + item.training_day + ", '" + item.length + "', '" + item.plan_name + "', '" + item.day_name + "', '" + item.day_data + "', '" + item.type + "', 1)";
-						console.log(statement);
+						//console.log(statement);
 						tx.executeSql(statement);
 					
 				   	});
@@ -199,7 +199,7 @@ var app = {
 				});
 				if (!localStorage.getItem('fitNotFirstTime')) {
 					localStorage.setItem('fitNotFirstTime', true);
-					console.log('SET');
+					//console.log('SET');
 					app.downloadPics('categories', cats);
 					
 				}
@@ -216,7 +216,7 @@ var app = {
 			data.ids = ex_notIDs;
 			data.user = user.id;
 			data.club_id = club_id;
-			console.log(data);
+			//console.log(data);
 			$.get(app.apiUrl + '?action=getExercises', data, function(result) {
 				db.transaction(function(tx) {
 					var pics = [];
@@ -297,7 +297,7 @@ var app = {
 				db.transaction(function(tx) {
 			   		$.each(result, function(i, item) {
 			   		
-			   			console.log(item);
+			   			//console.log(item);
 			   		
 			   			var sql = "INSERT INTO TRAININGS (id, type, name, description, exercises, day_names, has_offers) VALUES ("+item.id+", '" + (item.order_id && item.order_id != '0' && item.order_id != 0 ? 'order' : 'sample') + "', '"+item.name+"', '"+item.description+"', '" + JSON.stringify(item.exercises) + "', '" + JSON.stringify(item.day_names) + "', '" + item.has_offers + "')";
 			   			//console.log(sql);
@@ -452,7 +452,7 @@ var app = {
 						db.transaction(function(tx) {
 						
 							query = 'SELECT is_read FROM NOTIFICATIONS WHERE id = ' + id;
-							console.log(query);
+							//console.log(query);
 							tx.executeSql(query, [], function(tx, results) {
 								notification = results.rows.item(0);
 								if(!notification.is_read) {
@@ -462,8 +462,8 @@ var app = {
 								}
 							}, function(tx, results) {
 								console.error('Error in selecting test result');
-								console.log(tx);
-								console.log(results);
+								//console.log(tx);
+								//console.log(results);
 							});
 							
 							var statement = 'DELETE FROM NOTIFICATIONS WHERE id = ' + id;
@@ -952,7 +952,7 @@ var app = {
 		content.html('');
 		template = $('.module-template');
 		template.hide();
-		console.log(result);
+		//console.log(result);
    		$.each(result, function(i, item) {
    		
    			//console.log(item);
@@ -1021,7 +1021,7 @@ var app = {
 		
 		db.transaction(function(tx) {
 			query = 'SELECT * FROM EXERCISES ' + where + ' ORDER BY id DESC';
-			console.log(query);
+			//console.log(query);
 			tx.executeSql(query, [], function(tx, results) {
 				
 				var len = results.rows.length, i;
@@ -1064,7 +1064,7 @@ var app = {
 		db.transaction(function(tx) {
 		
 			query = 'SELECT * FROM EXERCISES WHERE id = ' + parseInt(id);
-			console.log(query);
+			//console.log(query);
 			tx.executeSql(query, [], function(tx, results) {
 				//console.log(results);
 				exercise = results.rows.item(0);
@@ -1080,7 +1080,7 @@ var app = {
 				else
 					videoLink = app.serverUrl + 'videos/' + exercise.id + '.mp4';
 				
-				console.log(sPath);
+				//console.log(sPath);
 				
 					$('#video').find('.video-container').html('<video id="video" height="41%" width="100%" controls="" preload="" autoplay=""  ><source src="' + videoLink + '"></video>');
 					
@@ -1232,7 +1232,7 @@ var app = {
 										item = results.rows.item(i);
 										fileSystem.root.getFile(sPath + 'videos/' + item.id + '.mp4', {create: false, exclusive: false}, 									
 										function(fileEntry){
-											console.log(fileEntry);
+											//console.log(fileEntry);
 											fileEntry.remove(function(s) {console.log('success');}, function(e) {console.log(e);});
 										}, function(error) {
 											console.log(error);
@@ -1274,7 +1274,7 @@ var app = {
 	},
 	//approx 2-3h to finish this shit
 	downloadExerciseVideos: function(type, id) {
-		console.log(type+' - ' + id);
+		//console.log(type+' - ' + id);
 		//localStore object with video id-s
 		//downloadedVideos = localStorage.getObject('fitExerciseVideos');
 		//if(!downloadedVideos)
@@ -1283,7 +1283,7 @@ var app = {
 		if(type == 'package') {
 			db.transaction(function(tx) {
 				query = 'SELECT * FROM TRAININGS WHERE id = ' + id + '';
-				console.log(query);
+				//console.log(query);
 				tx.executeSql(query, [], function(tx, results) {
 					item = results.rows.item(0);
 					var exercises = JSON.parse(item.exercises);
@@ -1297,8 +1297,8 @@ var app = {
 					app.downloadExerciseVideo(_exercises, 'package', id);
 				}, function(tx, results) {
 					console.error('Error in selecting test result');
-					console.log(tx);
-					console.log(results);
+					//console.log(tx);
+					//console.log(results);
 				});
 			}, function(error) {
 				console.error('Error in selecting test result');
@@ -1346,7 +1346,7 @@ var app = {
 			                uri,
 			                sPath + 'videos/' + exercise + '.mp4',
 			                function(theFile) {
-			                    console.log("download complete: " + theFile.toURL());
+			                    //console.log("download complete: " + theFile.toURL());
 			                    db.transaction(function(tx) {
 						        	var statement = 'UPDATE EXERCISES SET video = "1" WHERE id = ' + exercise;
 								   	tx.executeSql(statement);
@@ -1371,22 +1371,22 @@ var app = {
 								});
 			                },
 			                function(error) {
-			                    console.log("download error source " + error.source);
-			                    console.log("download error target " + error.target);
-			                    console.log("upload error code: " + error.code);
+			                    //console.log("download error source " + error.source);
+			                    //console.log("download error target " + error.target);
+			                    //console.log("upload error code: " + error.code);
 			                }
 			            );
 			        });
 		        }, function(e) {
-				    console.log(e);
+				    //console.log(e);
 			    });
 		    }, function(e) {
-			    console.log(e);
+			    //console.log(e);
 		    });
 		} else {
 			$.each(exercises, function(i, exercise) {
 		            	
-                console.log("download complete: " + exercise);
+                //console.log("download complete: " + exercise);
                 db.transaction(function(tx) {
 		        	var statement = 'UPDATE EXERCISES SET video = "1" WHERE id = ' + exercise;
 				   	tx.executeSql(statement);
@@ -1414,8 +1414,8 @@ var app = {
 	},
 	//approx 2-3h to finish this shit
 	downloadPics: function(module, pics) {
-		console.log(module);
-		console.log(pics);
+		//console.log(module);
+		//console.log(pics);
 		
 		//download sources: categories, exercises
 		//no checkmarks all those lil filthy pics must be on the phone!!!
@@ -1436,26 +1436,26 @@ var app = {
 			                uri,
 			                sPath + module + '/' + pic + '.jpg',
 			                function(theFile) {
-			                    console.log("download complete: " + theFile.toURL());
+			                    //console.log("download complete: " + theFile.toURL());
 			                    //showLink(theFile.toURL());
 			                },
 			                function(error) {
-			                    console.log("download error source " + error.source);
-			                    console.log("download error target " + error.target);
-			                    console.log("upload error code: " + error.code);
+			                    //console.log("download error source " + error.source);
+			                    //console.log("download error target " + error.target);
+			                    //console.log("upload error code: " + error.code);
 			                }
 			            );
 		            });
 		        }, function(e) {
-				    console.log(e);
+				    //console.log(e);
 			    });
 		    }, function(e) {
-			    console.log(e);
+			    //console.log(e);
 		    });
 			
 			localStorage.setItem('sPath', sPath);
 		} else {
-			console.log('have to be on device :(');
+			//console.log('have to be on device :(');
 		}
 	},
 	
@@ -1517,8 +1517,8 @@ var app = {
 			items = [];
 			
 			data.template_id = app.packageTemplate;
-			console.log(template);
-			console.log(data);
+			//console.log(template);
+			//console.log(data);
 			$('.treener').find('img').attr('src', app.serverUrl + 'pics/templates/' + template.id + '.jpg');
 			$('.treener').find('h2').html(template.name);
 			
@@ -1529,7 +1529,7 @@ var app = {
 		   		
 				
 				addHover( this );
-				console.log('whaaaat');
+				//console.log('whaaaat');
 				$('#overlay').find('img:first').attr('src', app.serverUrl + 'pics/templates/' + template.id + '.jpg');
 				$('#overlay').find('h1').html(template.name).css('font-size', '13px');
 				$('#overlay').find('h2').html(template.price + '€');
@@ -1721,7 +1721,7 @@ var app = {
 				});
 				iabRef.addEventListener('loadstop', function(event) {
 				
-					console.log(event.url);
+					//console.log(event.url);
 					if(event.url == 'http://projects.efley.ee/fitnessapp/admin/payment.php?order=' + order_id + '&bank=' + type + '&success=1') {
 						iabRef.close();
 						
@@ -1805,7 +1805,7 @@ var app = {
 	   		$('.detailsbtn').unbind(eventEnd).bind(eventEnd, function (e) {
 	   		
 	   			var id = $(this).data('id');
-	   			console.log(items[id]);
+	   			//console.log(items[id]);
 				//e.preventDefault();
 				addHover( this );
 				$('#voucher').show();
@@ -2003,7 +2003,7 @@ var app = {
 					testResults['extra'] = selectedExercise;
 					//r = repeater*r
 				}
-				console.log(repeater);
+				//console.log(repeater);
 				
 				if(r && r < 10000 && r > -100){
 					
@@ -2038,7 +2038,7 @@ var app = {
 								}
 								var min_score = parseInt(repeater * parseInt(item.min_score));
 								var max_score = parseInt(repeater * parseInt(item.max_score));
-								console.log(min_score + ' ja ' + max_score);
+								//console.log(min_score + ' ja ' + max_score);
 								
 								if (min_score == '0' && max_score == '0') {
 									$('.grade-' + item.grade).html('0');
@@ -2233,14 +2233,15 @@ Storage.prototype.getObject = function(key) {
 function isOdd(num) { return num % 2;}
 
 function deliverError(msg, url, line) {
-	console.log(msg);
-	console.log(url);
-	console.log(line);
+	//console.log(msg);
+	//console.log(url);
+	//console.log(line);
+	alert(msg + ' ja ' + url + ' ja ' + line);
 }
 
-/*window.onerror = function (msg, url, line) {
+window.onerror = function (msg, url, line) {
 	deliverError(msg, url, line);
-}*/
+}
 
 function errorCB(e, a, b) {
 	deliverError('Error in DB: ' + e, 'app.js', 800);
