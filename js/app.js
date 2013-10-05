@@ -41,6 +41,7 @@ var app = {
 	packageType: 'training',
 	packageTrainer: 0,
 	packageTemplate: 0,
+	packageMeeting: '',
 	
 	init: function() {
 		
@@ -725,6 +726,12 @@ var app = {
 		} else {
 			$('#homepage').find('.notification').hide();
 		}
+		console.log(packs.hasSpecialOffers);
+		if(packs.hasSpecialOffers) {
+			$('#homepage').find('.pakkumised').show();
+		} else {
+			$('#homepage').find('.pakkumised').hide();
+		}
 		
 		if (curDay = localStorage.getObject('fitCurDay')) {
 			if(!trainings.currentDay) {
@@ -890,21 +897,69 @@ var app = {
 	
 	parseUserDetails: function() {
 		//console.log(user);
-		$('#firstname').val(user.firstname);
-		$('#lastname').val(user.lastname);
-		$('#mail').val(user.mail);
-		$('#phone').val(user.phone);
-		$('#sex').val(user.sex);
-		$('#birthday').val(user.birthday);
-		$('#weight').val(user.weight);
-		$('#length').val(user.length);
-		$('#training_activity').val(user.training_activity).autoResize();
-		$('#training_target').val(user.training_target).autoResize();
-		$('#per_week').val(user.per_week).autoResize();
-		$('#currently_training').val(user.currently_training).autoResize();
-		$('#health_condition').val(user.health_condition).autoResize();
+		if(user.firstname)
+			$('#firstname').val(user.firstname).parent().parent().addClass('icon_ok');
+		else
+			$('#firstname').parent().parent().removeClass('icon_ok');
+		if(user.lastname)
+			$('#lastname').val(user.lastname).parent().parent().addClass('icon_ok');
+		else
+			$('#lastname').parent().parent().removeClass('icon_ok');
+			
+		if(user.mail)
+			$('#mail').val(user.mail).parent().parent().addClass('icon_ok');
+		else
+			$('#mail').parent().parent().removeClass('icon_ok');
+			
+		if(user.phone)
+			$('#phone').val(user.phone).parent().parent().addClass('icon_ok');
+		else
+			$('#phone').parent().parent().removeClass('icon_ok');
 		
-		$('textarea').autoResize();
+		if(user.sex)
+			$('#sex').val(user.sex).parent().addClass('icon_ok');
+		else
+			$('#sex').parent().removeClass('icon_ok');
+		
+		if(user.birthday)
+			$('#birthday').val(user.birthday).parent().parent().addClass('icon_ok');
+		else
+			$('#birthday').parent().parent().removeClass('icon_ok');
+			
+		if(user.weight)
+			$('#weight').val(user.weight).parent().parent().addClass('icon_ok');
+		else
+			$('#weight').parent().parent().removeClass('icon_ok');
+			
+		if(user.length)
+			$('#length').val(user.length).parent().parent().addClass('icon_ok');
+		else
+			$('#length').parent().parent().removeClass('icon_ok');
+		
+		if(user.training_activity)
+			$('#training_activity').val(user.training_activity).parent().addClass('icon_ok');
+		else
+			$('#training_activity').parent().removeClass('icon_ok');
+		
+		if(user.training_target)
+			$('#training_target').val(user.training_target).parent().addClass('icon_ok');
+		else
+			$('#training_target').parent().removeClass('icon_ok');
+			
+		if(user.per_week)
+			$('#per_week').val(user.per_week).parent().addClass('icon_ok');
+		else
+			$('#per_week').parent().removeClass('icon_ok');
+			
+		if(user.currently_training)
+			$('#currently_training').val(user.training_activity).parent().addClass('icon_ok');
+		else
+			$('#currently_training').parent().removeClass('icon_ok');
+			
+		if(user.health_condition)
+			$('#health_condition').val(user.health_condition).parent().parent().addClass('icon_ok');
+		else
+			$('#health_condition').parent().parent().removeClass('icon_ok');
 		
 		$('#saveUserData').click(function() {
 			addHover(this);
@@ -1646,7 +1701,20 @@ var app = {
 							$('#askClubNr').addClass('scaleIn');
 						}, 100);
 					} 
-				
+					
+					$('#askMeeting').find('.date').unbind('click');
+					$('#askMeeting').find('.date').click(function(e) {
+						addHover(this);
+						app.packageMeeting = $(this).data('date');
+						$('#askMeeting').removeClass('scale');
+						setTimeout(function () {
+							$('#askMeeting').removeClass('scaleIn');
+						}, 100);
+					});
+					$('#askMeeting').addClass('scale');
+					setTimeout(function () {
+						$('#askMeeting').addClass('scaleIn');
+					}, 100);
 				
 					addHover(this);
 					user.firstname = $('#firstname').val();
@@ -1707,6 +1775,8 @@ var app = {
 		data.item = app.packageTemplate;
 		data.trainer = trainer;
 		data.lang = lang;
+		data.club_id = club_id;
+		data.first_meeting = app.packageMeeting;
 		
 		$.get(app.apiUrl + '?action=createOrder', data, function(result) {
 			

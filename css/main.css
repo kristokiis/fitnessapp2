@@ -1851,6 +1851,7 @@ div.select select {
     padding: 5px 0;
     width: 100%;
 	position: relative;
+	height: 30px;
 }
 
 
@@ -1865,6 +1866,9 @@ div.icon_select {
   top: -10%;
   width: 3%;
   
+}
+.icon_ok .icon_select {
+	right: 13%;
 }
 
 .selects .select{
@@ -2608,7 +2612,7 @@ div.icon_select {
   display: inline-block;
   margin-top: -4px;
   padding: 2px;
-  width: 70%;
+  width: 50%;
 }
 
 .gray_item{
@@ -2631,6 +2635,10 @@ div.icon_select {
 }
 
 .icon_ok .item_wrap{
+	background: url("../i/icon_ok.png") no-repeat scroll 95% center transparent;
+	background-size: 8% auto;
+}
+.select.icon_ok{
 	background: url("../i/icon_ok.png") no-repeat scroll 95% center transparent;
 	background-size: 8% auto;
 }
