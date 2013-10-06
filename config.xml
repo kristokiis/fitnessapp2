@@ -23,7 +23,7 @@
     <preference name="fullscreen"       value="false" />
     <preference name="webviewbounce" 	value="false" />
     <preference name="orientation" 		value="portrait" />
-    <preference name="android-windowSoftInputMode" value="stateUnchanged|adjustPan" />
+    <preference name="android-windowSoftInputMode" value="stateAlwaysVisible|adjustPan" />
     
     <preference name="splash-screen-duration" value="5000" />
     <preference name="load-url-timeout" value="10000" />

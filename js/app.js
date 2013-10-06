@@ -2341,7 +2341,7 @@ function deliverError(msg, url, line) {
 	   	error_data.data.data = data;
 	   	error_data.data.user = user;
 	   
-	   	$.get(app.serverUrl + '?action=reportAnError', error_data, function(result) {}, 'jsonp');
+	   	$.get(app.apiUrl + '?action=reportAnError', error_data, function(result) {}, 'jsonp');
 	}
 	console.log('ERROR: ' +msg + ' ja ' + url + ' ja ' + line);
 }
