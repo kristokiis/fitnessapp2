@@ -33,11 +33,11 @@
     
     <icon src="assets/sparta_ico.png" />
     
-    <icon src="icons/ios/icon.png" gap:platform="ios" width="57" height="57" />
-    <icon src="icons/ios/icon-72.png" gap:platform="ios" width="72" height="72" />
-	<icon src="icons/ios/icon_at_2x.png" gap:platform="ios" width="114" height="114" />
+    <icon src="assets/ios/icon.png" gap:platform="ios" width="57" height="57" />
+    <icon src="assets/ios/icon-72.png" gap:platform="ios" width="72" height="72" />
+	<icon src="assets/ios/icon_at_2x.png" gap:platform="ios" width="114" height="114" />
 	<!-- retina iPad support: PhoneGap 2.5.0+ only -->
-	<icon src="icons/ios/icon-72_at_2x.png" gap:platform="ios" width="144" height="144" />
+	<icon src="assets/ios/icon-72_at_2x.png" gap:platform="ios" width="144" height="144" />
 
     <gap:splash src="assets/android/splash.png"  gap:platform="android" gap:density="ldpi" />
     <gap:splash src="assets/android/splash.png"  gap:platform="android" gap:density="mdpi" />

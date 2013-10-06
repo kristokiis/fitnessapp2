@@ -828,6 +828,13 @@ var app = {
 				console.error('Error in selecting test result');
 				//console.log(error);
 			});
+			console.log('please woork :)');
+			topH = Number($('#topbar').height());
+			bottomH = Number($('#bottombar').height());
+			meH = Number($('.me:last').height());
+			curH = windowH - topH - bottomH - meH;
+			$('.toscroll').height(curH);
+			
 		}, timing);
 		
 			
