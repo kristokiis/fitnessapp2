@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
 		<meta http-equiv="Cache-control" content="public">
-        <title>FitnessMobile</title>
+        <title>Fitness.ee</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 		
@@ -290,11 +290,11 @@
 
         <script src="js/swipe.js"></script>
         
-        <script src="js/app.js"></script>
+        <script src="js/app.js?012"></script>
         
         <script src="js/main.js?012"></script>
         
-        <script src="js/packs.js"></script>
+        <script src="js/packs.js?012"></script>
         
         
         <script type="text/javascript" charset="utf-8">
@@ -329,11 +329,15 @@
 		    	
 		    }
 		    function onBackButton(e) {
+		 
 			    e.preventDefault();
 				//if in subpage trigger correct 
 				console.log(LEVEL);
-				if (LEVEL != 0) {
-					goBack();
+				if (LEVEL > 1) {
+					$('#topbar .backbtn').click();
+				} else if(LEVEL == 1) {
+					LEVEL = 0;
+					teleportMe('frontpage');
 				} else {
 					navigator.app.exitApp();
 				}

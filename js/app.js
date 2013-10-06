@@ -1412,7 +1412,7 @@ var app = {
 			                uri,
 			                sPath + 'videos/' + exercise + '.mp4',
 			                function(theFile) {
-			                    //console.log("download complete: " + theFile.toURL());
+			                    console.log("download complete: " + theFile.toURL());
 			                    db.transaction(function(tx) {
 						        	var statement = 'UPDATE EXERCISES SET video = "1" WHERE id = ' + exercise;
 								   	tx.executeSql(statement);
@@ -1452,7 +1452,7 @@ var app = {
 		} else {
 			$.each(exercises, function(i, exercise) {
 		            	
-                //console.log("download complete: " + exercise);
+                console.log("download fake complete: " + exercise);
                 db.transaction(function(tx) {
 		        	var statement = 'UPDATE EXERCISES SET video = "1" WHERE id = ' + exercise;
 				   	tx.executeSql(statement);
