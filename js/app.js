@@ -825,16 +825,14 @@ var app = {
 				console.error('Error in selecting test result');
 				//console.log(error);
 			});
-			setTimeout(function() {
-				console.log('please woork :)');
-				topH = Number($('#topbar').height());
-				bottomH = Number($('#bottombar').height());
-				meH = Number($('.me:last').height());
-				curH = windowH - topH - bottomH - meH;
-				console.log(curH);
-				$('.toscroll').height(curH);
-			}, 1500);
 			
+			topH = Number($('#topbar').height());
+			bottomH = Number($('#bottombar').height());
+			meH = Number($('.me:last').height());
+			curH = windowH - topH - bottomH - meH;
+			$('.toscroll').height(curH);
+			
+			console.log(packs.hasSpecialOffers);
 			if(packs.hasSpecialOffers) {
 				$('#homepage').find('.pakkumised').show();
 			} else {
