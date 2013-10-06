@@ -255,9 +255,10 @@ var packs = {
 			else
 				lastTime = new Date().getTime();
 			difference = (curTime - lastTime)/10;
+			trainings.doingExercise = true;
 			startBigTimer(difference);
 			$('.kestus').show();
-			trainings.doingExercise = true;
+			
 		}
 		
 	},
@@ -935,16 +936,17 @@ var trainings = {
 		
 			if(trainings.currentExercise.id == exercise.id) {
 				if (data.type == 'time' && data.status == 'start') {
-					//console.log('start!');
+					console.log('start!');
 					newEx.status = 'doing';
 					newEx.started = new Date();
-					newEx.time = parseInt(data.length)/60000;
+					console.log(data.length);
+					newEx.time = parseInt(parseInt(data.length)/60000);
 					//console.log(newEx);
 				} else if (data.type == 'time' && data.status == 'pause') {
 					//console.log('add pause!!');
 					newEx.paused = new Date();
 					newEx.ignorep = false;
-					//console.log(exercise);
+					console.log(newEx);
 				} else if (data.type == 'time' && data.status == 'resume') {
 					//console.log(exercise);
 					var startedTime = new Date(newEx.started).getTime();
@@ -963,7 +965,7 @@ var trainings = {
 					newEx.paused = false;
 					newEx.paused = '';
 					newEx.status = 'doing';
-					//console.log(exercise);
+					console.log(newEx);
 					
 				} else if (data.type == 'time' && data.status == 'end') {
 					newEx.status = 'done';
@@ -997,6 +999,7 @@ var trainings = {
 					curDay.exercises[i] = newEx;
 					newDay = false;
 				} else {
+					trainings.doingExercise = true;
 					startBigTimer(0);
 					curDay = {};
 					curDay.started = new Date();
@@ -1006,6 +1009,7 @@ var trainings = {
 					curDay.exercises[i] = newEx;
 					newDay = true;
 				}
+				console.log(newEx);
 				curDay.last_activity = new Date();
 				if(newEx.status == 'done' && (exCounter+1) == Object.keys(trainings.currentTraining.exercises[trainings.currentDay]).length) {
 					$('.end-training').show();
@@ -1106,64 +1110,72 @@ var trainings = {
 		
 		curDay = localStorage.getObject('fitCurDay', curDay);
 		if(curDay && curDay.exercises) {
-			curTime = new Date();
-			if(curDay.started)
-				lastTime = new Date(curDay.started).getTime();
-			else
-				lastTime = new Date().getTime();
-			difference = (curTime.getTime() - lastTime)/1000;
-			$('.kestus').hide();
-			
-			var curr_date = curTime.getDate();
-			if(curr_date < 10)
-				curr_date = '0' + curr_date;
-		    var curr_month = curTime.getMonth() + 1; //Months are zero based
-		    if(curr_month < 10)
-				curr_month = '0' + curr_month;
-		    var curr_year = curTime.getFullYear();
-		    var exercises = {};
-		    //check if any timers are running and update their time to smaller amount
-		    $.each(curDay.exercises, function(i, exercise) {
-		    
-			   if (exercise.status == 'doing' && exercise.started) {
-				   var startedTime = new Date(exercise.started).getTime();
-				   //console.log(exercise);
-				   if(exercise.paused) {
-					   var pausedTime = new Date(exercise.paused).getTime();
-					   difference2 = (Number(pausedTime) - Number(startedTime))/1000;
-				   } else {
-					   difference2 = (curTime.getTime() - startedTime)/1000;
-				   }
-				   //console.log(difference2);
-				   exercise.time = secToHour(difference2);
-			   } else if(exercise.status == 'done') {
-				   exercise.time = exercise.time + ':00:00';
-			   }
-			   curDay.exercises[i] = exercise;
-		    });
-		    //console.log('ENDED');
-			//console.log(curDay);
 			setTimeout(function() {
-				db.transaction(function(tx) {
-					var statement = "UPDATE DIARY SET day_data = '" + JSON.stringify(curDay) + "', length = '" + difference + "' WHERE day = '" + curr_year + "-" + curr_month + "-" + curr_date + "' AND package = " + trainings.currentTraining.id + " AND training_day = " + trainings.currentDay;
-					//console.log(statement);
-				   	tx.executeSql(statement);
-				   	localStorage.removeItem('fitCurDay');
-				   	trainings.doingExercise = false;
-				   	
-				   	LEVEL = 1;
-					teleportMe('homepage', {});
-					if(mainTimer)
-						clearTimeout(mainTimer);
-						
-					$('.kestus').hide();
-				   	
-				   	
-			   	}, function(error) {
-					console.error('Error in selecting test result');
-					//console.log(error);
-				});
+				
+				curTime = new Date();
+				if(curDay.started)
+					lastTime = new Date(curDay.started).getTime();
+				else
+					lastTime = new Date().getTime();
+				difference = (curTime.getTime() - lastTime)/1000;
+				$('.kestus').hide();
+				
+				var curr_date = curTime.getDate();
+				if(curr_date < 10)
+					curr_date = '0' + curr_date;
+			    var curr_month = curTime.getMonth() + 1; //Months are zero based
+			    if(curr_month < 10)
+					curr_month = '0' + curr_month;
+			    var curr_year = curTime.getFullYear();
+			    var exercises = {};
+			    //check if any timers are running and update their time to smaller amount
+			    $.each(curDay.exercises, function(i, exercise) {
+			       console.log(exercise);
+				   if (exercise.status == 'doing' && exercise.started) {
+					   var startedTime = new Date(exercise.started).getTime();
+					   //console.log(exercise);
+					   if(exercise.paused) {
+						   var pausedTime = new Date(exercise.paused).getTime();
+						   difference2 = (Number(pausedTime) - Number(startedTime))/1000;
+					   } else {
+						   difference2 = (curTime.getTime() - startedTime)/1000;
+					   }
+					   //console.log(difference2);
+					   exercise.time = secToHour(difference2);
+				   } else if(exercise.status == 'done') {
+					   exercise.time = exercise.time + ':00:00';
+				   }
+				   curDay.exercises[i] = exercise;
+			    });
+			    //console.log('ENDED');
+				//console.log(curDay);
+				
+				trainings.doingExercise = false;
+				$('.kestus').hide();
+				setTimeout(function() {
+					db.transaction(function(tx) {
+						var statement = "UPDATE DIARY SET day_data = '" + JSON.stringify(curDay) + "', length = '" + difference + "' WHERE day = '" + curr_year + "-" + curr_month + "-" + curr_date + "' AND package = " + trainings.currentTraining.id + " AND training_day = " + trainings.currentDay;
+						//console.log(statement);
+					   	tx.executeSql(statement);
+					   	localStorage.removeItem('fitCurDay');
+					   	trainings.doingExercise = false;
+					   	
+					   	LEVEL = 1;
+						teleportMe('homepage', {});
+						if(mainTimer)
+							clearTimeout(mainTimer);
+							
+						$('.kestus').hide();
+					   	
+					   	
+				   	}, function(error) {
+						console.error('Error in selecting test result');
+						//console.log(error);
+					});
+				}, 600);
+				
 			}, 600);
+			
 		
 		} else {
 			currentTime = 0;
@@ -1436,9 +1448,12 @@ function secToHour(time) {
     return (hours > 0 ? pad(hours, 2) : "00") + ":" + (min > 0 ? pad(min, 2) : "00") + ":" + pad(sec, 2);
 }
 function startBigTimer(time) {
+	//console.log(time);
 	if(trainings.doingExercise) {
 		if(mainTimer)
 			clearTimeout(mainTimer);
+		
+		//console.log('doing..');
 		
 		time = time + 100;
 		
@@ -1447,6 +1462,8 @@ function startBigTimer(time) {
 		
 		var min = parseInt(time / 6000),
 	        sec = parseInt(time / 100) - (min * 60);
+	        
+	    //console.log(sec);
 	    
 	    $('.dayTimer').html((hours > 0 ? pad(hours, 2) : "00") + ":" + (min > 0 ? pad(min, 2) : "00") + ":" + pad(sec, 2));
 		

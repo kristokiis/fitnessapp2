@@ -87,7 +87,7 @@ var app = {
 		
 		app.initLogin(false);
 
-		localStorage.removeItem('fitNotFirstTime');
+		//localStorage.removeItem('fitNotFirstTime');
 	},
 	
 	/*
@@ -1883,7 +1883,10 @@ var app = {
 				new_name = shorten(items[id].name, 40);
 				$('#overlay').find('h1').html(new_name);
 				$('#overlay').find('h2').html(items[id].price + ' €');
-				$('#overlay').find('#voucher').find('span').html(items[id].sale + '%');
+				if(items[id].sale && items[id].sale != '0')
+					$('#overlay').find('#voucher').find('span').html(items[id].sale + '%');
+				else
+					$('#overlay').find('#voucher').find('span').html('');	
 				$('#overlay').find('h4').html('');
 				$('#overlay').find('p').html(items[id].description);
 				
@@ -2307,7 +2310,7 @@ function deliverError(msg, url, line) {
 	//console.log(msg);
 	//console.log(url);
 	//console.log(line);
-	alert(msg + ' ja ' + url + ' ja ' + line);
+	console.log('ERROR: ' +msg + ' ja ' + url + ' ja ' + line);
 }
 
 window.onerror = function (msg, url, line) {
