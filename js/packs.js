@@ -93,18 +93,11 @@ var packs = {
 						var diaryscroll = jQuery('#diaryscroll').length;
 						if(diaryscroll){
 							setTimeout(function(){
-								$('#diaryscroll .diary-content').append('<section class="pseudomonth" style="height: ' + bbar + 'px"></section>');
+								//$('#diaryscroll .diary-content').append('<section class="pseudomonth" style="height: ' + bbar + 'px"></section>');
 								var scroll = new iScroll('diaryscroll');
 								scroll.enableStickyHeaders('h4');
 							}, 0);
 						}
-						/*
-						var diaryscroll = $('#diaryscroll').length;
-						if(diaryscroll){
-							var scroll = new iScroll('diaryscroll');
-							scroll.enableStickyHeaders('h4');
-						}
-						*/
 						
 						$('.treening').unbind('click');
 						$('.treening').click(function(e) {
@@ -114,7 +107,7 @@ var packs = {
 							teleportMe('diary_detail', $(this).data('id'));
 						});
 						
-					}, 1500);
+					}, 500);
 					
 					
 				
@@ -284,9 +277,9 @@ var packs = {
 					plan.meals = meals;
 					//console.log(plan);
 					if (plan.type == 'order') {
-						nutritions.orderNutritions.push(plan);
+						nutritions.orderNutritions = true;
 					} else {
-						nutritions.sampleNutritions.push(plan);
+						nutritions.sampleNutritions = true;
 					}
 					
 					if (plan.has_offers && plan.has_offers != '0')
@@ -367,7 +360,7 @@ var trainings = {
 		$('#treening_naidiskavad').find('h3:first').html(translations[lang][type + '_packages']);
 		
 		db.transaction(function(tx) {
-			query = 'SELECT * FROM TRAININGS WHERE type = "' + type + '"';
+			query = 'SELECT * FROM TRAININGS WHERE type = "' + type + '" ORDER BY id DESC';
 			tx.executeSql(query, [], function(tx, results) {
 				
 				var len = results.rows.length, i;
@@ -448,13 +441,15 @@ var trainings = {
 				$('#treening_naidiskava').find('h3:first').html('<img src="i/icon_list.png" alt=""/>' /*+ translations[lang]['training_plan']*/ + '' + trainings.currentTraining.name);
 	
 				$.each(trainings.currentTraining.exercises, function(day, exercises) {
-				
+					var muscle_groups_str = '';
 					$.each(trainings.currentTraining.day_names[day], function(j, muscle) {
 						if(j == 0)
 							muscle_groups_str = muscle_groups[muscle];
 						else
 							muscle_groups_str = muscle_groups_str + ', ' + muscle_groups[muscle]; 
 					});
+					if(!muscle_groups_str)
+						muscle_groups_str = translations[lang]['test_5'];
 				
 					$('#treening_naidiskava').find('.training-content').append('<section class="item noicon day-item" data-page="treening_naidiskavad_1paev" data-level="3" data-day="' + day + '"><div class="item_wrap"><h6>' + day + '. '+translations[lang]['day']+'</h6><h3>' + muscle_groups_str + '</h3></div></section>');
 					
@@ -500,13 +495,16 @@ var trainings = {
 			trainings.currentDay = day;
 		else
 			day = trainings.currentDay;
-		
+			
+		var muscle_groups_str = '';
 		$.each(trainings.currentTraining.day_names[day], function(j, muscle) {
 			if(j == 0)
 				muscle_groups_str = muscle_groups[muscle];
 			else
 				muscle_groups_str = muscle_groups_str + ', ' + muscle_groups[muscle]; 
 		});
+		if(!muscle_groups_str)
+			muscle_groups_str = translations[lang]['test_5'];
 		
 		header = day + '. '+translations[lang]['DAY']+' ' + muscle_groups_str;	
 		$('#treening_naidiskavad_1paev').find('h3:first').html('<img src="i/icon_list.png" alt=""/>' + header);
@@ -1053,13 +1051,15 @@ var trainings = {
 		    if(curr_month < 10)
 				curr_month = '0' + curr_month;
 		    var curr_year = d.getFullYear();
-		    
+		    var muscle_groups_str = '';
 		    $.each(trainings.currentTraining.day_names[trainings.currentDay], function(j, muscle) {
 				if(j == 0)
 					muscle_groups_str = muscle_groups[muscle];
 				else
 					muscle_groups_str = muscle_groups_str + ', ' + muscle_groups[muscle]; 
 			});
+			if(!muscle_groups_str)
+				muscle_groups_str = translations[lang]['test_5'];
 			
 			var day_name = trainings.currentDay + '. PÄEV ' + muscle_groups_str;
 		
@@ -1207,8 +1207,8 @@ var trainings = {
 var nutritions = {
 	nutritions: {},
 	nextMeal: 0, 
-	sampleNutritions: [],
-	orderNutritions: [], 
+	sampleNutritions: false,
+	orderNutritions: false, 
 	currentNutrition: {},
 	currentType: 'sample',
 	
@@ -1217,11 +1217,11 @@ var nutritions = {
 		
 		//console.log(this.orderNutritions);
 		
-		if (this.sampleNutritions.length) {
+		if (nutritions.sampleNutritions) {
 			$('.main-contents').append('<section class="item noicon treenerpakkumisedbtn" data-page="naidiskavad" data-level="2" data-type="sample"><div class="item_wrap"><h3>'+translations[lang]['sample_plans']+'</h3></div></section>');
 		}
 		
-		if (this.orderNutritions.length) {
+		if (nutritions.orderNutritions) {
 			$('.main-contents').append('<section class="item noicon soodustusedbtn" data-page="naidiskavad" data-level="2" data-type="order"><div class="item_wrap"><h3>'+translations[lang]['order_plans']+'</h3></div></section>');
 		} else {
 			$('.main-contents').append('<section class="item noicon soodustusedbtn" data-page="personaalsed_toitumiskavad" data-level="2"><div class="item_wrap"><h3>'+translations[lang]['order_plans']+'</h3></div></section>');
@@ -1259,7 +1259,7 @@ var nutritions = {
 		$('#naidiskavad').find('h3:first').html(translations[lang][type + '_packages']);
 		
 		db.transaction(function(tx) {
-			query = 'SELECT * FROM NUTRITIONS WHERE type = "' + type + '"';
+			query = 'SELECT * FROM NUTRITIONS WHERE type = "' + type + '" ORDER BY id DESC';
 			tx.executeSql(query, [], function(tx, results) {
 				
 				var len = results.rows.length, i;
