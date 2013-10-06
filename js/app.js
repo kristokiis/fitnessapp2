@@ -28,7 +28,7 @@ muscle_groups[13] = 'Triitseps';
 firstLoad = true;
 totalSteps = 10;
 
-var club_id = 2;
+var club_id = 21;
 var trainer = {};
 
 var app = {

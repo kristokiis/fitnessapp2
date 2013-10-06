@@ -826,7 +826,7 @@ input.error {
 
 
 .me {
-  background: url(../i/mebg.jpg) no-repeat right center #FDCB1D;
+  background: url(../i/mebg.jpg) no-repeat right center #006DB3;
   background-size: 100% auto;
 }
 
@@ -1378,7 +1378,7 @@ input.error {
 }
 
 .seeria {
-  color: #FFFFFF;
+  color: black;
   font-size: 20px;
   padding: 30px 4%;
   margin: 7% 0;
@@ -2168,7 +2168,7 @@ div.icon_select {
 .backbtn {
   background: url("../i/back2.png") no-repeat scroll center center transparent;
   background-size: 60% auto;
-  color: #FBCB24;
+  color: #FFFFFF;
   display: inline-block;
   font-size: 15px;
   padding: 1.6%;
@@ -2195,7 +2195,7 @@ div.icon_select {
 .closebtn {
   background: url("../i/back2.png") no-repeat scroll center center transparent;
   background-size: 45% auto;
-  color: #FBCB24;
+  color: #FFFFFF;
   display: inline-block;
   font-size: 15px;
   padding: 23px;
@@ -2330,7 +2330,7 @@ div.icon_select {
   font-size: 28px;
 }
 .finalresults h1 {
-  color: #fbcb24;
+  color: #FFFFFF;
   font-size: 50px;
 }
 .finalresults h4 {
@@ -2338,7 +2338,7 @@ div.icon_select {
   font-size: 21px;
 }
 .finalresults h3 {
-  color: #fbcb24;
+  color: #FFFFFF;
   font-size: 40px;
 }
 
@@ -2898,6 +2898,7 @@ div.icon_select {
 	background-size: 100% 100%;
 	width: 100%;
 	position: relative;
+	color: white;
 }
 #voucher div {
   font-size: 14px;
@@ -3382,7 +3383,7 @@ li {
 }
 
 .yesno {
-  background: none repeat scroll 0 0 #FACA23;
+  background: none repeat scroll 0 0 rgb(42,126,178);
   border-radius: 4px 4px 4px 4px;
   box-shadow: 0 -18px 18px rgba(0, 0, 0, 0.3) inset;
   display: inline-block;
@@ -3394,7 +3395,6 @@ li {
 
 .yesno h2 {
 	margin: 0 !important;
-	color: #000 !important;
 }
 
 .yesno.active {
