@@ -336,8 +336,13 @@
 				if (LEVEL > 1) {
 					$('#topbar .backbtn').click();
 				} else if(LEVEL == 1) {
-					LEVEL = 0;
-					teleportMe('frontpage');
+					if(LATEST == '#homepage') {
+						LEVEL = 0;
+						teleportMe('frontpage');
+					} else {
+						LEVEL = 1;
+						teleportMe('homepage');
+					}
 				} else {
 					navigator.app.exitApp();
 				}
