@@ -575,11 +575,11 @@ var trainings = {
 		$('#treening_naidiskavad_1paev_nXn').find('h3:first').html('<img src="i/icon_list.png" alt=""/>' + trainings.currentTraining.name);
 		console.log(element);
 		//element = parseInt(element);
-		if(!element) {
+		if(!element && trainings.currentExercise) {
 			element = '_' + trainings.currentExercise.id;
 		}
 		//temp
-		console.log(trainings.currentExercise);
+		//console.log(trainings.currentExercise);
 		console.log(trainings.currentTraining.exercises[trainings.currentDay]);
 		trainings.currentExercise = trainings.currentTraining.exercises[trainings.currentDay][element];
 		
