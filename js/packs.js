@@ -395,6 +395,13 @@ var trainings = {
 						//console.log(statement);
 					   	tx.executeSql(statement);
 					   	element.remove();
+					   	if(!$('.remove-overlay').length) {
+							console.log('last one of type: ' + type);
+							if(type == 'order')
+								trainings.orderPackages = false;
+							else
+								trainings.samplePackages = false;
+						}
 				   	});
 					
 				});
@@ -563,19 +570,23 @@ var trainings = {
 	},
 	
 	getTrainingsExercise: function(element) {
-		
-		$('#treening_naidiskavad_1paev').find('h3:first').html('<img src="i/icon_list.png" alt=""/>' + trainings.currentTraining.name);
-		
+
+		$('#treening_naidiskavad_1paev_nXn').find('h3:first').html('<img src="i/icon_list.png" alt=""/>' + trainings.currentTraining.name);
+		console.log(element);
 		//element = parseInt(element);
-		if(!element)
-			element = trainings.currentExercise.id;
+		if(!element) {
+			element = '_' + trainings.currentExercise.id;
+		}
 		//temp
+		console.log(trainings.currentExercise);
+		console.log(trainings.currentTraining.exercises[trainings.currentDay]);
 		trainings.currentExercise = trainings.currentTraining.exercises[trainings.currentDay][element];
+		
 		j = 0;
 		iteration = false;
 		next = false;
 		
-		//console.log(trainings.currentTraining.exercises[trainings.currentDay][element]);
+		console.log(trainings.currentTraining.exercises[trainings.currentDay][element]);
 		
 		$('.videopreview').attr('data-id', trainings.currentExercise.exercise_id);
 		$('.videopreview').find('img:last').attr('src', app.serverUrl + 'pics/exercises/' + trainings.currentExercise.exercise_id + '.jpg');
@@ -628,16 +639,37 @@ var trainings = {
 		//permanent
 		//localStorage.setObject('currentTrainingExercise', trainings.currentExercise);
 		
-		//console.log(trainings.currentExercise);
+		console.log(trainings.currentExercise);
 		
 		if(trainings.currentExercise && trainings.currentExercise.comment) {
 			$('#treening_naidiskavad_1paev_nXn').find('.text_wrap').html(trainings.currentExercise.comment);
 			$('.soovitusedbtn').show();
+			
+			$('.soovitusedbtn, .alternatiivbtn').unbind(eventEnd).bind(eventEnd, function (e) {
+	
+				if( !$(this).hasClass('active') ){
+					$(this).addClass('active') 
+					$('.popup').removeClass('pophide');
+					setTimeout(function(){
+						$('.popup').addClass('popshow');
+					}, 100);
+				}else{
+					$(this).removeClass('active') 
+					$('.popup').removeClass('popshow');
+					setTimeout(function(){
+						$('.popup').addClass('pophide');
+					}, 300);
+				}
+			
+			});
+			
 		} else {
 			$('.soovitusedbtn').hide();
 		}
-		$('#treening_naidiskavad_1paev_nXn').find('h2').html(trainings.currentExercise.name);
-		
+		if(lang == 'et')
+			$('#treening_naidiskavad_1paev_nXn').find('h2').html(trainings.currentExercise.name);
+		else
+			$('#treening_naidiskavad_1paev_nXn').find('h2').html(trainings.currentExercise['name_' + lang]);
 		$('.serias-content').html('');
 		
 		if (trainings.currentExercise.type == 'weight') {

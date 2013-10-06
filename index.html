@@ -30,7 +30,7 @@
     <body>
 		<section class="page-wrap">
 			<section id="frontpage" class="frame open" style="opacity: 1">
-				<img class="bg" src="i/mbg3.jpg" alt=""/>
+				<img class="bg" src="i/bg1.jpg" alt=""/>
 				<section class="wrap">
 					
 					<img class="logo teleport" src="i/logo.png" alt="" data-page="frontpage" data-level="0" />
@@ -41,7 +41,7 @@
 					</hgroup>
 					
 					<div class="w50" style="display:none;">
-						<a href="javascript:void(0);" class="fb loginbtn"><span class="translate" data-keyword="login"></span></a>
+						<a href="javascript:void(0);" class="fb loginbtn" data-page="homepage" data-level="1" ><span class="translate" data-keyword="login"></span></a>
 					</div>
 					
 					<div class="w50" style="display:none;">
@@ -83,7 +83,8 @@
 			</section>
 			<section id="askClubNr" class="overlay">
 				<section class="header">
-					<br /><br /><h2 class="selection-title" style="color:white;text-align:center;">Sisestage klubi number jätkamiseks</h2><br />
+					<h2 class="selection-title">Sisestage klubi number jätkamiseks</h2>
+					<br /><br />
 				</section>
 				<section class="contentfield">
 					<section class="selection-content">
@@ -93,7 +94,7 @@
 						<h3 class="translate" data-keyword="continue_member">JÄTKA KLUBI LIIKMENA</h3>		
 					</section>
 					<section class="nobg_item cancel-button">
-						<h3 class="translate" data-keyword="continue_stranger">JÄTKA KÜLALISENA</h3>		
+						<h3 class="translate" data-keyword="continue_stranger">JÄTKA VÕÕRANA</h3>		
 					</section>
 				</section>
 			</section>
@@ -126,20 +127,6 @@
 					<input type="number" name="txt" class="club-nr txt" style="height:50px;" placeholder="Klubi number" val="" />
 					<input type="text" name="txt" class="club-pass txt" style="height:50px;display:none;" placeholder="Uus parool" />
 					<!-- <textarea name="txt" id="txt" class="txt" placeholder=""></textarea> -->
-				</section>
-			</section>
-			<section id="askMeeting" class="overlay">
-				<br /><h2 class="selection-title" style="color:white;text-align:center;">Vali esimene kohtumine treeneriga</h2><br />
-				<section style="text-align:center;">
-					<section class="nobg_item date" style="margin: 1% 0 !important;" data-date="2013-10-12 10:00:00">
-						<h4>12.10.2013 10:00</h4>		
-					</section>
-					<section class="nobg_item date" style="margin: 1% 0 !important;" data-date="2013-10-12 12:00:00">
-						<h4>12.10.2013 12:00</h4>		
-					</section>
-					<section class="nobg_item date" style="margin: 1% 0 !important;" data-date="2013-10-13 10:00:00">
-						<h4>13.10.2013 10:00</h4>		
-					</section>
 				</section>
 			</section>
 			<section id="yesnooverlay" class="overlay ">
@@ -292,7 +279,7 @@
         
         <script src="js/app.js"></script>
         
-        <script src="js/main.js?012"></script>
+        <script src="js/main.js"></script>
         
         <script src="js/packs.js"></script>
         
@@ -331,7 +318,6 @@
 		    function onBackButton(e) {
 			    e.preventDefault();
 				//if in subpage trigger correct 
-				console.log(LEVEL);
 				if (LEVEL != 0) {
 					goBack();
 				} else {

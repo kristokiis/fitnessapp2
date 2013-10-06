@@ -1538,8 +1538,8 @@ var app = {
 		   		$.each(result, function(i, item) {
 		   		
 		   			items[item.id] = item;
-			   		
-			   		template1.find('.name').html(item.name);
+			   		new_name = shorten(item.name, 40);
+			   		template1.find('.name').html(new_name);
 			   		template1.find('.price').html(item.price + ' €');
 			   		template1.find('img:last').attr('src', app.serverUrl + 'pics/templates/' + item.id + '.jpg');
 			   		template1.find('.selectbtn').attr('data-id', item.id);
@@ -1880,7 +1880,8 @@ var app = {
 				addHover( this );
 				$('#voucher').show();
 				$('#overlay').find('img:first').attr('src', app.serverUrl + 'pics/fitshop/' + id + '.jpg');
-				$('#overlay').find('h1').html(items[id].name);
+				new_name = shorten(items[id].name, 40);
+				$('#overlay').find('h1').html(new_name);
 				$('#overlay').find('h2').html(items[id].price + ' €');
 				$('#overlay').find('#voucher').find('span').html(items[id].sale + '%');
 				$('#overlay').find('h4').html('');
@@ -2347,4 +2348,11 @@ function checkConnection() {
 function calcAge(dateString) {
   var birthday = +new Date(dateString);
   return ~~((Date.now() - birthday) / (31557600000));
+}
+function shorten(text, maxLength) {
+    var ret = text;
+    if (ret.length > maxLength) {
+        ret = ret.substr(0,maxLength-3) + "...";
+    }
+    return ret;
 }
