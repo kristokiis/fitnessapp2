@@ -1,10 +1,7 @@
 @font-face {
-    font-family: 'epoca';
-    src: url('../fonts/epoclassic-lig-webfont.eot');
-    src: url('../fonts/epoclassic-lig-webfont.eot?#iefix') format('embedded-opentype'),
-         url('../fonts/epoclassic-lig-webfont.woff') format('woff'),
-         url('../fonts/epoclassic-lig-webfont.ttf') format('truetype'),
-         url('../fonts/epoclassic-lig-webfont.svg#epocaclassiclight') format('svg');
+    font-family: 'roboto';
+    src: url('../fonts/Roboto-Regular.woff') format('woff'),
+         url('../fonts/Roboto-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 
@@ -131,7 +128,7 @@ textarea {
 
 
 body{
-	font-family: 'epoca', arial;
+	font-family: 'Roboto', sans-serif;
 	opacity: 0;
 	-moz-transform: translate3d(0, 0, 0);
 	

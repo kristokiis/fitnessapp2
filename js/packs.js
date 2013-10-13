@@ -8,10 +8,34 @@ var packs = {
 	hasSpecialOffers: false,
 	
 	getMain: function() {
-		$('.training-count').html(trainings.orderPackages.length);
-		$('.nutrition-count').html(nutritions.orderNutritions.length);
+	
+		db.transaction(function(tx) {
+			query = 'SELECT COUNT(*) AS total FROM TRAININGS WHERE type = "order"';
+			//console.log(query);
+			tx.executeSql(query, [], function(tx, results) {
+				item = results.rows.item(0);
+				$('.training-count').html(item.total);
+			}, function(tx, results) {
+				console.error('Error in selecting training count');
+			});
+		}, function(error) {
+			console.error('Error in selecting training count');
+		});
+		db.transaction(function(tx) {
+			query = 'SELECT COUNT(*) AS total FROM NUTRITIONS WHERE type = "order"';
+			//console.log(query);
+			tx.executeSql(query, [], function(tx, results) {
+				item = results.rows.item(0);
+				$('.nutrition-count').html(item.total);
+			}, function(tx, results) {
+				console.error('Error in selecting training count');
+			});
+		}, function(error) {
+			console.error('Error in selecting training count');
+		});
+	
 		$('#ostetud').find('.bought-trainings').click(function() {
-			if (trainings.orderPackages.length > 0) {
+			if ($('.training-count').html() == '0') {
 				LEVEL = 3;
 				teleportMe('personaalsed_treeningkavad');
 			} else {
@@ -20,7 +44,7 @@ var packs = {
 			}
 		});
 		$('#ostetud').find('.bought-nutritions').click(function() {
-			if (nutritions.orderNutritions.length > 0) {
+			if ($('.nutrition-count').html() == '0') {
 				LEVEL = 3;
 				teleportMe('personaalsed_toitumiskavad');
 			} else {
@@ -1268,7 +1292,6 @@ var nutritions = {
 					$('#naidiskavad').find('.toscroll').append('<section class="item noicon treenerpakkumisedbtn" data-page="toitumisplaan1" data-level="3" data-id="' + nutrition.id + '"><div class="item_wrap avoid-clicks"><h3 class="avoid-clicks">' + nutrition.name + '</h3></div><div class="remove-overlay"><span class="remove-icon"></span></div></section>');
 				}
 		
-		
 				$('#naidiskavad').find('.item').click(function(e) {
 					e.preventDefault();
 					addHover(this);
@@ -1289,6 +1312,13 @@ var nutritions = {
 						//console.log(statement);
 					   	tx.executeSql(statement);
 					   	element.remove();
+					   	if(!$('.remove-overlay').length) {
+							console.log('last one of type: ' + type);
+							if(type == 'order')
+								nutritions.orderNutritions = false;
+							else
+								nutritions.sampleNutritions = false;
+						}
 				   	});
 					
 				});

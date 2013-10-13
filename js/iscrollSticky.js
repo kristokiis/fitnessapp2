@@ -55,9 +55,13 @@
             this.headers = [];
 
             for (i = 0, ii = elms.length; i < ii; i++) {
+            	if(elms.length == 1)
+            		offT = elms[i].parentNode.offsetTop;
+            	else
+            		offT = elms[i].offsetTop
                 var header = {
                         elm: elms[i],
-                        minY: elms[i].offsetTop,
+                        minY: offT,
                         maxY: elms[i].offsetHeight + elms[i].offsetTop
                     },
                     prevHeader = this.headers[i - 1];
