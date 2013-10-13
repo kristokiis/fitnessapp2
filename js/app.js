@@ -882,6 +882,28 @@ var app = {
 			}, 100);
 		});
 		
+		$('#seaded').find('.show-diary').click(function() {
+			if(user.diary == 'public')
+				$('#diaryStatus').html('Avalik');
+			else
+				$('#diaryStatus').html('Privaatne');
+			$('#yesnooverlay').find('.nobg_item').click(function(e) {
+				addHover(this);
+				if($(this).hasClass('yes-answer'))
+					user.diary = 'public';
+				else
+					user.diary = 'private';
+				$('#yesnooverlay').removeClass('scale');
+				setTimeout(function () {
+					$('#yesnooverlay').removeClass('scaleIn');
+				}, 100);
+			});
+			$('#yesnooverlay').addClass('scale');
+			setTimeout(function () {
+				$('#yesnooverlay').addClass('scaleIn');
+			}, 100);
+		});
+		
 		$('#seaded').find('.lang-select').click(function() {
 			
 			template = $('#selectiveoverlay').find('.lang-template');
@@ -966,7 +988,7 @@ var app = {
 			$('#per_week').parent().removeClass('icon_ok');
 			
 		if(user.currently_training)
-			$('#currently_training').val(user.training_activity).parent().addClass('icon_ok');
+			$('#currently_training').val(user.currently_training).parent().addClass('icon_ok');
 		else
 			$('#currently_training').parent().removeClass('icon_ok');
 			
@@ -1689,6 +1711,55 @@ var app = {
 			
 				});
 				$('.orderbtn').unbind(eventEnd).bind(eventEnd, function (e) {
+					error = false;
+					if (!$('#firstname').val()) {
+						error = true;
+						$('#firstname').parent().parent().removeClass('icon_ok').addClass('icon_edit2');
+					}
+					if (!$('#lastname').val()) {
+						error = true;
+						$('#lastname').parent().parent().removeClass('icon_ok').addClass('icon_edit2');
+					}
+					if (!$('#mail').val()) {
+						error = true;
+						$('#mail').parent().parent().removeClass('icon_ok').addClass('icon_edit2');
+					}
+					if (!$('#phone').val()) {
+						error = true;
+						$('#phone').parent().parent().removeClass('icon_ok').addClass('icon_edit2');
+					}
+					if (!$('#sex').val()) {
+						error = true;
+						$('#sex').parent().parent().removeClass('icon_ok').addClass('icon_edit2');
+					}
+					if (!$('#age').val()) {
+						error = true;
+						$('#age').parent().parent().removeClass('icon_ok').addClass('icon_edit2');
+					}
+					if (!$('#weight').val()) {
+						error = true;
+						$('#weight').parent().parent().removeClass('icon_ok').addClass('icon_edit2');
+					}
+					if (!$('#length').val()) {
+						error = true;
+						$('#length').parent().parent().removeClass('icon_ok').addClass('icon_edit2');
+					}
+					if (!$('#training_activity').val()) {
+						error = true;
+						$('#training_activity').parent().removeClass('icon_ok').addClass('icon_edit2');
+					}
+					if (!$('#training_target').val()) {
+						error = true;
+						$('#training_target').parent().removeClass('icon_ok').addClass('icon_edit2');
+					}
+					if (!$('#per_week').val()) {
+						error = true;
+						$('#per_week').parent().removeClass('icon_ok').addClass('icon_edit2');
+					}
+					if(error) {
+						$('input:first').focus();
+						return false;
+					}
 					if(!user.club_nr) {
 						$('#askClubNr').find('.save-button').unbind('click');
 						$('#askClubNr').find('.save-button, .cancel-button').click(function(e) {
@@ -1747,6 +1818,8 @@ var app = {
 					user.currently_training = $('#currently_training').val();
 					user.health_condition = $('#health_condition').val();
 					user.modified = new Date().getTime();
+					
+					
 					
 					localStorage.setObject('fitUser', user);
 					
@@ -2346,9 +2419,9 @@ function deliverError(msg, url, line) {
 	console.log('ERROR: ' +msg + ' ja ' + url + ' ja ' + line);
 }
 
-window.onerror = function (msg, url, line) {
+/*window.onerror = function (msg, url, line) {
 	deliverError(msg, url, line);
-}
+}*/
 
 function errorCB(e, a, b) {
 	deliverError('Error in DB: ' + e, 'app.js', 800);

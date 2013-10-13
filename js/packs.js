@@ -763,7 +763,7 @@ var trainings = {
 				data = {};
 				data.type = 'serie';
 				data.repeats = parseInt($(this).parent().find('.times span').html());
-				data.weight = parseInt($(this).parent().find('.weight span').html());
+				data.weights = parseInt($(this).parent().find('.weight span').html());
 				data.serie = parseInt($(this).parent().data('index'));
 				trainings.doTraining(data);
 				$(this).removeClass('unchecked').addClass('checked').find('img').attr('src', 'i/checked.png');
@@ -1006,7 +1006,7 @@ var trainings = {
 					$.each(exercise.series, function(j, serie) {
 						if(j == data.serie) {
 							serie.repeats = data.repeats;
-							serie.weight = data.weight;
+							serie.weights = data.weights;
 							serie.status = 'done';
 							newEx.series[j] = serie;
 						}/* else {
