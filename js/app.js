@@ -1715,46 +1715,68 @@ var app = {
 					if (!$('#firstname').val()) {
 						error = true;
 						$('#firstname').parent().parent().removeClass('icon_ok').addClass('icon_edit2');
+					} else {
+						$('#firstname').parent().parent().removeClass('icon_edit2').addClass('icon_ok');
 					}
 					if (!$('#lastname').val()) {
 						error = true;
 						$('#lastname').parent().parent().removeClass('icon_ok').addClass('icon_edit2');
+					} else {
+						$('#lastname').parent().parent().removeClass('icon_edit2').addClass('icon_ok');
 					}
 					if (!$('#mail').val()) {
 						error = true;
 						$('#mail').parent().parent().removeClass('icon_ok').addClass('icon_edit2');
+					} else {
+						$('#mail').parent().parent().removeClass('icon_edit2').addClass('icon_ok');
 					}
 					if (!$('#phone').val()) {
 						error = true;
 						$('#phone').parent().parent().removeClass('icon_ok').addClass('icon_edit2');
+					} else {
+						$('#phone').parent().parent().removeClass('icon_edit2').addClass('icon_ok');
 					}
 					if (!$('#sex').val()) {
 						error = true;
 						$('#sex').parent().parent().removeClass('icon_ok').addClass('icon_edit2');
+					} else {
+						$('#sex').parent().parent().removeClass('icon_edit2').addClass('icon_ok');
 					}
-					if (!$('#age').val()) {
+					if (!$('#birthday').val()) {
 						error = true;
-						$('#age').parent().parent().removeClass('icon_ok').addClass('icon_edit2');
+						$('#birthday').parent().parent().removeClass('icon_ok').addClass('icon_edit2');
+					} else {
+						$('#birthday').parent().parent().removeClass('icon_edit2').addClass('icon_ok');
 					}
 					if (!$('#weight').val()) {
 						error = true;
 						$('#weight').parent().parent().removeClass('icon_ok').addClass('icon_edit2');
+					} else {
+						$('#weight').parent().parent().removeClass('icon_edit2').addClass('icon_ok');
 					}
 					if (!$('#length').val()) {
 						error = true;
 						$('#length').parent().parent().removeClass('icon_ok').addClass('icon_edit2');
+					} else {
+						$('#length').parent().parent().removeClass('icon_edit2').addClass('icon_ok');
 					}
 					if (!$('#training_activity').val()) {
 						error = true;
 						$('#training_activity').parent().removeClass('icon_ok').addClass('icon_edit2');
+					} else {
+						$('#training_activity').parent().removeClass('icon_edit2').addClass('icon_ok');
 					}
 					if (!$('#training_target').val()) {
 						error = true;
 						$('#training_target').parent().removeClass('icon_ok').addClass('icon_edit2');
+					} else {
+						$('#training_target').parent().removeClass('icon_edit2').addClass('icon_ok');
 					}
 					if (!$('#per_week').val()) {
 						error = true;
 						$('#per_week').parent().removeClass('icon_ok').addClass('icon_edit2');
+					} else {
+						$('#per_week').parent().removeClass('icon_edit2').addClass('icon_ok');
 					}
 					if(error) {
 						$('input:first').focus();
@@ -1809,7 +1831,8 @@ var app = {
 					user.mail = $('#mail').val();
 					user.phone = $('#phone').val();
 					user.sex = $('#sex').val();
-					user.age = $('#age').val();
+					user.birthday = $('#birthday').val();
+					user.age = calcAge($('#birthday').val());
 					user.weight = $('#weight').val();
 					user.length = $('#length').val();
 					user.training_activity = $('#training_activity').val();
