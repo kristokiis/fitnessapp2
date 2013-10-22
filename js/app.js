@@ -1896,7 +1896,7 @@ var app = {
 			
 			if (type != 'bill') {
 			
-				iabRef = window.open('http://projects.efley.ee/fitnessapp/admin/payment.php?order=' + order_id + '&bank=' + type, '_blank', 'location=yes');
+				iabRef = window.open('http://fitnessmobile.ee/payment.php?order=' + order_id + '&bank=' + type, '_blank', 'location=yes');
 				iabRef.addEventListener('loadstart', function() {
 					//console.log('started');
 					//if()
@@ -1904,7 +1904,7 @@ var app = {
 				iabRef.addEventListener('loadstop', function(event) {
 				
 					//console.log(event.url);
-					if(event.url == 'http://projects.efley.ee/fitnessapp/admin/payment.php?order=' + order_id + '&bank=' + type + '&success=1') {
+					if(event.url == 'http://fitnessmobile.ee/payment.php?order=' + order_id + '&bank=' + type + '&success=1') {
 						iabRef.close();
 						
 						$('#buyoverlay').find('.checkoutcontent').hide();
@@ -1913,7 +1913,7 @@ var app = {
 						$('#buyoverlay').find('.backbtn').hide();
 					}
 					
-					if(event.url == 'http://projects.efley.ee/fitnessapp/admin/payment.php?order=' + order_id + '&bank=' + type + '&error=1') {
+					if(event.url == 'http://fitnessmobile.ee/payment.php?order=' + order_id + '&bank=' + type + '&error=1') {
 						iabRef.close();
 						
 						$('#buyoverlay').find('.checkoutcontent').hide();

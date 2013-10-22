@@ -19,7 +19,7 @@
     
     <access origin="*" />
     
-    <preference name="phonegap-version" value="2.9.0" />
+    <preference name="phonegap-version" value="3.0.0" />
     <preference name="fullscreen"       value="false" />
     <preference name="webviewbounce" 	value="false" />
     <preference name="orientation" 		value="portrait" />
@@ -28,9 +28,6 @@
     <preference name="splash-screen-duration" value="5000" />
     <preference name="load-url-timeout" value="10000" />
     
-    <feature name="http://api.phonegap.com/1.0/camera"/>
-	<feature name="http://api.phonegap.com/1.0/file"/>
-	<feature name="http://api.phonegap.com/1.0/network"/>
     
     <icon src="assets/sparta_ico.png" />
     
@@ -52,6 +49,12 @@
     
     <gap:splash src="assets/ios/splash.png"      gap:platform="ios"     width="768" height="1024" />
     <gap:splash src="assets/ios/splash.png"     gap:platform="ios"     width="1024" height="768" />
+    
+    <gap:plugin name="org.apache.cordova.core.file" />
+    <gap:plugin name="org.apache.cordova.core.file-transfer" />
+    <gap:plugin name="org.apache.cordova.core.network-information" />
+    <gap:plugin name="org.apache.cordova.core.dialogs" />
+    <gap:plugin name="org.apache.cordova.core.inappbrowser" />
     
     <gap:plugin name="com.phonegap.plugins.facebookconnect">
 	    <param name="APP_ID" value="161092774064906" />
