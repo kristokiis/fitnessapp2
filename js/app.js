@@ -188,6 +188,7 @@ var app = {
 				});
 				if (firstLoad) {
 					app.downloadPics('categories', cats);
+					firstLoad = false;
 				}
 			}, 'jsonp');
 			
@@ -799,7 +800,7 @@ var app = {
 		});
 		
 		if(firstLoad) {
-			firstLoad = false;
+			
 			timing = 1500;
 		} else {
 			timing = 100;
@@ -1646,7 +1647,7 @@ var app = {
 			var html = '';
 			var totalprice = 0;
 			
-			html += '<div class="inbasket"><div class="naming">'+ template.name +'</div><div class="pricing">'+ template.price +'</div><div class="clear"></div></div>';
+			html += '<div class="inbasket"><div class="naming">'+ template.name +'</div><div class="pricing">'+ template.price +' €</div><div class="clear"></div></div>';
 			
 			html += '<div class="intotal"><div class="naming">'+translations[lang]['sum']+':</div><div class="pricing">'+ template.price +'  €</div><div class="clear"></div></div>';
 			
