@@ -26,7 +26,7 @@ textarea {
 }
 
 html{
-	background: #ddd !important;
+	background: #fff !important;
 }
 
 body {
@@ -146,7 +146,7 @@ body{
 	position: relative;
 	margin: 0 auto;
 	/* min-height: 480px; */
-	background-color: #000;
+	background-color: #fff;
 	background-repeat: no-repeat;
 	background-position: center top;
 	/* overflow: hidden; */
@@ -829,7 +829,7 @@ input.error {
 }
 
 .me.title {
-  background: none repeat scroll 0 0 #ccc;
+  background: none repeat scroll 0 0 #006db3;
   padding: 3px 0;
 }
 
@@ -908,14 +908,14 @@ input.error {
 
 
 .me.title h3 {
-  color: #073E5F;
+  color: white;
   float: left;
   font-size: 15px;
   font-style: italic;
   padding: 1.2% 0 0;
 }
 .me.title h4 {
-  color: #073E5F;
+  color: white;
   float: left;
   font-size: 14px;
   font-weight: normal;
@@ -924,7 +924,7 @@ input.error {
 
 
 .harjutused .me.harjutused h3 {
-	  color: #073E5F;
+	  color: white;
 	  float: left;
 	  font-size: 15px;
 	  font-style: italic;
@@ -935,7 +935,7 @@ input.error {
 .toscroll{
 	width: 100%;
 	height: 300px;
-	background: #ddd;
+	background: white;
 	position: relative;
 	
 	overflow-x: hidden;
@@ -1052,6 +1052,7 @@ input.error {
 }
 
 .alusta .item_wrap h3 {
+  color: white;
   font-size: 28px;
   font-weight: normal;
   text-align: left;
@@ -1084,7 +1085,7 @@ input.error {
 
 .noicon .item_wrap {
   background: url("../i/arrow2.png") no-repeat scroll 92% center transparent;
-  background-size: 5% auto;
+  background-size: 9% auto;
   padding: 9% 18% 9% 5%;
 }
 
@@ -1986,11 +1987,11 @@ div.icon_select {
 
 
 .box33 {
-  border: 2px solid #ddd;
+  /*border: 2px solid #ddd;*/
   display: inline-block;
   margin: 4% 1%;
   width: 29%;
-  border-radius: 6px 6px 6px 6px;
+  /*border-radius: 6px 6px 6px 6px;*/
   padding: 0 0 5px;
   	
 	-webkit-transition: all 0.20s ease;
@@ -2042,14 +2043,14 @@ div.icon_select {
 }
 
 .details{
-	background: rgb(216,71,83);
+	/*background: rgb(216,71,83);
     background: -moz-linear-gradient(top,  rgba(216,71,83,1) 0%, rgba(217,21,39,1) 100%);
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(216,71,83,1)), color-stop(100%,rgba(217,21,39,1)));
     background: -webkit-linear-gradient(top,  rgba(216,71,83,1) 0%,rgba(217,21,39,1) 100%);
-    background: linear-gradient(to bottom,  rgba(216,71,83,1) 0%,rgba(217,21,39,1) 100%);
+    background: linear-gradient(to bottom,  rgba(216,71,83,1) 0%,rgba(217,21,39,1) 100%);*/
+    background-color: #006db3;
 	display: inline-block;
 	border: 1px solid rgba(255, 255, 255, 0.01);
-	border-radius: 4px 4px 4px 4px;
 	color: #fff;
 	font-size: 12px;
 	margin: 5px 0;
@@ -2732,11 +2733,12 @@ div.icon_select {
 
 .nobg_item{
 
-	background: rgb(42,126,178);
+	/*background: rgb(42,126,178);
     background: -moz-linear-gradient(top,  rgba(42,126,178,1) 0%, rgba(0,64,107,1) 100%);
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(42,126,178,1)), color-stop(100%,rgba(0,64,107,1)));
     background: -webkit-linear-gradient(top,  rgba(42,126,178,1) 0%,rgba(0,64,107,1) 100%);
-    background: linear-gradient(to bottom,  rgba(42,126,178,1) 0%,rgba(0,64,107,1) 100%);
+    background: linear-gradient(to bottom,  rgba(42,126,178,1) 0%,rgba(0,64,107,1) 100%);*/
+    background-color: #006db3;
     color: #FFF;
 	
 	width: 90%;
@@ -2744,9 +2746,7 @@ div.icon_select {
 	text-align: center;
 	display: inline-block;
 	margin: 6% 0;
-	
 	border: 1px solid rgba(69,67,67,0.5);
-	border-radius: 6px;
 
 }
 
@@ -2792,7 +2792,7 @@ div.icon_select {
 }
 
 .testing .thenumber{
-	background: #000;
+	background: #fff;
 	border-bottom: 2px solid #D91527;
 	text-align: center;
 	height: 35px;
@@ -4033,7 +4033,7 @@ div.icon_select {
 	
 
 	.harjutused .me.harjutused h3 {
-	  color: #073E5F;
+	  color: white;
 	  float: left;
 	  font-size: 15px;
 	  font-style: italic;
@@ -4041,7 +4041,7 @@ div.icon_select {
 	}
 	
 	.me.title h3 {
-		color: #073E5F;
+		color: white;
 		float: left;
 		font-size: 14px;
 		font-style: italic;
