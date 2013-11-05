@@ -395,6 +395,9 @@ background: radial-gradient(ellipse at center,  rgba(255,255,255,0.71) 0%,rgba(2
   display: block;
   padding: 4.4% 4%;
   position: relative;
+  background: url("../i/arrow12.png") no-repeat scroll 95% center transparent;
+  background-size: 10% auto;
+  padding: 4% 17% 5% 2%;
 }
 
 #themenu .menu p {
