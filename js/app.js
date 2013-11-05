@@ -1174,15 +1174,7 @@ var app = {
 				
 				//console.log(sPath);
 				
-					$('#video').find('.video-container').html('<video id="video" height="41%" width="100%" controls="" preload="" autoplay=""  ><source src="' + videoLink + '"></video>');
-					
-					setTimeout(function() {
-						//document.getElementById("video").play();
-						//document.getElementById("video").onClick(function() {
-						//	this.play();
-						//});
-					}, 500);
-					
+					$('#video').find('.video-container').html('<video id="video" height="41%" width="100%" controls="" preload="" autoplay="" onclick="this.play();" onload="this.play();"><source src="' + videoLink + '"></video>');
 				
 			}, function(tx, results) {
 				console.error('Error in selecting test result');
@@ -2420,9 +2412,9 @@ Storage.prototype.getObject = function(key) {
 function isOdd(num) { return num % 2;}
 
 function deliverError(msg, url, line) {
-	//console.log(msg);
-	//console.log(url);
-	//console.log(line);
+	console.log(msg);
+	console.log(url);
+	console.log(line);
 	if (window.device.platform != 'Generic') {
    		error_data = {};
 	   	error_data.function = app.curFunction;

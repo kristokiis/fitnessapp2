@@ -1,5 +1,5 @@
 translations.et = [];
-translations.et['slogan-1'] = 'Sinu <span>uus</span><br/>ja <span>mugav</span>';
+translations.et['slogan-1'] = 'Virtuaalne<br />personaaltreener';
 translations.et['slogan-2'] = 'treeningpäevik';
 //LOGIN
 translations.et['login_slogan-1'] = 'Sisselogimine';

@@ -22,7 +22,7 @@ button,
 input,
 select,
 textarea {
-    color: #222;
+    color: #073e5f;
 }
 
 html{
@@ -165,11 +165,13 @@ body{
 }
 
 .bottombar{
-	background: rgb(32,122,178);
+	background-color: #006db3;
+	border-top: 1px solid white;
+	/*background: rgb(32,122,178);
     background: -moz-linear-gradient(top,  rgba(32,122,178,1) 0%, rgba(67,136,178,1) 44%, rgba(12,102,158,1) 100%);
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(32,122,178,1)), color-stop(44%,rgba(67,136,178,1)), color-stop(100%,rgba(12,102,158,1)));
     background: -webkit-linear-gradient(top,  rgba(32,122,178,1) 0%,rgba(67,136,178,1) 44%,rgba(12,102,158,1) 100%);
-    background: linear-gradient(to bottom,  rgba(32,122,178,1) 0%,rgba(67,136,178,1) 44%,rgba(12,102,158,1) 100%);
+    background: linear-gradient(to bottom,  rgba(32,122,178,1) 0%,rgba(67,136,178,1) 44%,rgba(12,102,158,1) 100%);*/
 	
 	width: 100%;
 	max-height: 124px;
@@ -193,9 +195,10 @@ body{
 .bottombar .devider1, .bottombar .devider2 {
   display: inline-block;
   float: left;
-  margin: 2% 0 0;
+  margin: 0;
+  background-color: white;
   text-align: center;
-  width: 2%;
+  width: 1px;
 }
 
 .diaryoffset{
@@ -203,8 +206,8 @@ body{
 }
 
 
-.devider2 img {
-	margin-left: 1px;
+.devider1 img, .devider2 img {
+	opacity: 0;
 }
 
 .bottombar a {
@@ -386,8 +389,8 @@ background: radial-gradient(ellipse at center,  rgba(255,255,255,0.71) 0%,rgba(2
 }
 
 #themenu .menu {
-  border-top: 1px solid #367DAB;
-  border-bottom: 1px solid #0067A9;
+  /*border-top: 1px solid #367DAB;*/
+  border-bottom: 1px solid white;
   color: #FFFFFF;
   display: block;
   padding: 4.4% 4%;
@@ -397,7 +400,7 @@ background: radial-gradient(ellipse at center,  rgba(255,255,255,0.71) 0%,rgba(2
 #themenu .menu p {
   display: inline-block;
   font-size: 15px;
-  font-weight: bold;
+  /*font-weight: bold;*/
   padding: 2px 0 2px 4%;
 }
 
@@ -545,14 +548,14 @@ background: radial-gradient(ellipse at center,  rgba(255,255,255,0.71) 0%,rgba(2
 .menu p {
   display: inline-block;
   font-size: 19px;
-  font-weight: bold;
+  /*font-weight: bold;*/
   padding: 2.5% 0 0 4%;
 }
 
 
 
 .topbar {
-	background: none repeat scroll 0 0 #006DB3;
+	background: rgb(255,255,255);
 	max-height: 110px;
 	height: auto;
 	left: 0;
@@ -571,8 +574,7 @@ background: radial-gradient(ellipse at center,  rgba(255,255,255,0.71) 0%,rgba(2
 
 .topbar .logo {
   margin: 11px auto;
-  max-width: 70px;
-  width: 25%;
+  max-width: 80px;
 }
 
 #menu {
@@ -621,8 +623,8 @@ background: radial-gradient(ellipse at center,  rgba(255,255,255,0.71) 0%,rgba(2
   font-family: 'AvantLt',Arial;
   margin: 0 auto 20%;
   text-shadow: 1px 1px 0 #000000;
-  width: 70%;
-  letter-spacing: 3px;
+  width: 80%;
+  letter-spacing: 0;
 }
 
 #login hgroup {
@@ -630,13 +632,16 @@ background: radial-gradient(ellipse at center,  rgba(255,255,255,0.71) 0%,rgba(2
   margin: 0 auto 10%;
   text-shadow: 1px 1px 0 #000000;
   width: 90%;
-  letter-spacing: 3px;
+  letter-spacing: 2px;
 }
 #frontpage h2{
-	color: #fff;
-	font-size: 30px;
+	font-weight: bold;
+	color: #0063a9;
+	font-size: 34px;
 	font-weight: 100;
 	line-height: 38px;
+	text-align: center;
+	width: 100%;
 }
 #frontpage h2 span{
 	color: #fff;
@@ -660,14 +665,11 @@ background: radial-gradient(ellipse at center,  rgba(255,255,255,0.71) 0%,rgba(2
 }
 
 #frontpage .fb{
-	background: rgb(84,110,164);
-	background: -moz-linear-gradient(top,  rgba(84,110,164,1) 0%, rgba(52,78,132,1) 100%);
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(84,110,164,1)), color-stop(100%,rgba(52,78,132,1)));
-	background: -webkit-linear-gradient(top,  rgba(84,110,164,1) 0%,rgba(52,78,132,1) 100%);
-	background: linear-gradient(to bottom,  rgba(84,110,164,1) 0%,rgba(52,78,132,1) 100%);
+	background-color: #0063a9;
 	color: #fff;
 	padding: 9% 14% 9% 28%;
-	
+	border-radius: 0;
+	box-shadow: none;
 	text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.7);
 }
 #frontpage .fb.active{
@@ -704,8 +706,6 @@ background: radial-gradient(ellipse at center,  rgba(255,255,255,0.71) 0%,rgba(2
 
 
 .langselector {
-  background: none repeat scroll 0 0 rgba(0, 0, 0, 0.5);
-  border-radius: 4px 4px 4px 4px;
   margin: 10% 30% 0;
   padding: 8px 0;
   text-align: center;
@@ -713,9 +713,10 @@ background: radial-gradient(ellipse at center,  rgba(255,255,255,0.71) 0%,rgba(2
 }
 
 .langselector a{
-	color: #B1B1B1;
+	background-color: black;
+	color: white;
 	font-weight: 600;
-	padding: 0 4px;
+	padding: 8px;
 	text-shadow: 0 1px 0 #000;
 	font-size: 14px;
 }
@@ -823,7 +824,7 @@ input.error {
 
 
 .me {
-  background: url(../i/mebg.jpg) no-repeat right center #006DB3;
+  background: url(../i/mebg.jpg?1) no-repeat right center #006DB3;
   background-size: 100% auto;
 }
 
@@ -838,6 +839,7 @@ input.error {
 
 .me img {
   border: 1px solid #000000;
+  border-radius: 50%;
   float: left;
   margin: 2% 4% 2% 4%;
   width: 18%;
@@ -845,7 +847,8 @@ input.error {
 }
 
 .me h2 {
-  color: #073E5F;
+  color: white;
+  text-shadow: 2px 2px 2px #073E5F;
   float: left;
   font-size: 22px;
   margin-top: 7%;
@@ -941,11 +944,12 @@ input.error {
 }
 
 .bigitem{
-	background: rgb(243,243,243);
+	background: rgb(255,255,255);
+	/*background: rgb(243,243,243);
     background: -moz-linear-gradient(top,  rgba(243,243,243,1) 0%, rgba(229,229,229,1) 100%);
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(243,243,243,1)), color-stop(100%,rgba(229,229,229,1)));
     background: -webkit-linear-gradient(top,  rgba(243,243,243,1) 0%,rgba(229,229,229,1) 100%);
-    background: linear-gradient(to bottom,  rgba(243,243,243,1) 0%,rgba(229,229,229,1) 100%);
+    background: linear-gradient(to bottom,  rgba(243,243,243,1) 0%,rgba(229,229,229,1) 100%);*/
 
 
 	border-top: 1px solid #FFF;
@@ -956,11 +960,14 @@ input.error {
 }
 
 .item{
+	background: rgb(255,255,255);
+	/*
 	background: rgb(243,243,243);
     background: -moz-linear-gradient(top,  rgba(243,243,243,1) 0%, rgba(229,229,229,1) 100%);
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(243,243,243,1)), color-stop(100%,rgba(229,229,229,1)));
     background: -webkit-linear-gradient(top,  rgba(243,243,243,1) 0%,rgba(229,229,229,1) 100%);
     background: linear-gradient(to bottom,  rgba(243,243,243,1) 0%,rgba(229,229,229,1) 100%);
+    */
 	-webkit-transition: all 300ms;
 	border-top: 1px solid #FFF;
 	border-bottom: 1px solid #B3B3B3;
@@ -1026,11 +1033,12 @@ input.error {
 }
 
 .alusta{
-	background: rgb(32,122,178);
+	background-color: #006db3;
+	/*background: rgb(32,122,178);
     background: -moz-linear-gradient(top,  rgba(32,122,178,1) 0%, rgba(67,136,178,1) 44%, rgba(12,102,158,1) 100%);
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(32,122,178,1)), color-stop(44%,rgba(67,136,178,1)), color-stop(100%,rgba(12,102,158,1)));
     background: -webkit-linear-gradient(top,  rgba(32,122,178,1) 0%,rgba(67,136,178,1) 44%,rgba(12,102,158,1) 100%);
-    background: linear-gradient(to bottom,  rgba(32,122,178,1) 0%,rgba(67,136,178,1) 44%,rgba(12,102,158,1) 100%);
+    background: linear-gradient(to bottom,  rgba(32,122,178,1) 0%,rgba(67,136,178,1) 44%,rgba(12,102,158,1) 100%);*/
 	
 	border: none;
 	top: 0px;
@@ -1051,14 +1059,14 @@ input.error {
 
 .alusta .item_wrap {
   background: url("../i/arrow12.png") no-repeat scroll 95% center transparent;
-  background-size: 9% auto;
+  background-size: 12% auto;
   padding: 6% 17% 6% 10% ;
 }
 
 .item_wrap {
 	padding: 3% 17% 3% 14%;
 	background: url("../i/arrow2.png") no-repeat scroll 93% center transparent;
-	background-size: 3% auto;
+	background-size: 6% auto;
 }
 .item_wrap.no_bg {
 	padding: 5% !important;
@@ -1083,7 +1091,7 @@ input.error {
 
 .bigitem .item_wrap {
 	background-position: 94%;
-	background-size: 4% auto;
+	background-size: 7% auto;
 }
 
 
@@ -3532,10 +3540,10 @@ div.icon_select {
   padding: 3% 7%;
 }
 .bigitem .item_wrap {
-  background-size: 2% auto;
+  background-size: 4% auto;
 }
 .item_wrap {
-  background-size: 1.4% auto;
+  background-size: 3.4% auto;
 }
 
 .bigitem:before, .item:before {
@@ -3544,7 +3552,7 @@ div.icon_select {
 
 .alusta .item_wrap {
 	background-position: 94% center;
-  background-size: 3% auto;
+  background-size: 4% auto;
   padding: 2% 5% 2% 3%;
 }
 
@@ -3806,7 +3814,7 @@ div.icon_select {
 @media screen and (max-width: 480px) {
 
 		#frontpage h2{
-			color: #fff;
+			color: #0063a9;
 			font-size: 28px;
 			font-weight: 100;
 			line-height: 38px;
@@ -3846,17 +3854,17 @@ div.icon_select {
 		
 		.bigitem .item_wrap {
 			background-position: 94%;
-			background-size: 7% auto;
+			background-size: 10% auto;
 		}
 		
 		
 		.item_wrap {
 			padding: 8% 17% 8% 14%;
-			background-size: 6% auto;
+			background-size: 9% auto;
 		}
 		
 		.alusta .item_wrap {
-		  background-size: 11% auto;
+		  background-size: 14% auto;
 		  padding: 8% 17% 8% 8%;
 		}
 		
@@ -3919,8 +3927,8 @@ div.icon_select {
 @media screen and (max-width: 320px) {
 		
 		#frontpage h2{
-			color: #fff;
-			font-size: 24px;
+			color: #0063a9;
+			font-size: 28px;
 			font-weight: 100;
 			line-height: 30px;
 		}
@@ -4063,7 +4071,7 @@ div.icon_select {
 	}
 	
 	.langselector a{
-		padding: 0 2px;
+		padding: 5px;
 		font-size: 12px;
 	}
 	
