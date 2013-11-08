@@ -199,6 +199,7 @@ body{
   background-color: white;
   text-align: center;
   width: 1px;
+  padding: 1% 0;
 }
 
 .diaryoffset{
@@ -946,6 +947,10 @@ input.error {
 	-webkit-overflow-scrolling: touch;
 }
 
+#minuandmed .toscroll {
+	background: black;
+}
+
 .bigitem{
 	background: rgb(255,255,255);
 	/*background: rgb(243,243,243);
@@ -1004,11 +1009,11 @@ input.error {
 	position: relative;
 }
 .whiteitem{
-	background: rgb(245,245,245);
+	/*background: rgb(245,245,245);
 	background: -moz-linear-gradient(top,  rgba(245,245,245,1) 0%, rgba(207,207,207,1) 100%);
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(245,245,245,1)), color-stop(100%,rgba(207,207,207,1)));
 	background: -webkit-linear-gradient(top,  rgba(245,245,245,1) 0%,rgba(207,207,207,1) 100%);
-	background: linear-gradient(to bottom,  rgba(245,245,245,1) 0%,rgba(207,207,207,1) 100%);
+	background: linear-gradient(to bottom,  rgba(245,245,245,1) 0%,rgba(207,207,207,1) 100%);*/
 
 	border-top: 1px solid #fff;
 	border-bottom: 1px solid #B3B3B3;
@@ -1267,13 +1272,14 @@ input.error {
 }
 
 .remove-overlay {
+	border-top: 1px solid gray;
 	box-shadow:inset 0 0 10px #000000;
 	top: 0;
 	height: 100%;
 	width: 35%;
 	position: absolute;
 	right: -35%;
-	background-color: gray;
+	background-color: #006db3;
 }
 .remove-item .remove-overlay {
 	/*display: block;
@@ -1343,6 +1349,7 @@ input.error {
 
 .videotitle {
   background: none repeat scroll 0 0 #FFFFFF;
+  border-bottom: 1px solid lightgray;
   padding: 5% 3%;
   position: relative;
   z-index: 3000;
@@ -1483,13 +1490,14 @@ input.error {
 }
 
 
-.soovitusedbtn{
-	background: -moz-linear-gradient(left, rgba(39,49,56,1) 0%, rgba(28,37,42,1) 100%);
+.soovitusedbtn {
+	background-color: rgba(28,37,42,1); 
+	/*background: -moz-linear-gradient(left, rgba(39,49,56,1) 0%, rgba(28,37,42,1) 100%);
 	background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(39,49,56,1)), color-stop(100%,rgba(28,37,42,1)));
 	background: -webkit-linear-gradient(left, rgba(39,49,56,1) 0%,rgba(28,37,42,1) 100%);
-	background: linear-gradient(to right, rgba(39,49,56,1) 0%,rgba(28,37,42,1) 100%);
+	background: linear-gradient(to right, rgba(39,49,56,1) 0%,rgba(28,37,42,1) 100%);*/
 	display: inline-block;
-	border-radius: 4px 4px 4px 4px;
+	/*border-radius: 4px 4px 4px 4px;*/
 	margin-top: 6%;
 }	
 
@@ -1907,12 +1915,12 @@ div.icon_select {
 }
 
 .month .treening{
-	background: rgb(243,243,243);
+	/*background: rgb(243,243,243);
     background: -moz-linear-gradient(top,  rgba(243,243,243,1) 0%, rgba(229,229,229,1) 100%);
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(243,243,243,1)), color-stop(100%,rgba(229,229,229,1)));
     background: -webkit-linear-gradient(top,  rgba(243,243,243,1) 0%,rgba(229,229,229,1) 100%);
-    background: linear-gradient(to bottom,  rgba(243,243,243,1) 0%,rgba(229,229,229,1) 100%);
-
+    background: linear-gradient(to bottom,  rgba(243,243,243,1) 0%,rgba(229,229,229,1) 100%);*/
+    border-bottom: 1px solid lightgray;
 	font-size: 13px;
 	color: #777;
 }
@@ -1928,6 +1936,7 @@ div.icon_select {
 .treening .arrow {
   padding: 5% 10% 5% 2% !important;
   background: url(../i/arrow5.png) no-repeat 95% center transparent;
+  background-size: 10%;
 }
 
 .month .treening div span{
@@ -2084,11 +2093,12 @@ div.icon_select {
 
 
 .buybtn{
-	background: rgb(42,126,178);
+	background: #006db3;
+	/*
     background: -moz-linear-gradient(top,  rgba(42,126,178,1) 0%, rgba(0,64,107,1) 100%);
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(42,126,178,1)), color-stop(100%,rgba(0,64,107,1)));
     background: -webkit-linear-gradient(top,  rgba(42,126,178,1) 0%,rgba(0,64,107,1) 100%);
-    background: linear-gradient(to bottom,  rgba(42,126,178,1) 0%,rgba(0,64,107,1) 100%);
+    background: linear-gradient(to bottom,  rgba(42,126,178,1) 0%,rgba(0,64,107,1) 100%);*/
     color: #FFF;
 	
 	width: 80%;
@@ -2101,7 +2111,7 @@ div.icon_select {
 	text-align: center;
 	
 	border: 1px solid rgba(69,67,67,0.5);
-	border-radius: 6px;
+	/*border-radius: 6px;*/
 	
 	position: relative;
 	top: -10000px;
@@ -2779,7 +2789,7 @@ div.icon_select {
 }
 
 .nobg_special_button {
-	width: 99%;
+	width: 100%;
 	text-align: center;
 }
 
@@ -2845,7 +2855,6 @@ div.icon_select {
 }
 
 .testing .answer {
-  background: none repeat scroll 0 0 #000000;
   margin-top: 4%;
   padding: 4%;
   border-radius: 5px;
@@ -2855,7 +2864,6 @@ div.icon_select {
 .answer label {
     float: left;
 	width: 35%;
-	color: #fff;
 	font-size: 14px;
 	line-height: 14px;
 }
@@ -2867,7 +2875,6 @@ div.icon_select {
 	border: none;
 	background: #fff;
     box-shadow: inset 0 2px 9px rgba(0,0,0,0.4);
-	border-radius: 4px;
 }
 
 .answer .nobg_item h3{
@@ -3037,8 +3044,8 @@ div.icon_select {
 
 
 .f3bg{
-	background: #F3F3F3;
-	color: #006DB3;
+	/*background: #F3F3F3;
+	color: #006DB3;*/
 }
 
 .text_wrap p {
