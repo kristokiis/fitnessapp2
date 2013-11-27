@@ -202,14 +202,14 @@ var app = {
 			data.ids = ex_notIDs;
 			data.user = user.id;
 			data.club_id = club_id;
-			//console.log(data);
+			console.log(data);
 			$.get(app.apiUrl + '?action=getExercises', data, function(result) {
 				db.transaction(function(tx) {
 					var pics = [];
 					$.each(result, function(i, item) {
 						
 						var statement = 'INSERT INTO EXERCISES (id, type, name, name_en, name_ru, data, video, description, description_en, description_ru, category, muscle, muscle2, muscle3) VALUES (' + parseInt(item.id) + ', "' + item.heading + '", "' + item.name + '", "' + item.name_en + '", "' + item.name_ru + '", "0", "0", "' + item.description + '", "' + item.description_en + '", "' + item.description_ru + '", "' + item.category + '", "' + item.muscle_group + '", "' + item.muscle_group2 + '", "' + item.muscle_group3 + '")';
-						////console.log(statement);
+						console.log(statement);
 							//return false;
 					   	tx.executeSql(statement);
 					
@@ -1044,6 +1044,29 @@ var app = {
 		content.html('');
 		template = $('.module-template');
 		template.hide();
+		
+		if ($('.muscleslist').length > 1) {
+			console.log('got one that doesnt belong here..');
+			$('.muscleslist:last').parent().remove();
+		}
+		
+		if (app.muscleGroup) {
+			setTimeout(function() {
+				$('#harjutused').find('h3:first').html(translations[lang]['exercises'] + ' | ' + muscle_groups[app.muscleGroup] + '&nbsp;&nbsp;');
+				$('.lihasname').html(muscle_groups[app.muscleGroup]);
+				$('#thefilter g').each(function(i, item) {
+					if (parseInt($(item).data('muscle')) == parseInt(app.muscleGroup)) {
+						if ($(item).attr('class').indexOf("pathOver") === -1) {
+							$(item).click();
+							$('#harjutused').find('h3:first').html(translations[lang]['exercises'] + ' | ' + muscle_groups[app.muscleGroup] + '&nbsp;&nbsp;');
+						}
+					}
+						
+				});
+			}, 600);
+			
+		}
+		
 		//console.log(result);
    		$.each(result, function(i, item) {
    		
@@ -1520,13 +1543,13 @@ var app = {
 			                uri,
 			                sPath + module + '/' + pic + '.jpg',
 			                function(theFile) {
-			                    //console.log("download complete: " + theFile.toURL());
+			                    console.log("download complete: " + theFile.toURL());
 			                    //showLink(theFile.toURL());
 			                },
 			                function(error) {
-			                    //console.log("download error source " + error.source);
-			                    //console.log("download error target " + error.target);
-			                    //console.log("upload error code: " + error.code);
+			                    console.log("download error source " + error.source);
+			                    console.log("download error target " + error.target);
+			                    console.log("upload error code: " + error.code);
 			                }
 			            );
 		            });
@@ -1775,7 +1798,7 @@ var app = {
 						$('input:first').focus();
 						return false;
 					}
-					if(!user.club_nr) {
+					/*if(!user.club_nr) {
 						$('#askClubNr').find('.save-button').unbind('click');
 						$('#askClubNr').find('.save-button, .cancel-button').click(function(e) {
 							addHover(this);
@@ -1800,7 +1823,7 @@ var app = {
 						setTimeout(function () {
 							$('#askClubNr').addClass('scaleIn');
 						}, 100);
-					} 
+					} */
 					if (parseInt(template.personal_trainings) > 0) {
 						$('#askMeeting').find('.date').unbind('click');
 						$('#askMeeting').find('.date').click(function(e) {
@@ -1857,7 +1880,7 @@ var app = {
 						$('.popup').removeClass('pophide');
 						$('.popup').addClass('popshow');
 					}, 500);
-					
+					$('.bank-link').unbind('click');
 					$('.bank-link').click(function(e) {
 						e.preventDefault();
 						addHover(this);

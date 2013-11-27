@@ -727,6 +727,7 @@ background: radial-gradient(ellipse at center,  rgba(255,255,255,0.71) 0%,rgba(2
 
 .langselector a.active {
 	color: #fff;
+	border: 1px solid red;
 }
 
 
@@ -1913,7 +1914,7 @@ div.icon_select {
 
 
 .month h4{
-	background: rgba(32,122,178,1);
+	background: #006db3;
     border-top: 10px solid rgb(243,243,243);
 	font-size: 14px;
     padding: 2% 5%;
@@ -3135,10 +3136,10 @@ div.icon_select {
 }
 
 .harjutus_item .play {
-	width: 90px;
+	/*width: 90px;*/
 	position: absolute;
 	top: 5px;
-	left: 15px;
+	/*left: 15px;*/
 }
 
 .harjutus_item .img .bubble {
