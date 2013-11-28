@@ -1119,12 +1119,15 @@ var app = {
 		} 
 		if (app.muscleGroup) {
 			data.muscle_group = app.muscleGroup;
-			
-			if (app.exerciseCat) {
-				$('#harjutused_subpage1').find('h3:first').html(categories[app.exerciseCat] + ' | ' + muscle_groups[app.muscleGroup]).css('font-size', '13px');
-			} else {
-				$('#harjutused_subpage1').find('h3:first').html(muscle_groups[app.muscleGroup]).css('font-size', '15px');
-			}
+			setTimeout(function() {
+				if (app.exerciseCat) {
+					$('#harjutused_subpage1').find('h3:first').html(categories[app.exerciseCat] + ' | ' + muscle_groups[app.muscleGroup] + '&nbsp;&nbsp;').css('font-size', '13px');
+				} else {
+					$('#harjutused_subpage1').find('h3:first').html(muscle_groups[app.muscleGroup] + '&nbsp;&nbsp;').css('font-size', '15px');
+				}
+				console.log('like what..');
+				$('.lihasname').html(muscle_groups[app.muscleGroup]);
+			}, 600);
 			where = where + ' AND (muscle = "' + app.muscleGroup + '" OR muscle2 = "' + app.muscleGroup + '" OR muscle3 = "' + app.muscleGroup + '")';
 		}
 		
