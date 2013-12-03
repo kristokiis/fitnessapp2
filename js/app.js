@@ -888,20 +888,20 @@ var app = {
 				$('#diaryStatus').html('Avalik');
 			else
 				$('#diaryStatus').html('Privaatne');
-			$('#yesnooverlay').find('.nobg_item').click(function(e) {
+			$('#yesnooverlay2').find('.nobg_item').click(function(e) {
 				addHover(this);
 				if($(this).hasClass('yes-answer'))
 					user.diary = 'public';
 				else
 					user.diary = 'private';
-				$('#yesnooverlay').removeClass('scale');
+				$('#yesnooverlay2').removeClass('scale');
 				setTimeout(function () {
-					$('#yesnooverlay').removeClass('scaleIn');
+					$('#yesnooverlay2').removeClass('scaleIn');
 				}, 100);
 			});
-			$('#yesnooverlay').addClass('scale');
+			$('#yesnooverlay2').addClass('scale');
 			setTimeout(function () {
-				$('#yesnooverlay').addClass('scaleIn');
+				$('#yesnooverlay2').addClass('scaleIn');
 			}, 100);
 		});
 		

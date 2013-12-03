@@ -440,7 +440,7 @@ background: radial-gradient(ellipse at center,  rgba(255,255,255,0.71) 0%,rgba(2
 
 
 .home span{
-	background: url(../i/icon_home.png) no-repeat center center transparent;
+	background: url(../i/icon_home_white.png) no-repeat center center transparent;
 	width: 38px;
 	height: 38px;
 	display: inline-block;
