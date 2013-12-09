@@ -131,18 +131,53 @@ var app = {
 				//20 rows max, 250kb
 				tx.executeSql('DROP TABLE IF EXISTS TRAININGS');
 				tx.executeSql('CREATE TABLE IF NOT EXISTS TRAININGS (id unique, type, name, description, exercises, day_names, has_offers)');
+			}, function(error) {
+				console.error('Error on line 134:');
+				//console.log(error);
+			}, function() {
+				//console.log('Tables created');
+			});
+			db.transaction(function(tx) {
 				//20 rows max, 250kb
 				tx.executeSql('DROP TABLE IF EXISTS NUTRITIONS');
 				tx.executeSql('CREATE TABLE IF NOT EXISTS NUTRITIONS (id unique, type, name, description, meals, has_offers)');
+			}, function(error) {
+				console.error('Error on line 134:');
+				//console.log(error);
+			}, function() {
+				//console.log('Tables created');
+			});
+			db.transaction(function(tx) {
 				//250 rows max, 300kb
 				tx.executeSql('DROP TABLE IF EXISTS EXERCISES');
 				tx.executeSql('CREATE TABLE IF NOT EXISTS EXERCISES (id unique, type, name, name_en, name_ru, data, video, description, description_en, description_ru, category, muscle, muscle2, muscle3)');
+			}, function(error) {
+				console.error('Error on line 134:');
+				//console.log(error);
+			}, function() {
+				//console.log('Tables created');
+			});
+			db.transaction(function(tx) {
 				//50 rows max, 20kb
 				tx.executeSql('DROP TABLE IF EXISTS NOTIFICATIONS');
 				tx.executeSql('CREATE TABLE IF NOT EXISTS NOTIFICATIONS (id unique, is_read, heading, message, `from`, send)');
+			}, function(error) {
+				console.error('Error on line 134:');
+				//console.log(error);
+			}, function() {
+				//console.log('Tables created');
+			});
+			db.transaction(function(tx) {
 				//700 rows max, 224kb
 				tx.executeSql('DROP TABLE IF EXISTS TEST');
 				tx.executeSql('CREATE TABLE IF NOT EXISTS TEST (id unique, exercise, sex, min_age, max_age, min_score, max_score, grade)');
+			}, function(error) {
+				console.error('Error on line 134:');
+				//console.log(error);
+			}, function() {
+				//console.log('Tables created');
+			});
+			db.transaction(function(tx) {
 				//300 rows max 1mb
 				tx.executeSql('DROP TABLE IF EXISTS DIARY');
 				tx.executeSql('CREATE TABLE IF NOT EXISTS DIARY (id INTEGER PRIMARY KEY AUTOINCREMENT, day, month, year, package, training_day, length, plan_name, day_name, day_data, type, synced INTEGER)');
@@ -205,6 +240,7 @@ var app = {
 			console.log(data);
 			$.get(app.apiUrl + '?action=getExercises', data, function(result) {
 				db.transaction(function(tx) {
+					tx.executeSql('CREATE TABLE IF NOT EXISTS EXERCISES (id unique, type, name, name_en, name_ru, data, video, description, description_en, description_ru, category, muscle, muscle2, muscle3)');
 					var pics = [];
 					$.each(result, function(i, item) {
 						
@@ -244,6 +280,7 @@ var app = {
 			data.club = club_id;
 			$.get(app.apiUrl + '?action=getNotifications', data, function(result) {
 				db.transaction(function(tx) {
+					tx.executeSql('CREATE TABLE IF NOT EXISTS NOTIFICATIONS (id unique, is_read, heading, message, `from`, send)');
 					$.each(result, function(i, item) {
 						
 						var statement = 'INSERT INTO NOTIFICATIONS (id, is_read, heading, message, `from`, send) VALUES (' + parseInt(item.id) + ', 0, "' + item.heading + '", "' + item.message + '", "' + item.from + '", "' + item.send + '")';
@@ -281,6 +318,7 @@ var app = {
 			data.ids = tr_notIDs;
 			$.get(app.apiUrl + '?action=getTrainings', data, function(result) {
 				db.transaction(function(tx) {
+					tx.executeSql('CREATE TABLE IF NOT EXISTS TRAININGS (id unique, type, name, description, exercises, day_names, has_offers)');
 			   		$.each(result, function(i, item) {
 			   		
 			   			//console.log(item);
@@ -323,6 +361,7 @@ var app = {
 			data.ids = nu_notIDs;
 			$.get(app.apiUrl + '?action=getNutritions', data, function(result) {
 				db.transaction(function(tx) {
+					tx.executeSql('CREATE TABLE IF NOT EXISTS NUTRITIONS (id unique, type, name, description, meals, has_offers)');
 			   		$.each(result, function(i, item) {
 			   		
 			   			if (item.order_id && item.order_id != '0' && item.order_id != 0) {

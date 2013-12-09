@@ -1,7 +1,7 @@
 			<section id="minuandmed" class="centered frame">
 				<section class="me title">
 					<img src="i/icon_profile.png" alt=""/>
-					<h3>MINU ANDMED</h3>
+					<h3 class="translate" data-keyword="my_data">MINU ANDMED</h3>
 					<div class="clear"></div>
 				</section>
 
@@ -11,36 +11,36 @@
 					
 					<section class="gray_item icon_ok" >
 						<div class="item_wrap">
-							<label for="firstname">Eesnimi:</label><input id="firstname" type="text" value=""/>
+							<label for="firstname" class="translate" data-keyword="firstname">Eesnimi:</label><input id="firstname" type="text" value=""/>
 						</div>
 					</section>
 					
 					<section class="gray_item icon_ok" >
 						<div class="item_wrap">
-							<label for="lastname">Perekonna nimi:</label><input id="lastname" type="text" value=""/>
+							<label for="lastname" class="translate" data-keyword="lastname">Perekonna nimi:</label><input id="lastname" type="text" value=""/>
 						</div>
 					</section>
 					
 					<section class="gray_item " >
 						<div class="item_wrap">
-							<label for="mail">E-post:  </label><input id="mail" type="text" value=""/>
+							<label for="mail" class="translate" data-keyword="mail">E-post:</label><input id="mail" type="text" value=""/>
 						</div>
 					</section>
 					
 					<section class="gray_item " >
 						<div class="item_wrap">
-							<label for="phone">Telefon:  </label><input id="phone" type="text" value=""/>
+							<label for="phone" class="translate" data-keyword="phone">Telefon:</label><input id="phone" type="text" value=""/>
 						</div>
 					</section>
 					
 					<section class="gray_item selects" >
 						<div class="item_wrap">
-							<label for="training_activity">Sugu:</label>
+							<label for="training_activity" class="translate" data-keyword="sex">Sugu:</label>
 							<div class="select">
 								<!--<div class="icon_select"></div>-->
 								<select name="sex" id="sex">
-									<option value="male">Mees</option>
-									<option value="female">Naine</option>
+									<option value="male" class="translate" data-keyword="male">Mees</option>
+									<option value="female" class="translate" data-keyword="female">Naine</option>
 								</select>
 							</div>
 						</div>
@@ -48,33 +48,33 @@
 					
 					<section class="gray_item " >
 						<div class="item_wrap">
-							<label for="age">Sünnikuupäev:  </label><input id="birthday" type="date" value="1988-09-08"/>
+							<label for="age" class="translate" data-keyword="birthday">Sünnikuupäev:  </label><input id="birthday" type="date" value="1988-09-08"/>
 						</div>
 					</section>
 					
 					<section class="gray_item " >
 						<div class="item_wrap">
-							<label for="weight">Kaal:  </label><input id="weight" type="text" value=""/>
+							<label for="weight" class="translate" data-keyword="weight">Kaal:  </label><input id="weight" type="text" value=""/>
 						</div>
 					</section>
 					
 					<section class="gray_item " >
 						<div class="item_wrap">
-							<label for="length">Pikkus:  </label><input id="length" type="text" value=""/>
+							<label for="length" class="translate" data-keyword="height">Pikkus:  </label><input id="length" type="text" value=""/>
 						</div>
 					</section>
 					
 					
 					<section class="gray_item selects" >
 						<div class="item_wrap">
-							<label for="training_activity">Kokkupuude spordiga viimasel aastal:</label>
+							<label for="training_activity" class="translate" data-keyword="training_activity">Kokkupuude spordiga viimasel aastal:</label>
 							<div class="select">
 								<!--<div class="icon_select"></div>-->
 								<select name="sex" id="training_activity">
-									<option value="1">1 korra nädalas</option>
-									<option value="1-2">1-2 korda nädalas</option>
-									<option value="3-4">3-4 korda nädalas</option>
-									<option value="5">üle 5 korra nädalas</option>
+									<option value="1" class="translate" data-keyword="frequency1">1 korra nädalas</option>
+									<option value="1-2" class="translate" data-keyword="frequency2">1-2 korda nädalas</option>
+									<option value="3-4" class="translate" data-keyword="frequency3">3-4 korda nädalas</option>
+									<option value="5" class="translate" data-keyword="frequency4">üle 5 korra nädalas</option>
 								</select>
 							</div>
 						</div>
@@ -83,13 +83,13 @@
 					
 					<section class="gray_item selects" >
 						<div class="item_wrap">
-							<label for="training_activity">Treeningu eesmärk:</label>
+							<label for="training_activity" class="translate" data-keyword="training_goal">Treeningu eesmärk:</label>
 							<div class="select">
 								<!--<div class="icon_select"></div>-->
 								<select name="sex" id="training_target">
-									<option value="vastupidavus">Vastupidavuse arendamine</option>
-									<option value="lihamass">Lihasmassi kasvatamine</option>
-									<option value="kehakaal">Kehakaalu langetamine</option>
+									<option value="vastupidavus" class="translate" data-keyword="training_goal1">Vastupidavuse arendamine</option>
+									<option value="lihamass" class="translate" data-keyword="training_goal2">Lihasmassi kasvatamine</option>
+									<option value="kehakaal" class="translate" data-keyword="training_goal3">Kehakaalu langetamine</option>
 								</select>
 							</div>
 						</div>
@@ -98,17 +98,17 @@
 					
 					<section class="gray_item selects" >
 						<div class="item_wrap">
-							<label for="training_activity">Mitu korda nädalas võimalus treenida:</label>
+							<label for="training_activity" class="translate" data-keyword="training_possibility">Mitu korda nädalas võimalus treenida:</label>
 							<div class="select">
 								<!--<div class="icon_select"></div>-->
 								<select name="sex" id="per_week">
-									<option value="1">1 kord nädalas</option>
-									<option value="2">2 korda nädalas</option>
-									<option value="3">3 korda nädalas</option>
-									<option value="4">4 korda nädalas</option>
-									<option value="5">5 korda nädalas</option>
-									<option value="6">6 korda nädalas</option>
-									<option value="7">7 korda nädalas</option>
+									<option value="1" class="translate" data-keyword="training_possibility1">1 kord nädalas</option>
+									<option value="2" class="translate" data-keyword="training_possibility2">2 korda nädalas</option>
+									<option value="3" class="translate" data-keyword="training_possibility3">3 korda nädalas</option>
+									<option value="4" class="translate" data-keyword="training_possibility4">4 korda nädalas</option>
+									<option value="5" class="translate" data-keyword="training_possibility5">5 korda nädalas</option>
+									<option value="6"class="translate" data-keyword="training_possibility6">6 korda nädalas</option>
+									<option value="7"class="translate" data-keyword="training_possibility7">7 korda nädalas</option>
 								</select>
 							</div>
 						</div>
@@ -118,12 +118,12 @@
 					
 					<section class="gray_item selects" >
 						<div class="item_wrap">
-							<label for="currently_training">Kas kasutate treeningkava:</label>
+							<label for="currently_training" class="translate" data-keyword="current_plan">Kas kasutate treeningkava:</label>
 							<div class="select">
 								<!--<div class="icon_select"></div>-->
 								<select name="sex" id="currently_training">
-									<option value="jah">Jah</option>
-									<option value="ei">Ei</option>
+									<option value="jah" class="translate" data-keyword="yes">Jah</option>
+									<option value="ei" class="translate" data-keyword="no">Ei</option>
 								</select>
 							</div>
 						</div>
@@ -131,19 +131,19 @@
 					
 					<section class="gray_item" >
 						<div class="item_wrap">
-							<label for="health_condition">Tervise ohutegurid ja sümptoomid:</label>
+							<label for="health_condition" class="translate" data-keyword="additional_info">Täiendav info:</label>
 							<textarea name="health_condition" id="health_condition" rows="3"></textarea>
 						</div>
 					</section>
 					
 
 					<section class="nobg_item nobg_special_button orderbtn">
-						<h3>Salvesta</h3>		
+						<h3 class="translate" data-keyword="save">Salvesta</h3>		
 					</section>
 					
 					<section class="gray_item" >
 						<div class="item_wrap">
-							<p>Teavitus, kuidas andmeid hoiame</p>
+							<p class="translate" data-keyword="privacy_terms">Sinu privaatsus on meile oluline! Me ei jaga kunagi Sinu poolt edastatud informatiooni ega kontaktandmeid kolmanate isikutega!</p>
 						</div>
 					</section>
 
