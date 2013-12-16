@@ -3,6 +3,8 @@ var pausedTime = {};
 var mainTimer = {};
 var timer = {};
 var pauseTimer = false;
+var buttonTimer = {};
+var buttonHover = false;
 //finish this file on friday
 var packs = {
 	hasSpecialOffers: false,
@@ -718,23 +720,24 @@ var trainings = {
 		} else {
 		
 			if(curDay && curDay.exercises[element] && curDay.exercises[element].status == 'done') {
-				//console.log('here');
+				console.log('here1');
 				$('#timerStuff').html('00:00:00');
 				currentTime = unFormatTime('00:00:00');
 				$('.timer-exercise .nobg_item').hide();
 			} else if (curDay && curDay.exercises[element] && curDay.exercises[element].status == 'doing') {
-				//console.log('here');
+				console.log('here2');
 				//started = new Date(curDay.exercises[element].started).getTime();
 				//$('#timerStuff').html(started);
 				//currentTime = unFormatTime(started);
 				$('.timer-exercise .nobg_item').show();
 				$('.timer-exercise .nobg_item').addClass('started').find('h3').text('PAUS');
 			} else {
-				//console.log('here');
+				console.log('here3');
 				$('#timerStuff').html(trainings.currentExercise.time + ':00:00');
 				currentTime = unFormatTime(trainings.currentExercise.time + ':00:00');
 				$('.timer-exercise .nobg_item').show();
 				//$('.timer-exercise .nobg_item').addClass('started').find('h3').text('PAUS');
+				$('.timer-exercise .nobg_item').removeClass('started').find('h3').text('START');
 			}
 			if (pauseTimer) {
 				console.log('fo real ??');
@@ -771,8 +774,19 @@ var trainings = {
 				$(this).removeClass('checked').addClass('unchecked').find('img').attr('src', 'i/unchecked.png');
 			}
 		});
-		
-		
+
+		$('.plus, .minus').bind('touchstart',function(){
+			var button = $(this);
+			buttonHover = true;
+		    buttonTimer = setTimeout(function(){
+		    	$(this).addClass('hover');
+			    autoClick(button);
+		    }, 100);
+		}).bind('touchend',function(){
+			$(this).removeClass('hover');
+			buttonHover = false;
+			clearTimeout(buttonTimer);
+		});
 		
 		$('.times .plus').unbind(eventEnd).bind(eventEnd, function (e) {
 			var par = $(this).parent();
@@ -934,7 +948,10 @@ var trainings = {
 			
 			
 		});
-		//console.log(trainings.currentTraining);
+		//console.log(trainings.currentTraining.exercises[trainings.currentDay]);
+		
+		var trainHolder = trainings.currentTraining.exercises;
+		console.log(trainHolder[trainings.currentDay]);
 		exCounter = 0;
 		var updateExercises = [];
 		$.each(trainings.currentTraining.exercises[trainings.currentDay], function(i, exercise) {
@@ -999,7 +1016,6 @@ var trainings = {
 						newEx.done_series = curDay.exercises[i].done_series + 1;
 					} else {
 						newEx.done_series = 1;
-						
 					}
 					if (exercise.series.length == exercise.done_series)
 						newEx.status = 'done';
@@ -1009,10 +1025,7 @@ var trainings = {
 							serie.weights = data.weights;
 							serie.status = 'done';
 							newEx.series[j] = serie;
-						}/* else {
-							serie.status = false;
-							exercise.series[j] = serie;
-						}*/
+						}
 						
 					});
 					
@@ -1027,11 +1040,14 @@ var trainings = {
 					curDay.started = new Date();
 					curDay.plan_id = trainings.currentTraining.id;
 					curDay.day = trainings.currentDay;
+					
+					trainHolder[trainings.currentDay]['_' + newEx.id] = newEx;
+					
 					curDay.exercises = {};
 					curDay.exercises[i] = newEx;
 					newDay = true;
 				}
-				console.log(newEx);
+				
 				curDay.last_activity = new Date();
 				if(newEx.status == 'done' && (exCounter+1) == Object.keys(trainings.currentTraining.exercises[trainings.currentDay]).length) {
 					$('.end-training').show();
@@ -1042,17 +1058,18 @@ var trainings = {
 			}
 			
 		});
+		
+		console.log(JSON.stringify(trainHolder));
+		
 		//console.log(trainings.currentTraining);
-		
-		
-		/*db.transaction(function(tx) {
-			var statement = "UPDATE TRAININGS SET exercises = '" + JSON.stringify(updateExercises) + "' WHERE id = " + trainings.currentTraining.id + "";
+		db.transaction(function(tx) {
+			var statement = "UPDATE TRAININGS SET exercises = '" + JSON.stringify(trainings.currentTraining.exercises) + "' WHERE id = " + trainings.currentTraining.id + "";
 			//console.log(statement);
 		   	tx.executeSql(statement);
 		}, function(error) {
 			console.error('Error in selecting test result');
 			//console.log(error);
-		});*/
+		});
 		trainings.doingExercise = true;
 		localStorage.setObject('fitCurDay', curDay);
 		
@@ -1500,6 +1517,17 @@ function startBigTimer(time) {
 		mainTimer = setTimeout(function() {
 			startBigTimer(time)
 		}, 1000);
+	}
+	
+}
+function autoClick(el, timer) {
+	clearTimeout(buttonTimer);
+	if (buttonHover) {
+		buttonTimer = setTimeout(function() {
+			$(el).click();
+			autoClick(el);
+			console.log('click...');
+		}, 100);
 	}
 	
 }

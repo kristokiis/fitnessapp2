@@ -1442,7 +1442,7 @@ input.error {
 	text-align: left;
 }
 
-.seeria .plus{
+.seeria .plus {
 	width: 32px;
 	height: 33px;
 	background: url(../i/plus.png) no-repeat center top transparent;
@@ -1455,12 +1455,12 @@ input.error {
 }
 
 
-.seeria .w50 .plus{
+.seeria .w50 .plus {
 	top: -40px;
 	left: 65px;
 }
 
-.seeria .minus{
+.seeria .minus {
 	width: 32px;
 	height: 33px;
 	background: url(../i/minus.png) no-repeat center top transparent;
@@ -1589,11 +1589,11 @@ input.error {
 	margin-left: -8px;
 }
 
-.seeria .plus:hover {
+.seeria .plus.hover {
   background-position: center 104%;
 }
 
-.seeria .minus:hover{
+.seeria .minus.hover{
 	background-position: center 106%;
 }
 
