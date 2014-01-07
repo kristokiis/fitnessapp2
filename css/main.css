@@ -2062,6 +2062,10 @@ div.icon_select {
   word-wrap: break-word; 
 }
 
+#vali_kava .box33 h4.name {
+	height: 25px;
+}
+
 .box33 h5 {
   color: #222;
   font-size: 12px;

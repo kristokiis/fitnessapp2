@@ -189,10 +189,10 @@ var app = {
 				$.each(result, function(i, cat) {
 					cats.push(cat.category);
 				});
-				if (firstLoad) {
+				//if (firstLoad) {
 					app.downloadPics('categories', cats);
 					firstLoad = false;
-				}
+				//}
 			}, 'jsonp');
 			
 			/*
@@ -1090,7 +1090,7 @@ var app = {
    			} else {
    				template.find('.bubble').html(item.total);
    			}	
-   			template.find('img').attr('src', sPath + 'categories/' + item.cat_id + '.jpg');
+   			template.find('img').attr('src', sPath + '.categories/' + item.cat_id + '.jpg');
    			template.find('.harjutus_item').attr('data-cat', item.cat_id);
 	   		content.append(template.html());
    		});
@@ -1155,7 +1155,7 @@ var app = {
 			   		else
 			   			template.find('h3').html(exercise['name_' + lang]);
 			   		
-			   		template.find('img:last').attr('src', sPath + 'exercises/' + exercise.id + '.jpg');
+			   		template.find('img:last').attr('src', sPath + '.exercises/' + exercise.id + '.jpg');
 			   		template.find('.harjutus_item').attr('data-id', exercise.id);
 			   		
 			   		container.append(template.html());
@@ -1255,7 +1255,7 @@ var app = {
 							
 							template.find('.downloadtitle').html(item.name);
 				   			template.find('.downloadcircle').find('span').html(exExercises + '/' + dlExercises);
-				   			template.find('img').attr('src', sPath + 'categories/2.jpg');
+				   			template.find('img').attr('src', sPath + '.categories/2.jpg');
 				   			template.find('.nobg_item').attr('data-id', item.id).attr('data-type', 'package');
 				   			if(exExercises == dlExercises)
 				   				template.find('.nobg_item').html('<img src="i/icon_ok.png" alt="">').removeClass('arrow');
@@ -1306,7 +1306,7 @@ var app = {
 					result = results.rows.item(0);
 					template.find('.downloadtitle').html(item.name);
 		   			template.find('.downloadcircle').find('span').html(result.total + '/' + item.total);
-		   			template.find('img').attr('src', sPath + 'categories/' + item.cat_id + '.jpg');
+		   			template.find('img').attr('src', sPath + '.categories/' + item.cat_id + '.jpg');
 		   			template.find('.nobg_item').attr('data-id', item.cat_id).attr('data-type', 'category');
 		   			if(result.total == item.total)
 		   				template.find('.nobg_item').html('<img src="i/icon_ok.png" alt="">').removeClass('arrow');
@@ -1547,7 +1547,7 @@ var app = {
 			            var uri = encodeURI(app.serverUrl + 'pics/' + module + '/' + pic + '.jpg');
 			            fileTransfer.download(
 			                uri,
-			                sPath + module + '/' + pic + '.jpg',
+			                sPath + '.' + module + '/' + pic + '.jpg',
 			                function(theFile) {
 			                    console.log("download complete: " + theFile.toURL());
 			                    //showLink(theFile.toURL());

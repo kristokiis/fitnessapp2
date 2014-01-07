@@ -117,12 +117,19 @@ var TOTALRESULT = 0;
 var nolevel = false;
 var fisrstrun = true;
 
-
+var initialScreenSize = window.innerHeight;
 
 jQuery(window).resize(function ($) {
 
 	offset = jQuery('.topbar').height();
 	jQuery('.centered').css('top', offset + 'px');
+	
+	if (window.innerHeight < initialScreenSize){
+		$("#bottombar").hide();
+	} else {
+		$("#bottombar").show();                                      
+	}
+	
 	//jQuery('.page-wrap').css('height', Number(jQuery(aligner).height() + plus) +  'px');
 
 	//console.log(jQuery(window).width() + 'px');
@@ -1017,7 +1024,7 @@ function hideKeyBoard() {
 		
 		$('body').touchwipe({
 			wipeLeft : function () {
-				if(($('#teated') && $('#teated').html()) || ($('#treening_naidiskavad') && $('#treening_naidiskavad').html()) || ($('#naidiskavad') && $('#naidiskavad').html())) {
+				if(($('#teated') && $('#teated').html()) || ($('#treening_naidiskavad') && $('#treening_naidiskavad').html()) || ($('#naidiskavad') && $('#naidiskavad').html()) || ($('#diary') && $('#diary').html())) {
 					//alert($(touchElement).attr('class'));
 					$(touchElement).addClass('remove-item');
 					return true;
@@ -1040,7 +1047,7 @@ function hideKeyBoard() {
 				}
 			},
 			wipeRight : function () {
-				if(($('#teated') && $('#teated').html()) || ($('#treening_naidiskavad') && $('#treening_naidiskavad').html()) || ($('#naidiskavad') && $('#naidiskavad').html())) {
+				if(($('#teated') && $('#teated').html()) || ($('#treening_naidiskavad') && $('#treening_naidiskavad').html()) || ($('#naidiskavad') && $('#naidiskavad').html()) || ($('#diary') && $('#diary').html())) {
 					//alert($(touchElement).attr('class'));
 					$(touchElement).removeClass('remove-item');
 					return true;

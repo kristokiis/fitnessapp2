@@ -95,9 +95,9 @@ var packs = {
 						}
 						
 						if(day.type == 'exercise') {
-							template.find('.trainings-content').append('<div class="treening" data-id="' + day.id + '"><div class="arrow"><div>'+translations[lang]['date']+': <span class="date">' + day.day + '</span></div><div>'+translations[lang]['pack']+': <span class="kava">' + day.plan_name + '</span></div><div>'+translations[lang]['trainingday']+': <span class="paev">' + day.day_name + '</span></div><div>'+translations[lang]['training_length']+': <span class="length">' + secToHour(day.length) + '</span></div></div></div>');
+							template.find('.trainings-content').append('<div class="treening" data-id="' + day.id + '"><div class="arrow"><div>'+translations[lang]['date']+': <span class="date">' + day.day + '</span></div><div>'+translations[lang]['pack']+': <span class="kava">' + day.plan_name + '</span></div><div>'+translations[lang]['trainingday']+': <span class="paev">' + day.day_name + '</span></div><div>'+translations[lang]['training_length']+': <span class="length">' + secToHour(day.length) + '</span></div></div><div class="remove-overlay"><span class="remove-icon"></span></div></div>');
 						} else {
-							template.find('.trainings-content').append('<div class="treening" data-id="' + day.id + '"><div class="arrow"><div>'+translations[lang]['date']+': <span class="date">' + day.day + '</span></div><div>'+translations[lang]['pack']+': <span class="kava">'+translations[lang]['fitness_test']+'</span></div><div>'+translations[lang]['score']+': <span class="paev">' + day.day_name + '</span></div></div></div>');
+							template.find('.trainings-content').append('<div class="treening" data-id="' + day.id + '"><div class="arrow"><div>'+translations[lang]['date']+': <span class="date">' + day.day + '</span></div><div>'+translations[lang]['pack']+': <span class="kava">'+translations[lang]['fitness_test']+'</span></div><div>'+translations[lang]['score']+': <span class="paev">' + day.day_name + '</span></div></div><div class="remove-overlay"><span class="remove-icon"></span></div></div>');
 						}
 						
 						
@@ -111,6 +111,24 @@ var packs = {
 						}
 						
 					}
+					
+					$('#diaryscroll').find('.remove-overlay').click(function(e) {
+						e.preventDefault();
+						e.stopPropagation();
+						element = $(this).parent();
+						var id = parseInt(element.data('id'));
+						
+						db.transaction(function(tx) {
+							var statement = 'DELETE FROM DIARY WHERE id = ' + id;
+							//console.log(statement);
+						   	tx.executeSql(statement);
+						   	element.remove();
+						   	/*
+						   	* AJAX request to DB to remove it.. 
+						   	*/
+					   	});
+						
+					});
 					
 						
 					//content.html(template.html());
@@ -614,7 +632,7 @@ var trainings = {
 		console.log(trainings.currentTraining.exercises[trainings.currentDay][element]);
 		
 		$('.videopreview').attr('data-id', trainings.currentExercise.exercise_id);
-		$('.videopreview').find('img:last').attr('src', app.serverUrl + 'pics/exercises/' + trainings.currentExercise.exercise_id + '.jpg');
+		$('.videopreview').find('img:last').attr('src', sPath + '.exercises/' + trainings.currentExercise.exercise_id + '.jpg');
 		
 		var curDay = localStorage.getObject('fitCurDay');
 		//console.log(curDay);
